@@ -1,122 +1,130 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
-  },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "tabs": [
-      {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+    "$schema": "https://mintlify.com/docs.json",
+    "theme": "linden",
+    "name": "Inertia.js Documentation",
+    "colors": {
+        "primary": "#2563EB",
+        "light": "#2563EB",
+        "dark": "#2563EB"
+    },
+    "favicon": "/favicon.svg",
+    "navigation": {
+        "tabs": [
+            {
+                "tab": "Guides",
+                "groups": [
+                    {
+                        "group": "Getting Started",
+                        "pages": [
+                            "getting-started/index",
+                            "getting-started/demo-application",
+                            "getting-started/upgrade-guide"
+                        ]
+                    },
+                    {
+                        "group": "Installation",
+                        "pages": [
+                            "installation/server-side-setup",
+                            "installation/client-side-setup"
+                        ]
+                    },
+                    {
+                        "group": "Core Concepts",
+                        "pages": [
+                            "core-concepts/who-is-it-for",
+                            "core-concepts/how-it-works",
+                            "core-concepts/the-protocol"
+                        ]
+                    },
+                    {
+                        "group": "The Basics",
+                        "pages": [
+                            "the-basics/pages",
+                            "the-basics/responses",
+                            "the-basics/redirects",
+                            "the-basics/routing",
+                            "the-basics/title-and-meta",
+                            "the-basics/links",
+                            "the-basics/manual-visits",
+                            "the-basics/forms",
+                            "the-basics/file-uploads",
+                            "the-basics/validation"
+                        ]
+                    },
+                    {
+                        "group": "Data & Props",
+                        "pages": [
+                            "data-props/shared-data",
+                            "data-props/partial-reloads",
+                            "data-props/deferred-props",
+                            "data-props/merging-props",
+                            "data-props/polling",
+                            "data-props/prefetching",
+                            "data-props/load-when-visible",
+                            "data-props/infinite-scroll",
+                            "data-props/remembering-state"
+                        ]
+                    },
+                    {
+                        "group": "Security",
+                        "pages": [
+                            "security/authentication",
+                            "security/authorization",
+                            "security/csrf-protection",
+                            "security/history-encryption"
+                        ]
+                    },
+                    {
+                        "group": "Advanced",
+                        "pages": [
+                            "advanced/asset-versioning",
+                            "advanced/code-splitting",
+                            "advanced/error-handling",
+                            "advanced/events",
+                            "advanced/progress-indicators",
+                            "advanced/scroll-management",
+                            "advanced/server-side-rendering",
+                            "advanced/testing"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "global": []
+    },
+    "logo": {
+        "light": "/logo/light.svg",
+        "dark": "/logo/dark.svg"
+    },
+    "navbar": {
+        "links": [
+            {
+                "label": "Support",
+                "href": "mailto:hi@mintlify.com"
+            }
+        ],
+        "primary": {
+            "type": "button",
+            "label": "Dashboard",
+            "href": "https://dashboard.mintlify.com"
         }
-      ]
+    },
+    "contextual": {
+        "options": [
+            "copy",
+            "view",
+            "chatgpt",
+            "claude",
+            "perplexity",
+            "mcp",
+            "cursor",
+            "vscode"
+        ]
+    },
+    "footer": {
+        "socials": {
+            "x": "https://x.com/inertiajs",
+            "github": "https://github.com/inertiajs"
+        }
     }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
-  }
 }
