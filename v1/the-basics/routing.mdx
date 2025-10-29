@@ -1,0 +1,85 @@
+---
+title: Routing
+---
+
+
+## Defining routes
+
+When using Inertia, all of your application's routes are defined server-side. This means that you don't need Vue Router or React Router. Instead, you can simply define Laravel routes and return [Inertia responses](/responses) from those routes.
+
+## Shorthand routes
+
+If you have a [page](/pages) that doesn't need a corresponding controller method, like an "FAQ" or "about" page, you can route directly to a component via the `Route::inertia()` method.
+
+```php
+Route::inertia('/about', 'About');
+```
+
+## Generating URLs
+
+Some server-side frameworks allow you to generate URLs from named routes. However, you will not have access to those helpers client-side. Here are a couple ways to still use named routes with Inertia.
+
+The first option is to generate URLs server-side and include them as props. Notice in this example how we're passing the `edit_url` and `create_url` to the `Users/Index` component.
+
+```php
+class UsersController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render('Users/Index', [
+            'users' => User::all()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'edit_url' => route('users.edit', $user),
+                ];
+            }),
+            'create_url' => route('users.create'),
+        ]);
+    }
+}
+```
+
+However, when using Laravel, the [Ziggy](https://github.com/tighten/ziggy) library can make your named, server-side routes available to you via a global `route()` function. In fact, if you are developing an application using one of Laravel's [starter kits](https://laravel.com/docs/starter-kits), Ziggy is already configured for you.
+
+If you're using the Vue plugin included with Ziggy, you may use the `route()`function directly in your templates.
+
+```html
+<a :href="route('users.create')">Create User</a>
+```
+
+When [server-side rendering](/server-side-rendering) is enabled, you may pass an options object to the Ziggy plugin in your `ssr.js` file. This should include the route definitions and current location.
+
+```js
+.use(ZiggyVue, {
+...page.props.ziggy,
+location: new URL(page.props.ziggy.location),
+});
+```
+
+## Customizing the Page URL
+
+The [page object](/the-protocol#the-page-object) includes a `url` that represents the current page's URL. By default, the Laravel adapter resolves this using the `fullUrl()` method on the `Request` instance, but strips the scheme and host so the result is a relative URL.
+
+If you need to customize how the URL is resolved, you may provide a resolver within the `urlResolver` method of the Inertia `HandleInertiaRequests` middleware.
+
+```php
+class HandleInertiaRequests extends Middleware
+{
+public function urlResolver()
+{
+return function (Request $request) {
+// Return the URL for the request...
+};
+}
+}
+```
+
+Alternatively, you may define the resolver using the `Inertia::resolveUrlUsing()` method.
+
+```php
+Inertia::resolveUrlUsing(function (Request $request) {
+// Return the URL for the request...
+});
+```

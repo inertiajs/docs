@@ -9,88 +9,205 @@
     },
     "favicon": "/favicon.svg",
     "navigation": {
-        "tabs": [
+        "global": {},
+        "versions": [
             {
-                "tab": "Guides",
+                "version": "1.0.0",
                 "groups": [
                     {
                         "group": "Getting Started",
                         "pages": [
-                            "getting-started/index",
-                            "getting-started/demo-application",
-                            "getting-started/upgrade-guide"
+                            "v1/getting-started/index",
+                            "v1/getting-started/demo-application",
+                            "v1/getting-started/upgrade-guide"
                         ]
                     },
                     {
                         "group": "Installation",
                         "pages": [
-                            "installation/server-side-setup",
-                            "installation/client-side-setup"
+                            "v1/installation/server-side-setup",
+                            "v1/installation/client-side-setup"
                         ]
                     },
                     {
                         "group": "Core Concepts",
                         "pages": [
-                            "core-concepts/who-is-it-for",
-                            "core-concepts/how-it-works",
-                            "core-concepts/the-protocol"
+                            "v1/core-concepts/who-is-it-for",
+                            "v1/core-concepts/how-it-works",
+                            "v1/core-concepts/the-protocol"
                         ]
                     },
                     {
                         "group": "The Basics",
                         "pages": [
-                            "the-basics/pages",
-                            "the-basics/responses",
-                            "the-basics/redirects",
-                            "the-basics/routing",
-                            "the-basics/title-and-meta",
-                            "the-basics/links",
-                            "the-basics/manual-visits",
-                            "the-basics/forms",
-                            "the-basics/file-uploads",
-                            "the-basics/validation"
-                        ]
-                    },
-                    {
-                        "group": "Data & Props",
-                        "pages": [
-                            "data-props/shared-data",
-                            "data-props/partial-reloads",
-                            "data-props/deferred-props",
-                            "data-props/merging-props",
-                            "data-props/polling",
-                            "data-props/prefetching",
-                            "data-props/load-when-visible",
-                            "data-props/infinite-scroll",
-                            "data-props/remembering-state"
-                        ]
-                    },
-                    {
-                        "group": "Security",
-                        "pages": [
-                            "security/authentication",
-                            "security/authorization",
-                            "security/csrf-protection",
-                            "security/history-encryption"
+                            "v1/the-basics/pages",
+                            "v1/the-basics/responses",
+                            "v1/the-basics/redirects",
+                            "v1/the-basics/routing",
+                            "v1/the-basics/title-and-meta",
+                            "v1/the-basics/links",
+                            "v1/the-basics/manual-visits",
+                            "v1/the-basics/forms",
+                            "v1/the-basics/file-uploads",
+                            "v1/the-basics/validation",
+                            "v1/the-basics/shared-data"
                         ]
                     },
                     {
                         "group": "Advanced",
                         "pages": [
-                            "advanced/asset-versioning",
-                            "advanced/code-splitting",
-                            "advanced/error-handling",
-                            "advanced/events",
-                            "advanced/progress-indicators",
-                            "advanced/scroll-management",
-                            "advanced/server-side-rendering",
-                            "advanced/testing"
+                            "v1/advanced/events",
+                            "v1/advanced/testing",
+                            "v1/advanced/partial-reloads",
+                            "v1/advanced/scroll-management",
+                            "v1/advanced/authentication",
+                            "v1/advanced/authorization",
+                            "v1/advanced/csrf-protection",
+                            "v1/advanced/error-handling",
+                            "v1/advanced/asset-versioning",
+                            "v1/advanced/progress-indicators",
+                            "v1/advanced/remembering-state",
+                            "v1/advanced/server-side-rendering"
+                        ]
+                    }
+                ]
+            },
+            {
+                "version": "2.0.0",
+                "groups": [
+                    {
+                        "group": "Getting Started",
+                        "pages": [
+                            "v1/getting-started/index",
+                            "v1/getting-started/demo-application",
+                            "v1/getting-started/upgrade-guide"
+                        ]
+                    },
+                    {
+                        "group": "Installation",
+                        "pages": [
+                            "v1/installation/server-side-setup",
+                            "v1/installation/client-side-setup"
+                        ]
+                    },
+                    {
+                        "group": "Core Concepts",
+                        "pages": [
+                            "v1/core-concepts/who-is-it-for",
+                            "v1/core-concepts/how-it-works",
+                            "v1/core-concepts/the-protocol"
+                        ]
+                    },
+                    {
+                        "group": "The Basics",
+                        "pages": [
+                            "v1/the-basics/pages",
+                            "v1/the-basics/responses",
+                            "v1/the-basics/redirects",
+                            "v1/the-basics/routing",
+                            "v1/the-basics/title-and-meta",
+                            "v1/the-basics/links",
+                            "v1/the-basics/manual-visits",
+                            "v1/the-basics/forms",
+                            "v1/the-basics/file-uploads",
+                            "v1/the-basics/validation",
+                            "v1/the-basics/shared-data"
+                        ]
+                    },
+                    {
+                        "group": "Advanced",
+                        "pages": [
+                            "v1/advanced/events",
+                            "v1/advanced/testing",
+                            "v1/advanced/partial-reloads",
+                            "v1/advanced/scroll-management",
+                            "v1/advanced/authentication",
+                            "v1/advanced/authorization",
+                            "v1/advanced/csrf-protection",
+                            "v1/advanced/error-handling",
+                            "v1/advanced/asset-versioning",
+                            "v1/advanced/progress-indicators",
+                            "v1/advanced/remembering-state",
+                            "v1/advanced/server-side-rendering"
+                        ]
+                    },
+                    {
+                        "group": "Getting Started",
+                        "pages": [
+                            "v2/getting-started/index",
+                            "v2/getting-started/demo-application",
+                            "v2/getting-started/upgrade-guide"
+                        ]
+                    },
+                    {
+                        "group": "Installation",
+                        "pages": [
+                            "v2/installation/server-side-setup",
+                            "v2/installation/client-side-setup"
+                        ]
+                    },
+                    {
+                        "group": "Core Concepts",
+                        "pages": [
+                            "v2/core-concepts/who-is-it-for",
+                            "v2/core-concepts/how-it-works",
+                            "v2/core-concepts/the-protocol"
+                        ]
+                    },
+                    {
+                        "group": "The Basics",
+                        "pages": [
+                            "v2/the-basics/pages",
+                            "v2/the-basics/responses",
+                            "v2/the-basics/redirects",
+                            "v2/the-basics/routing",
+                            "v2/the-basics/title-and-meta",
+                            "v2/the-basics/links",
+                            "v2/the-basics/manual-visits",
+                            "v2/the-basics/forms",
+                            "v2/the-basics/file-uploads",
+                            "v2/the-basics/validation"
+                        ]
+                    },
+                    {
+                        "group": "Data & Props",
+                        "pages": [
+                            "v2/data-props/shared-data",
+                            "v2/data-props/partial-reloads",
+                            "v2/data-props/deferred-props",
+                            "v2/data-props/merging-props",
+                            "v2/data-props/polling",
+                            "v2/data-props/prefetching",
+                            "v2/data-props/load-when-visible",
+                            "v2/data-props/infinite-scroll",
+                            "v2/data-props/remembering-state"
+                        ]
+                    },
+                    {
+                        "group": "Security",
+                        "pages": [
+                            "v2/security/authentication",
+                            "v2/security/authorization",
+                            "v2/security/csrf-protection",
+                            "v2/security/history-encryption"
+                        ]
+                    },
+                    {
+                        "group": "Advanced",
+                        "pages": [
+                            "v2/advanced/asset-versioning",
+                            "v2/advanced/code-splitting",
+                            "v2/advanced/error-handling",
+                            "v2/advanced/events",
+                            "v2/advanced/progress-indicators",
+                            "v2/advanced/scroll-management",
+                            "v2/advanced/server-side-rendering",
+                            "v2/advanced/testing"
                         ]
                     }
                 ]
             }
-        ],
-        "global": {}
+        ]
     },
     "logo": {
         "light": "/logo/light.svg",
@@ -126,5 +243,163 @@
             "x": "https://x.com/inertiajs",
             "github": "https://github.com/inertiajs"
         }
-    }
+    },
+    "redirects": [
+        {
+            "source": "/index",
+            "destination": "/v2/getting-started/index"
+        },
+        {
+            "source": "/demo-application",
+            "destination": "/v2/getting-started/demo-application"
+        },
+        {
+            "source": "/upgrade-guide",
+            "destination": "/v2/getting-started/upgrade-guide"
+        },
+        {
+            "source": "/server-side-setup",
+            "destination": "/v2/installation/server-side-setup"
+        },
+        {
+            "source": "/client-side-setup",
+            "destination": "/v2/installation/client-side-setup"
+        },
+        {
+            "source": "/who-is-it-for",
+            "destination": "/v2/core-concepts/who-is-it-for"
+        },
+        {
+            "source": "/how-it-works",
+            "destination": "/v2/core-concepts/how-it-works"
+        },
+        {
+            "source": "/the-protocol",
+            "destination": "/v2/core-concepts/the-protocol"
+        },
+        {
+            "source": "/pages",
+            "destination": "/v2/the-basics/pages"
+        },
+        {
+            "source": "/responses",
+            "destination": "/v2/the-basics/responses"
+        },
+        {
+            "source": "/redirects",
+            "destination": "/v2/the-basics/redirects"
+        },
+        {
+            "source": "/routing",
+            "destination": "/v2/the-basics/routing"
+        },
+        {
+            "source": "/title-and-meta",
+            "destination": "/v2/the-basics/title-and-meta"
+        },
+        {
+            "source": "/links",
+            "destination": "/v2/the-basics/links"
+        },
+        {
+            "source": "/manual-visits",
+            "destination": "/v2/the-basics/manual-visits"
+        },
+        {
+            "source": "/forms",
+            "destination": "/v2/the-basics/forms"
+        },
+        {
+            "source": "/file-uploads",
+            "destination": "/v2/the-basics/file-uploads"
+        },
+        {
+            "source": "/validation",
+            "destination": "/v2/the-basics/validation"
+        },
+        {
+            "source": "/shared-data",
+            "destination": "/v2/data-props/shared-data"
+        },
+        {
+            "source": "/events",
+            "destination": "/v2/advanced/events"
+        },
+        {
+            "source": "/testing",
+            "destination": "/v2/advanced/testing"
+        },
+        {
+            "source": "/partial-reloads",
+            "destination": "/v2/data-props/partial-reloads"
+        },
+        {
+            "source": "/scroll-management",
+            "destination": "/v2/advanced/scroll-management"
+        },
+        {
+            "source": "/authentication",
+            "destination": "/v2/security/authentication"
+        },
+        {
+            "source": "/authorization",
+            "destination": "/v2/security/authorization"
+        },
+        {
+            "source": "/csrf-protection",
+            "destination": "/v2/security/csrf-protection"
+        },
+        {
+            "source": "/error-handling",
+            "destination": "/v2/advanced/error-handling"
+        },
+        {
+            "source": "/asset-versioning",
+            "destination": "/v2/advanced/asset-versioning"
+        },
+        {
+            "source": "/progress-indicators",
+            "destination": "/v2/advanced/progress-indicators"
+        },
+        {
+            "source": "/remembering-state",
+            "destination": "/v2/data-props/remembering-state"
+        },
+        {
+            "source": "/server-side-rendering",
+            "destination": "/v2/advanced/server-side-rendering"
+        },
+        {
+            "source": "/deferred-props",
+            "destination": "/v2/data-props/deferred-props"
+        },
+        {
+            "source": "/merging-props",
+            "destination": "/v2/data-props/merging-props"
+        },
+        {
+            "source": "/polling",
+            "destination": "/v2/data-props/polling"
+        },
+        {
+            "source": "/prefetching",
+            "destination": "/v2/data-props/prefetching"
+        },
+        {
+            "source": "/load-when-visible",
+            "destination": "/v2/data-props/load-when-visible"
+        },
+        {
+            "source": "/infinite-scroll",
+            "destination": "/v2/data-props/infinite-scroll"
+        },
+        {
+            "source": "/history-encryption",
+            "destination": "/v2/security/history-encryption"
+        },
+        {
+            "source": "/code-splitting",
+            "destination": "/v2/advanced/code-splitting"
+        }
+    ]
 }
