@@ -2,10 +2,11 @@
 title: Error handling
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 ## Development
 
-One of the advantages to working with a robust server-side framework is the built-in exception handling you get for free. For example, Laravel ships with a beautiful error reporting tool which displays a nicely formatted stack trace in local development.
+One of the advantages to working with a robust server-side framework is the built-in exception handling you get for free. For example, Laravel ships with [Ignition](https://github.com/facade/ignition), a beautiful error reporting tool which displays a nicely formatted stack trace in local development.
 
 The challenge is, if you're making an XHR request (which Inertia does) and you hit a server-side error, you're typically left digging through the network tab in your browser's devtools to diagnose the problem.
 
@@ -25,7 +26,7 @@ use Inertia\\Inertia;
 ->withExceptions(function (Exceptions $exceptions) {
     $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
         if (! app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
-            return Inertia::render('ErrorPage', ['status' => $response->getStatusCode()])
+            return Inertia::render('Error', ['status' => $response->getStatusCode()])
                 ->toResponse($request)
                 ->setStatusCode($response->getStatusCode());
         } elseif ($response->getStatusCode() === 419) {
@@ -39,11 +40,46 @@ use Inertia\\Inertia;
 })
 ```
 
-You may have noticed we're returning an `ErrorPage` page component in the example above. You'll need to actually create this component, which will serve as the generic error page for your application. Here's an example error component you can use as a starting point.
+You may have noticed we're returning an `Error` page component in the example above. You'll need to actually create this component, which will serve as the generic error page for your application. Here's an example error component you can use as a starting point.
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <div>
+    <H1>{{ title }}</H1>
+    <div>{{ description }}</div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    status: Number,
+  },
+  computed: {
+    title() {
+      return {
+        503: '503: Service Unavailable',
+        500: '500: Server Error',
+        404: '404: Page Not Found',
+        403: '403: Forbidden',
+      }[this.status]
+    },
+    description() {
+      return {
+        503: 'Sorry, we are doing some maintenance. Please check back soon.',
+        500: 'Whoops, something went wrong on our servers.',
+        404: 'Sorry, the page you are looking for could not be found.',
+        403: 'Sorry, you are forbidden from accessing this page.',
+      }[this.status]
+    },
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import { computed } from 'vue'
 
@@ -70,7 +106,7 @@ const description = computed(() => {
 
 <template>
   <div>
-    <h1>{{ title }}</h1>
+    <H1>{{ title }}</H1>
     <div>{{ description }}</div>
   </div>
 </template>
@@ -101,7 +137,7 @@ export default function ErrorPage({ status }) {
 }
 ```
 
-```jsx Svelte 4 icon="code"
+```html Svelte icon="code"
 <script>
   export let status
 
@@ -121,33 +157,8 @@ export default function ErrorPage({ status }) {
 </script>
 
 <div>
-  <h1>{title}</h1>
+  <H1>{title}</H1>
   <div>{description}</div>
-</div>
-```
-
-```jsx Svelte 5 icon="code"
-<script>
-  let { status } = $props()
-
-  const titles = {
-    503: '503: Service Unavailable',
-    500: '500: Server Error',
-    404: '404: Page Not Found',
-    403: '403: Forbidden',
-  }
-
-  const descriptions = {
-    503: 'Sorry, we are doing some maintenance. Please check back soon.',
-    500: 'Whoops, something went wrong on our servers.',
-    404: 'Sorry, the page you are looking for could not be found.',
-    403: 'Sorry, you are forbidden from accessing this page.',
-  }
-</script>
-
-<div>
-  <h1>{titles[status]}</h1>
-  <div>{description[status]}</div>
 </div>
 ```
 

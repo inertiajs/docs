@@ -2,6 +2,7 @@
 title: Partial reloads
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 When making visits to the same page you are already on, it's not always necessary to re-fetch all of the page's data from the server. In fact, selecting only a subset of the data can be a helpful performance optimization if it's acceptable that some page data becomes stale. Inertia makes this possible via its "partial reload" feature.
 
@@ -15,7 +16,15 @@ To perform a partial reload, use the `only` visit option to specify which data t
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, {
+  only: ['users'],
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, {
@@ -47,7 +56,15 @@ In addition to the `only` visit option you can also use the `except` option to s
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, {
+  except: ['users'],
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, {
@@ -79,7 +96,13 @@ Since partial reloads can only be made to the same page component the user is al
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.reload({ only: ['users'] })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.reload({ only: ['users'] })
@@ -105,7 +128,13 @@ It's also possible to perform partial reloads with Inertia links using the `only
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Link } from '@inertiajs/vue2'
+
+<a href="/users?active=true" :only="['users']">Show active</a>
+```
+
+```jsx Vue 3 
 import { Link } from '@inertiajs/vue3'
 
 <a href="/users?active=true" :only="['users']">Show active</a>
@@ -120,7 +149,7 @@ import { Link } from '@inertiajs/react'
 ```jsx Svelte icon="code"
 import { inertia, Link } from '@inertiajs/svelte'
 
-<a href="/users?active=true" use:inertia={{ only: ['users'] }}>Show active</a>
+<a href="/users?active=true" use:inertia="{{ only: ['users'] }}">Show active</a>
 
 <a href="/users?active=true" only={['users']}>Show active</a>
 ```
@@ -140,11 +169,11 @@ return Inertia::render('Users/Index', [
 
 When Inertia performs a request, it will determine which data is required and only then will it evaluate the closure. This can significantly increase the performance of pages that contain a lot of optional data.
 
-Additionally, Inertia provides an `Inertia::optional()` method to specify that a prop should never be included unless explicitly requested using the `only` option:
+Additionally, Inertia provides an `Inertia::lazy()` method to specify that a prop should never be included unless explicitly requested using the `only` option:
 
 ```php
 return Inertia::render('Users/Index', [
-    'users' => Inertia::optional(fn () => User::all()),
+    'users' => Inertia::lazy(fn () => User::all()),
 ]);
 ```
 
@@ -173,7 +202,7 @@ return Inertia::render('Users/Index', [
     // NEVER included on standard visits
     // OPTIONALLY included on partial reloads
     // ONLY evaluated when needed
-    'users' => Inertia::optional(fn () => User::all()),
+    'users' => Inertia::lazy(fn () => User::all()),
 
     // ALWAYS included on standard visits
     // ALWAYS included on partial reloads

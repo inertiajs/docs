@@ -2,8 +2,9 @@
 title: Progress indicators
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
-Since Inertia requests are made via XHR, there would typically not be a browser loading indicator when navigating from one page to another. To solve this, Inertia displays a progress indicator at the top of the page whenever you make an Inertia visit. However, [asynchronous requests](#visit-options) do not show the progress indicator unless explicitly configured.
+Since Inertia requests are made via XHR, there would typically not be a browser loading indicator when navigating from one page to another. To solve this, Inertia displays a progress indicator at the top of the page whenever you make an Inertia visit.
 
 Of course, if you prefer, you can disable Inertia's default loading indicator and provide your own custom implementation. We'll discuss both approaches below.
 
@@ -61,11 +62,16 @@ After installation, you'll need to add the NProgress [styles](https://github.com
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
 ```
 
-Then, import both `NProgress` and the Inertia `router` into your application.
+Next, import both `NProgress` and the Inertia `router` into your application.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import NProgress from 'nprogress'
+import { router } from '@inertiajs/vue2'
+```
+
+```js Vue 3 
 import NProgress from 'nprogress'
 import { router } from '@inertiajs/vue3'
 ```
@@ -82,13 +88,13 @@ import { router } from '@inertiajs/svelte'
 
 </CodeGroup>
 
-Next, add a `start` event listener. We'll use this listener to show the progress bar when a new Inertia visit begins.
+Next, let's add a `start` event listener. We'll use this listener to show the progress bar when a new Inertia visit begins.
 
 ```js
 router.on('start', () => NProgress.start())
 ```
 
-Finally, add a `finish` event listener to hide the progress bar when the page visit finishes.
+Then, let's add a `finish` event listener to hide the progress bar when the page visit finishes.
 
 ```js
 router.on('finish', () => NProgress.done())
@@ -176,7 +182,7 @@ if (!NProgress.isStarted()) {
 return
 }
 // ...
-})
+}
 ```
 
 That's it, you now have a beautiful custom page loading indicator!
@@ -187,7 +193,38 @@ For convenience, here is the full source code of the final version of our custom
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import NProgress from 'nprogress'
+import { router } from '@inertiajs/vue2'
+
+let timeout = null
+
+router.on('start', () => {
+  timeout = setTimeout(() => NProgress.start(), 250)
+})
+
+router.on('progress', (event) => {
+  if (NProgress.isStarted() && event.detail.progress.percentage) {
+    NProgress.set((event.detail.progress.percentage / 100) * 0.9)
+  }
+})
+
+router.on('finish', (event) => {
+  clearTimeout(timeout)
+  if (!NProgress.isStarted()) {
+    return
+  } else if (event.detail.visit.completed) {
+    NProgress.done()
+  } else if (event.detail.visit.interrupted) {
+    NProgress.set(0)
+  } else if (event.detail.visit.cancelled) {
+    NProgress.done()
+    NProgress.remove()
+  }
+})
+```
+
+```js Vue 3 
 import NProgress from 'nprogress'
 import { router } from '@inertiajs/vue3'
 
@@ -281,26 +318,3 @@ router.on('finish', (event) => {
 ```
 
 </CodeGroup>
-
-## Visit Options
-
-In addition to these configurations, Inertia.js provides two visit options to control the loading indicator on a per-request basis: `showProgress` and `async`. These options offer greater control over how Inertia.js handles asynchronous requests and manages progress indicators.
-
-### showProgress
-
-The `showProgress` option provides fine-grained control over the visibility of the loading indicator during requests.
-
-```js
-router.get('/settings', {}, { showProgress: false })
-```
-
-### async
-
-The `async` option allows you to perform asynchronous requests without displaying the default progress indicator. It can be used in combination with the `showProgress` option.
-
-```js
-// Disable the progress indicator
-router.get('/settings', {}, { async: true })
-// Enable the progress indicator with async requests
-router.get('/settings', {}, { async: true, showProgress: true })
-```

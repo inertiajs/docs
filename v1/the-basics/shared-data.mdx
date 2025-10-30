@@ -2,6 +2,7 @@
 title: Shared data
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 Sometimes you need to access specific pieces of data on numerous pages within your application. For example, you may need to display the current user in the site header. Passing this data manually in each response across your entire application is cumbersome. Thankfully, there is a better option: shared data.
 
@@ -54,7 +55,30 @@ Once you have shared the data server-side, you will be able to access it within 
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <main>
+    <header>
+      You are logged in as: {{ user.name }}
+    </header>
+    <article>
+      <slot />
+    </article>
+  </main>
+</template>
+
+<script>
+export default {
+  computed: {
+    user() {
+      return this.$page.props.auth.user
+    }
+  }
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
@@ -136,7 +160,22 @@ Next, display the flash message in a frontend component, such as the site layout
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <main>
+    <header></header>
+    <article>
+      <div v-if="$page.props.flash.message" class="alert">
+        {{ $page.props.flash.message }}
+      </div>
+      <slot />
+    </article>
+    <footer></footer>
+  </main>
+</template>
+```
+
+```html Vue 3 
 <template>
   <main>
     <header></header>

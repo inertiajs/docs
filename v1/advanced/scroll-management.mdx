@@ -2,6 +2,7 @@
 title: Scroll management
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 ## Scroll resetting
 
@@ -11,26 +12,32 @@ In addition, Inertia keeps track of the scroll position of each page and automat
 
 ## Scroll preservation
 
-Sometimes it's desirable to prevent the default scroll resetting when making visits. You can disable this behavior by setting the `preserveScroll` option to `true`.
+Sometimes it's desirable to prevent the default scroll resetting when making visits. You can disable this behavior by setting the `preserveScroll` option to `false`.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, { preserveScroll: false })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 ```js Svelte icon="code"
 import { router } from '@inertiajs/svelte'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 </CodeGroup>
@@ -39,7 +46,13 @@ If you'd like to only preserve the scroll position if the response includes vali
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, { preserveScroll: 'errors' })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, { preserveScroll: 'errors' })
@@ -63,7 +76,15 @@ You can also lazily evaluate the `preserveScroll` option based on the response b
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  preserveScroll: (page) => page.props.someProp === 'value',
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -93,7 +114,13 @@ When using an [Inertia link](/links), you can preserve the scroll position using
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Link } from '@inertiajs/vue2'
+
+<a href="/" preserve-scroll>Home</a>
+```
+
+```jsx Vue 3 
 import { Link } from '@inertiajs/vue3'
 
 <a href="/" preserve-scroll>Home</a>
@@ -108,7 +135,7 @@ import { Link } from '@inertiajs/react'
 ```jsx Svelte icon="code"
 import { inertia, Link } from '@inertiajs/svelte'
 
-<a href="/" use:inertia={{ preserveScroll: true }}>Home</a>
+<a href="/" use:inertia="{{ preserveScroll: true }}">Home</a>
 
 <a href="/" preserveScroll>Home</a>
 ```
@@ -122,7 +149,7 @@ If your app doesn't use document body scrolling, but instead has scrollable elem
 In these situations, you must tell Inertia which scrollable elements to manage by adding the `scroll-region` attribute to the element.
 
 ```html
-<div class="overflow-y-auto" scroll-region="">
+<div class="overflow-y-auto" scroll-region>
 \<!-- Your page content -->
 </div>
 ```

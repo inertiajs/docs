@@ -2,6 +2,7 @@
 title: Server-side setup
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 The first step when installing Inertia is to configure your server-side framework. Inertia maintains an official server-side adapter for [Laravel](https://laravel.com/). For other frameworks, please see the [community adapters](/community-adapters).
 
@@ -21,14 +22,14 @@ composer require inertiajs/inertia-laravel
 
 ## Root template
 
-Next, setup the root template that will be loaded on the first page visit to your application. This template should include your site's CSS and JavaScript assets, along with the `@inertia` and `@inertiaHead` directives.
+Next, setup the root template that will be loaded on the first page visit to your application. This will be used to load your site assets (CSS and JavaScript), and will also contain a root `<div>` in which to boot your JavaScript application.
 
 ```html
 
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     @vite('resources/js/app.js')
     @inertiaHead
   </head>
@@ -38,21 +39,7 @@ Next, setup the root template that will be loaded on the first page visit to you
 </html>
 ```
 
-For React applications, it's recommended to include the `@viteReactRefresh` directive before the `@vite` directive to enable Fast Refresh in development.
-
-The `@inertia` directive renders a `<div>` element with an `id` of `app`. This element serves as the mounting point for your JavaScript application. You may customize the `id` by passing a different value to the directive.
-
-```html
-
-<html>
-...
-<body>
-@inertia('custom-app-id')
-</body>
-</html>
-```
-
-If you change the `id` of the root element, be sure to update it [client-side](/client-side-setup#defining-a-root-element) as well.
+This template should include your assets, as well as the `@inertia` and `@inertiaHead`directives.
 
 By default, Inertia's Laravel adapter will assume your root template is named `app.blade.php`. If you would like to use a different root view, you can change it using the `Inertia::setRootView()` method.
 

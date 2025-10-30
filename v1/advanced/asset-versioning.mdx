@@ -2,6 +2,7 @@
 title: Asset versioning
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 One common challenge when building single-page apps is refreshing site assets when they've been changed. Thankfully, Inertia makes this easy by optionally tracking the current version of your site assets. When an asset changes, Inertia will automatically make a full page visit instead of a XHR visit on the next request.
 
@@ -34,28 +35,4 @@ Inertia::version(fn () => $version); // Lazily...
 
 Asset refreshing in Inertia works on the assumption that a hard page visit will trigger your assets to reload. However, Inertia doesn't actually do anything to force this. Typically this is done with some form of cache busting. For example, appending a version query parameter to the end of your asset URLs.
 
-With Laravel's Vite integration, asset versioning is done automatically. If you're using Laravel Mix, you can do this automatically by enabling [versioning](https://laravel.com/docs/mix#versioning-and-cache-busting) in your `webpack.mix.js` file.
-
-## Manual refreshing
-
-If you want to take asset refreshing into your control, you can return a fixed value from the `version` method in the `HandleInertiaRequests` middleware. This disables Inertia's automatic asset versioning.
-
-For example, if you want to notify users when a new version of your frontend is available, you can still expose the actual asset version to the frontend by including it as [shared data](/shared-data).
-
-```php
-class HandleInertiaRequests extends Middleware
-{
-public function version(Request $request)
-{
-return null;
-}
-public function share(Request $request)
-{
-return array_merge(parent::share($request), [
-'version' => parent::version($request),
-]);
-}
-}
-```
-
-On the frontend, you can watch the `version` property and show a notification when a new version is detected.
+If you're using Laravel Mix, you can do this automatically by enabling [versioning](https://laravel.com/docs/mix#versioning-and-cache-busting) in your `webpack.mix.js` file. When using Laravel's Vite integration, asset versioning is done automatically.

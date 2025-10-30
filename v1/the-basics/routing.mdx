@@ -2,6 +2,7 @@
 title: Routing
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 ## Defining routes
 
@@ -41,45 +42,22 @@ class UsersController extends Controller
 }
 ```
 
-However, when using Laravel, the [Ziggy](https://github.com/tighten/ziggy) library can make your named, server-side routes available to you via a global `route()` function. In fact, if you are developing an application using one of Laravel's [starter kits](https://laravel.com/docs/starter-kits), Ziggy is already configured for you.
+However, when using Laravel, the [Ziggy](https://github.com/tightenco/ziggy) library can make your named, server-side routes available to you via a global `route()` function. In fact, if you are developing an application using one of Laravel's [starter kits](https://laravel.com/docs/starter-kits), Ziggy is already configured for you.
 
-If you're using the Vue plugin included with Ziggy, you may use the `route()`function directly in your templates.
+If you're using Ziggy with Vue, it's helpful to make this function available as a custom `$route`property so you can use it directly in your templates.
+
+<CodeGroup>
+
+```js Vue 2 
+Vue.prototype.$route = route
+```
+
+```js Vue 3 
+app.config.globalProperties.$route = route
+```
+
+</CodeGroup>
 
 ```html
-<a :href="route('users.create')">Create User</a>
-```
-
-When [server-side rendering](/server-side-rendering) is enabled, you may pass an options object to the Ziggy plugin in your `ssr.js` file. This should include the route definitions and current location.
-
-```js
-.use(ZiggyVue, {
-...page.props.ziggy,
-location: new URL(page.props.ziggy.location),
-});
-```
-
-## Customizing the Page URL
-
-The [page object](/the-protocol#the-page-object) includes a `url` that represents the current page's URL. By default, the Laravel adapter resolves this using the `fullUrl()` method on the `Request` instance, but strips the scheme and host so the result is a relative URL.
-
-If you need to customize how the URL is resolved, you may provide a resolver within the `urlResolver` method of the Inertia `HandleInertiaRequests` middleware.
-
-```php
-class HandleInertiaRequests extends Middleware
-{
-public function urlResolver()
-{
-return function (Request $request) {
-// Return the URL for the request...
-};
-}
-}
-```
-
-Alternatively, you may define the resolver using the `Inertia::resolveUrlUsing()` method.
-
-```php
-Inertia::resolveUrlUsing(function (Request $request) {
-// Return the URL for the request...
-});
+<a :href="$route('users.create')">Create User</a>
 ```

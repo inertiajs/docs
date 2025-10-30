@@ -2,6 +2,7 @@
 title: File uploads
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 ## FormData conversion
 
@@ -11,7 +12,15 @@ If you would like the request to always use a `FormData` object regardless of wh
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  forceFormData: true,
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -47,7 +56,40 @@ Let's examine a complete file upload example using Inertia. This example include
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <form @submit.prevent="submit">
+    <input type="text" v-model="form.name" />
+    <input type="file" @input="form.avatar = $event.target.files[0]" />
+    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+      {{ form.progress.percentage }}%
+    </progress>
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script>
+import { useForm } from '@inertiajs/vue2'
+
+export default {
+  data() {
+    return {
+      form: useForm({
+        name: null,
+        avatar: null,
+      }),
+    }
+  },
+  methods: {
+    submit() {
+      this.form.post('/users')
+    },
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
 
@@ -89,7 +131,7 @@ function submit(e) {
 return (
   <form onSubmit={submit}>
     <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} />
-    <input type="file" onChange={e => setData('avatar', e.target.files[0])} />
+    <input type="file" value={data.avatar} onChange={e => setData('avatar', e.target.files[0])} />
     {progress && (
       <progress value={progress.percentage} max="100">
         {progress.percentage}%
@@ -100,50 +142,23 @@ return (
 )
 ```
 
-```jsx Svelte 4 icon="code"
+```html Svelte icon="code"
 <script>
-  import { useForm } from '@inertiajs/svelte'
+import { useForm } from '@inertiajs/svelte'
 
-  const form = useForm({
-    name: null,
-    avatar: null,
-  })
+let form = useForm({
+  name: null,
+  avatar: null,
+})
 
-  function submit() {
-    $form.post('/users')
-  }
+function submit() {
+  $form.post('/users')
+}
 </script>
 
 <form on:submit|preventDefault={submit}>
   <input type="text" bind:value={$form.name} />
   <input type="file" on:input={e => $form.avatar = e.target.files[0]} />
-  {#if $form.progress}
-    <progress value={$form.progress.percentage} max="100">
-      {$form.progress.percentage}%
-    </progress>
-  {/if}
-  <button type="submit">Submit</button>
-</form>
-```
-
-```jsx Svelte 5 icon="code"
-<script>
-  import { useForm } from '@inertiajs/svelte'
-
-  const form = useForm({
-    name: null,
-    avatar: null,
-  })
-
-  function submit(e) {
-    e.preventDefault()
-    $form.post('/users')
-  }
-</script>
-
-<form onsubmit={submit}>
-  <input type="text" bind:value={$form.name} />
-  <input type="file" oninput={e => $form.avatar = e.target.files[0]} />
   {#if $form.progress}
     <progress value={$form.progress.percentage} max="100">
       {$form.progress.percentage}%
@@ -161,11 +176,17 @@ This example uses the [Inertia form helper](/forms#form-helper) for convenience,
 
 Uploading files using a `multipart/form-data` request is not natively supported in some server-side frameworks when using the `PUT`,`PATCH`, or `DELETE` HTTP methods. The simplest workaround for this limitation is to simply upload files using a `POST` request instead.
 
-However, some frameworks, such as [Laravel](https://laravel.com/docs/routing#form-method-spoofing)and [Rails ](https://guides.rubyonrails.org/form_helpers.html#how-do-forms-with-patch-put-or-delete-methods-work-questionmark), support form method spoofing, which allows you to upload the files using `POST`, but have the framework handle the request as a `PUT` or `PATCH` request. This is done by including a `_method` attribute in the data of your request.
+However, some frameworks, such as [Laravel](https://laravel.com/docs/8.x/routing#form-method-spoofing) and [Rails ](https://guides.rubyonrails.org/form_helpers.html#how-do-forms-with-patch-put-or-delete-methods-work-questionmark), support form method spoofing, which allows you to upload the files using `POST`, but have the framework handle the request as a `PUT` or `PATCH` request. This is done by including a `_method` attribute in the data of your request.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post(`/users/\${user.id}\
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post(`/users/\${user.id}\

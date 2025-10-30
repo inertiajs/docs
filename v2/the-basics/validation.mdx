@@ -2,7 +2,6 @@
 title: Validation
 ---
 
-
 ## How it works
 
 Handling server-side validation errors in Inertia works differently than a classic XHR-driven form that requires you to catch the validation errors from `422` responses and manually update the form's error state - because Inertia never receives `422` responses. Instead, Inertia operates much more like a standard full page form submission. Here's how:

@@ -2,12 +2,37 @@
 title: Manual visits
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 In addition to [creating links](/links), it's also possible to manually make Inertia visits / requests programmatically via JavaScript. This is accomplished via the `router.visit()` method.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, {
+  method: 'get',
+  data: {},
+  replace: false,
+  preserveState: false,
+  preserveScroll: false,
+  only: [],
+  headers: {},
+  errorBag: null,
+  forceFormData: false,
+  onCancelToken: cancelToken => {},
+  onCancel: () => {},
+  onBefore: visit => {},
+  onStart: visit => {},
+  onProgress: progress => {},
+  onSuccess: page => {},
+  onError: errors => {},
+  onFinish: visit => {},
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, {
@@ -17,17 +42,9 @@ router.visit(url, {
   preserveState: false,
   preserveScroll: false,
   only: [],
-  except: [],
   headers: {},
   errorBag: null,
   forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
   onCancelToken: cancelToken => {},
   onCancel: () => {},
   onBefore: visit => {},
@@ -36,8 +53,6 @@ router.visit(url, {
   onSuccess: page => {},
   onError: errors => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -51,17 +66,9 @@ router.visit(url, {
   preserveState: false,
   preserveScroll: false,
   only: [],
-  except: [],
   headers: {},
   errorBag: null,
   forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
   onCancelToken: cancelToken => {},
   onCancel: () => {},
   onBefore: visit => {},
@@ -70,8 +77,6 @@ router.visit(url, {
   onSuccess: page => {},
   onError: errors => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -85,17 +90,9 @@ router.visit(url, {
   preserveState: false,
   preserveScroll: false,
   only: [],
-  except: [],
   headers: {},
   errorBag: null,
   forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
   onCancelToken: cancelToken => {},
   onCancel: () => {},
   onBefore: visit => {},
@@ -104,8 +101,6 @@ router.visit(url, {
   onSuccess: page => {},
   onError: errors => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -115,7 +110,18 @@ However, it's generally more convenient to use one of Inertia's shortcut request
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.get(url, data, options)
+router.post(url, data, options)
+router.put(url, data, options)
+router.patch(url, data, options)
+router.delete(url, options)
+router.reload(options) // Uses the current URL
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.get(url, data, options)
@@ -158,7 +164,13 @@ When making manual visits, you may use the `method` option to set the request's 
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, { method: 'post' })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, { method: 'post' })
@@ -178,69 +190,7 @@ router.visit(url, { method: 'post' })
 
 </CodeGroup>
 
-Uploading files via `put` or `patch` is not supported in Laravel. Instead, make the request via `post`, including a `_method` field set to `put` or `patch`. This is called [form method spoofing](https://laravel.com/docs/routing#form-method-spoofing).
-
-## Wayfinder
-
-<minimumversion version="2.1.2"></minimumversion>When using [Wayfinder](https://github.com/laravel/wayfinder), you can pass the resulting object directly to any router method. The router will infer the HTTP method and URL from the Wayfinder object.
-
-<CodeGroup>
-
-```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
-import { show } from 'App/Http/Controllers/UserController'
-
-router.visit(show(1))
-router.post(store())
-router.delete(destroy(1))
-```
-
-```js React icon="react"
-import { router } from '@inertiajs/react'
-import { show } from 'App/Http/Controllers/UserController'
-
-router.visit(show(1))
-router.post(store())
-router.delete(destroy(1))
-```
-
-```js Svelte icon="code"
-import { router } from '@inertiajs/svelte'
-import { show } from 'App/Http/Controllers/UserController'
-
-router.visit(show(1))
-router.post(store())
-router.delete(destroy(1))
-```
-
-</CodeGroup>
-
-If you provide both a Wayfinder object and specify the `method` option, the `method` option will take precedence.
-
-<CodeGroup>
-
-```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
-import { update } from 'App/Http/Controllers/UserController'
-
-router.visit(update(1), { method: 'patch' })
-```
-
-```js React icon="react"
-import { router } from '@inertiajs/react'
-import { update } from 'App/Http/Controllers/UserController'
-
-router.visit(update(1), { method: 'patch' })
-```
-
-```js Svelte icon="code"
-import { router } from '@inertiajs/svelte'
-import { update } from 'App/Http/Controllers/UserController'
-
-router.visit(update(1), { method: 'patch' })
-```
-
-</CodeGroup>
+Uploading files via `put` or `patch` is not supported in Laravel. Instead, make the request via `post`, including a `_method` field set to `put` or `patch`. This is called [form method spoofing](https://laravel.com/docs/8.x/routing#form-method-spoofing).
 
 ## Data
 
@@ -248,7 +198,19 @@ You may use the `data` option to add data to the request.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit('/users', {
+  method: 'post',
+  data: {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+  },
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit('/users', {
@@ -290,7 +252,16 @@ For convenience, the `get()`, `post()`, `put()`, and `patch()`methods all accept
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', {
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', {
@@ -325,7 +296,17 @@ The `headers` option allows you to add custom headers to a request.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  headers: {
+    'Custom-Header': 'value',
+  },
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -365,7 +346,15 @@ When making visits / requests that include files, Inertia will automatically con
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/companies', data, {
+  forceFormData: true,
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/companies', data, {
@@ -391,7 +380,7 @@ router.post('/companies', data, {
 
 </CodeGroup>
 
-For more information on uploading files, check out the dedicated [file uploads](/file-uploads)documentation.
+For more information on uploading files, please consult the dedicated [file uploads](/file-uploads)documentation.
 
 ## Browser history
 
@@ -399,7 +388,13 @@ When making visits, Inertia automatically adds a new entry into the browser hist
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.get('/users', { search: 'John' }, { replace: true })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.get('/users', { search: 'John' }, { replace: true })
@@ -421,110 +416,6 @@ router.get('/users', { search: 'John' }, { replace: true })
 
 Visits made to the same URL automatically set `replace` to `true`.
 
-## Client side visits
-
-You can use the `router.push` and `router.replace` method to make client-side visits. This method is useful when you want to update the browser's history without making a server request.
-
-<CodeGroup>
-
-```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
-
-router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
-})
-```
-
-```js React icon="react"
-import { router } from '@inertiajs/react'
-
-router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
-})
-```
-
-```js Svelte icon="code"
-import { router } from '@inertiajs/svelte'
-
-router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
-})
-```
-
-</CodeGroup>
-
-All of the parameters are optional. By default, all passed paramaters (except `errorBag`) will be merged with the current page. This means you are responsible for overriding the current page's URL, component, and props.
-
-If you need access to the current page's props, you can pass a function to the props option. This function will receive the current page's props as an argument and should return the new props.
-
-The `errorBag` option allows you to specify which error bag to use when handling validation errors in the `onError` callback.
-
-<CodeGroup>
-
-```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
-
-router.push({ url: '/users', component: 'Users' })
-
-router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
-})
-```
-
-```js React icon="react"
-import { router } from '@inertiajs/react'
-
-router.push({ url: '/users', component: 'Users' })
-
-router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
-})
-```
-
-```js Svelte icon="code"
-import { router } from '@inertiajs/svelte'
-
-router.push({ url: '/users', component: 'Users' })
-
-router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
-})
-```
-
-</CodeGroup>
-
-Make sure that any route you push on the client side is also defined on the server side. If the user refreshes the page, the server will need to know how to render the page.
-
 ## State preservation
 
 By default, page visits to the same page create a fresh page component instance. This causes any local state, such as form inputs, scroll positions, and focus states to be lost.
@@ -537,7 +428,13 @@ You can instruct Inertia to preserve the component's state when using the `get` 
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.get('/users', { search: 'John' }, { preserveState: true })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.get('/users', { search: 'John' }, { preserveState: true })
@@ -561,7 +458,13 @@ If you'd like to only preserve state if the response includes validation errors,
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.get('/users', { search: 'John' }, { preserveState: 'errors' })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.get('/users', { search: 'John' }, { preserveState: 'errors' })
@@ -585,7 +488,15 @@ You can also lazily evaluate the `preserveState` option based on the response by
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  preserveState: (page) => page.props.someProp === 'value',
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -615,26 +526,32 @@ router.post('/users', data, {
 
 When navigating between pages, Inertia mimics default browser behavior by automatically resetting the scroll position of the document body (as well as any [scroll regions](/scroll-management#scroll-regions)you've defined) back to the top of the page.
 
-You can disable this behavior by setting the `preserveScroll` option to `true`.
+You can disable this behavior by setting the `preserveScroll` option to `false`.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, { preserveScroll: false })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 ```js Svelte icon="code"
 import { router } from '@inertiajs/svelte'
 
-router.visit(url, { preserveScroll: true })
+router.visit(url, { preserveScroll: false })
 ```
 
 </CodeGroup>
@@ -643,7 +560,13 @@ If you'd like to only preserve the scroll position if the response includes vali
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit(url, { preserveScroll: 'errors' })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, { preserveScroll: 'errors' })
@@ -667,7 +590,15 @@ You can also lazily evaluate the `preserveScroll` option based on the response b
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  preserveScroll: (page) => page.props.someProp === 'value',
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -701,22 +632,28 @@ The `only` option allows you to request a subset of the props (data) from the se
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.visit('/users', { search: 'John' }, { only: ['users'] })
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
-router.get('/users', { search: 'John' }, { only: ['users'] })
+router.visit('/users', { search: 'John' }, { only: ['users'] })
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
-router.get('/users', { search: 'John' }, { only: ['users'] })
+router.visit('/users', { search: 'John' }, { only: ['users'] })
 ```
 
 ```js Svelte icon="code"
 import { router } from '@inertiajs/svelte'
 
-router.get('/users', { search: 'John' }, { only: ['users'] })
+router.visit('/users', { search: 'John' }, { only: ['users'] })
 ```
 
 </CodeGroup>
@@ -729,7 +666,18 @@ You can cancel a visit using a cancel token, which Inertia automatically generat
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
+})
+
+// Cancel the visit...
+this.cancelToken.cancel()
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -772,7 +720,21 @@ In addition to Inertia's [global events](/events), Inertia also provides a numbe
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/users', data, {
+  onBefore: (visit) => {},
+  onStart: (visit) => {},
+  onProgress: (progress) => {},
+  onSuccess: (page) => {},
+  onError: (errors) => {},
+  onCancel: () => {},
+  onFinish: visit => {},
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
@@ -783,8 +745,6 @@ router.post('/users', data, {
   onError: (errors) => {},
   onCancel: () => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -799,8 +759,6 @@ router.post('/users', data, {
   onError: (errors) => {},
   onCancel: () => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -815,8 +773,6 @@ router.post('/users', data, {
   onError: (errors) => {},
   onCancel: () => {},
   onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
 })
 ```
 
@@ -826,7 +782,13 @@ Returning `false` from the `onBefore()` callback will cause the visit to be canc
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.delete(`/users/\${user.id}\
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.delete(`/users/\${user.id}\
@@ -850,18 +812,36 @@ It's also possible to return a promise from the `onSuccess()` and `onError()` ca
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post(url, {
+  onSuccess: () => {
+    return Promise.all([
+      this.doThing(),
+      this.doAnotherThing()
+    ])
+  }
+  onFinish: visit => {
+    // This won't be called until doThing()
+    // and doAnotherThing() have finished.
+  },
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post(url, {
   onSuccess: () => {
     return Promise.all([
-      this.firstTask(),
-      this.secondTask()
+      this.doThing(),
+      this.doAnotherThing()
     ])
   }
   onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
+    // This won't be called until doThing()
+    // and doAnotherThing() have finished.
   },
 })
 ```
@@ -872,12 +852,13 @@ import { router } from '@inertiajs/react'
 router.post(url, {
   onSuccess: () => {
     return Promise.all([
-      this.firstTask(),
-      this.secondTask()
+      this.doThing(),
+      this.doAnotherThing()
     ])
   }
   onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
+    // This won't be called until doThing()
+    // and doAnotherThing() have finished.
   },
 })
 ```
@@ -888,12 +869,13 @@ import { router } from '@inertiajs/svelte'
 router.post(url, {
   onSuccess: () => {
     return Promise.all([
-      this.firstTask(),
-      this.secondTask()
+      this.doThing(),
+      this.doAnotherThing()
     ])
   }
   onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
+    // This won't be called until doThing()
+    // and doAnotherThing() have finished.
   },
 })
 ```

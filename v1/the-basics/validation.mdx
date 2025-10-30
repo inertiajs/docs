@@ -2,6 +2,7 @@
 title: Validation
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 ## How it works
 
@@ -23,7 +24,48 @@ Since validation errors are made available client-side as page component props, 
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <form @submit.prevent="submit">
+    <label for="first_name">First name:</label>
+    <input id="first_name" v-model="form.first_name" />
+    <div v-if="errors.first_name">{{ errors.first_name }}</div>
+    <label for="last_name">Last name:</label>
+    <input id="last_name" v-model="form.last_name" />
+    <div v-if="errors.last_name">{{ errors.last_name }}</div>
+    <label for="email">Email:</label>
+    <input id="email" v-model="form.email" />
+    <div v-if="errors.email">{{ errors.email }}</div>
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script>
+import { router } from '@inertiajs/vue2'
+
+export default {
+  props: {
+    errors: Object,
+  },
+  data() {
+    return {
+      form: {
+        first_name: null,
+        last_name: null,
+        email: null,
+      },
+    }
+  },
+  methods: {
+    submit() {
+      router.post('/users', this.form)
+    },
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
@@ -84,13 +126,13 @@ export default function Edit() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="first_name">First name:</label>
+      <label for="first_name">First name:</label>
       <input id="first_name" value={values.first_name} onChange={handleChange} />
       {errors.first_name && <div>{errors.first_name}</div>}
-      <label htmlFor="last_name">Last name:</label>
+      <label for="last_name">Last name:</label>
       <input id="last_name" value={values.last_name} onChange={handleChange} />
       {errors.last_name && <div>{errors.last_name}</div>}
-      <label htmlFor="email">Email:</label>
+      <label for="email">Email:</label>
       <input id="email" value={values.email} onChange={handleChange} />
       {errors.email && <div>{errors.email}</div>}
       <button type="submit">Submit</button>
@@ -155,7 +197,19 @@ To solve this issue, you can use "error bags". Error bags scope the validation e
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
+
+router.post('/companies', data, {
+  errorBag: 'createCompany',
+})
+
+router.post('/users', data, {
+  errorBag: 'createUser',
+})
+```
+
+```js Vue 3 
 import { router } from '@inertiajs/vue3'
 
 router.post('/companies', data, {

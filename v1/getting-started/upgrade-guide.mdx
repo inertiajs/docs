@@ -1,75 +1,277 @@
 ---
-title: Upgrade guide for v2.0
+title: Upgrade guide for v1.0
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
-You can find the legacy docs for Inertia.js v1.0 at [v1.inertiajs.com](https://v1.inertiajs.com).
+You can find the legacy docs for Inertia.js v0.11 at [legacy.inertiajs.com](https://legacy.inertiajs.com).
 
 ## What's new
 
-Inertia.js v2.0 is a huge step forward for Inertia! The core library has been completely rewritten to architecturally support asynchronous requests, enabling a whole set of new features, including:
+Inertia.js v1.0 focuses on simplifying the overall architecture of the project with the goal of making Inertia easier to maintain and easier to use.
 
-- [Polling](/polling)
-- [Prefetching](/prefetching)
-- [Deferred props](/deferred-props)
-- [Infinite scrolling](/merging-props)
-- [Lazy loading data on scroll](/load-when-visible)
+It includes a number of breaking changes, mostly related to package names and updated named exports. This guide explains how to upgrade your project to v1.0.
 
-Additionally, for security sensitive projects, Inertia now offers a [history encryption API](/history-encryption), allowing you to clear page data from history state when logging out of an application.
+For a complete list of all the changes, see the [release notes](https://github.com/inertiajs/inertia/releases/tag/v1.0.0).
 
-## Upgrade dependencies
+## New dependencies
 
-To upgrade to the Inertia.js v2.0, first use npm to install the client-side adapter of your choice:
+To use previous Inertia releases, you had to install a number of libraries, including the core library ( `@inertiajs/inertia`), the adapter of your choice ( `@inertiajs/inertia-vue|vue3|react|svelte`), the progress library (`@inertiajs/progress`), and if you were using server-side rendering, the server library (`@inertiajs/server`).
+
+**Moving forward you are now only required to install a single library** — the adapter of your choice (Vue, React, or Svelte), and all other core libraries are automatically installed for you.
+
+To get started, remove *all* of the old Inertia libraries.
 
 <CodeGroup>
 
-```bash Vue icon="vuejs"
-npm install @inertiajs/vue3@^2.0
+```bash Vue 2 
+npm remove @inertiajs/inertia @inertiajs/inertia-vue @inertiajs/progress @inertiajs/server
+```
+
+```bash Vue 3 
+npm remove @inertiajs/inertia @inertiajs/inertia-vue3 @inertiajs/progress @inertiajs/server
 ```
 
 ```bash React icon="react"
-npm install @inertiajs/react@^2.0
+npm remove @inertiajs/inertia @inertiajs/inertia-react @inertiajs/progress @inertiajs/server
 ```
 
 ```bash Svelte icon="code"
-npm install @inertiajs/svelte@^2.0
+npm remove @inertiajs/inertia @inertiajs/inertia-svelte @inertiajs/progress @inertiajs/server
 ```
 
 </CodeGroup>
 
-Next, upgrade the `inertiajs/inertia-laravel` package to use the `2.x` dev branch:
+Next, install the new Inertia adapter of your choice. The new adapter libraries have been renamed, and no longer include `inertia-` in them.
 
-```bash
-composer require inertiajs/inertia-laravel:^2.0
+<CodeGroup>
+
+```bash Vue 2 
+npm install @inertiajs/vue2
 ```
 
-## Breaking changes
-
-While a significant release, Inertia.js v2.0 doesn't introduce many breaking changes. Here's a list of all the breaking changes:
-
-### Dropped Laravel 8 and 9 support
-
-The Laravel adapter now requires Laravel 10 and PHP 8.1 at a minimum.
-
-### Dropped Vue 2 support
-
-The Vue 2 adapter has been removed. Vue 2 reached End of Life on December 3, 2023, so this felt like it was time.
-
-### Router `replace` method
-
-The previously deprecated `router.replace` method has been re-instated, but its functionality has changed. It is now used to make [Client Side](/manual-visits#client-side-visits) page visits. To make server-side visits that replace the current history entry in the browser, use the `replace` option:
-
-```javascript
-router.get('/users', { search: 'John' }, { replace: true })
+```bash Vue 3 
+npm install @inertiajs/vue3
 ```
 
-### Svelte adapter
+```bash React icon="react"
+npm install @inertiajs/react
+```
 
-- Dropped support for Svelte 3 as it reached End of Life on June 20, 2023.
-- The `remember` helper has been rename to `useRemember` to be consistent with other helpers.
-- Updated `setup` callback in `app.js`. You need to pass `props` when initializing the `App` component. [See setup in app.js](/client-side-setup#initialize-the-inertia-app)
-- `setup` callback is now required in `ssr.js`. [See setup in ssr.js](/server-side-rendering#add-server-entry-point)
+```bash Svelte icon="code"
+npm install @inertiajs/svelte
+```
 
-### Partial reloads are now async
+</CodeGroup>
 
-Previously partial reloads in Inertia were synchronous, just like all Inertia requests. In v2.0, partial reloads are now asynchronous. Generally this is desirable, but if you were relying on these requests being synchronous, you may need to adjust your code.
+## Renamed imports
+
+Next, update all the Inertia related imports in your project to use the new adapter library name. All imports are now available from the adapter library, meaning you no longer import anything from the Inertia core library, progress library, or server library.
+
+Additionally, some exports have been renamed and previously deprecated exports have been removed. For example, the `Inertia` export has been renamed to `router`.
+
+Here is a complete list of all the import changes:
+
+<CodeGroup>
+
+```diff Vue 2 
+\- import { Inertia } from '@inertiajs/inertia'
+\+ import { router } from '@inertiajs/vue2'
+
+\- import createServer from '@inertiajs/server'
+\+ import createServer from '@inertiajs/vue2/server'
+
+\- import { createInertiaApp } from '@inertiajs/inertia-vue'
+\- import { App } from '@inertiajs/inertia-vue'
+\- import { app } from '@inertiajs/inertia-vue'
+\- import { InertiaApp } from '@inertiajs/inertia-vue'
+\- import { plugin } from '@inertiajs/inertia-vue'
+\+ import { createInertiaApp } from '@inertiajs/vue2'
+
+\- import { Head } from '@inertiajs/inertia-vue'
+\- import { InertiaHead } from '@inertiajs/inertia-vue'
+\+ import { Head } from '@inertiajs/vue2'
+
+\- import { Link } from '@inertiajs/inertia-vue'
+\- import { link } from '@inertiajs/inertia-vue'
+\- import { InertiaLink } from '@inertiajs/inertia-vue'
+\+ import { Link } from '@inertiajs/vue2'
+```
+
+```diff Vue 3 
+\- import { Inertia } from '@inertiajs/inertia'
+\+ import { router } from '@inertiajs/vue3'
+
+\- import createServer from '@inertiajs/server'
+\+ import createServer from '@inertiajs/vue3/server'
+
+\- import { createInertiaApp } from '@inertiajs/inertia-vue3'
+\- import { App } from '@inertiajs/inertia-vue3'
+\- import { app } from '@inertiajs/inertia-vue3'
+\- import { plugin } from '@inertiajs/inertia-vue3'
+\- import { InertiaApp } from '@inertiajs/inertia-vue3'
+\+ import { createInertiaApp } from '@inertiajs/vue3'
+
+\- import { usePage } from '@inertiajs/inertia-vue3'
+\+ import { usePage } from '@inertiajs/vue3'
+
+\- import { useForm } from '@inertiajs/inertia-vue3'
+\+ import { useForm } from '@inertiajs/vue3'
+
+\- import { useRemember } from '@inertiajs/inertia-vue3'
+\+ import { useRemember } from '@inertiajs/vue3'
+
+\- import { Head } from '@inertiajs/inertia-vue3'
+\- import { InertiaHead } from '@inertiajs/inertia-vue3'
+\+ import { Head } from '@inertiajs/vue3'
+
+\- import { Link } from '@inertiajs/inertia-vue3'
+\- import { link } from '@inertiajs/inertia-vue3'
+\- import { InertiaLink } from '@inertiajs/inertia-vue3'
+\+ import { Link } from '@inertiajs/vue3'
+```
+
+```diff React icon="react"
+\- import { Inertia } from '@inertiajs/inertia'
+\+ import { router } from '@inertiajs/react'
+
+\- import createServer from '@inertiajs/server'
+\+ import createServer from '@inertiajs/react/server'
+
+\- import { createInertiaApp } from '@inertiajs/inertia-react'
+\- import { App } from '@inertiajs/inertia-react'
+\- import { app } from '@inertiajs/inertia-react'
+\- import { InertiaApp } from '@inertiajs/inertia-react'
+\+ import { createInertiaApp } from '@inertiajs/react'
+
+\- import { usePage } from '@inertiajs/inertia-react'
+\+ import { usePage } from '@inertiajs/react'
+
+\- import { useForm } from '@inertiajs/inertia-react'
+\+ import { useForm } from '@inertiajs/react'
+
+\- import { useRemember } from '@inertiajs/inertia-react'
+\- import { useRememberedState } from '@inertiajs/inertia-react'
+\+ import { useRemember } from '@inertiajs/react'
+
+\- import { Head } from '@inertiajs/inertia-react'
+\- import { InertiaHead } from '@inertiajs/inertia-react'
+\+ import { Head } from '@inertiajs/react'
+
+\- import { Link } from '@inertiajs/inertia-react'
+\- import { link } from '@inertiajs/inertia-react'
+\- import { InertiaLink } from '@inertiajs/inertia-react'
+\+ import { Link } from '@inertiajs/react'
+```
+
+```diff Svelte icon="code"
+\- import { Inertia } from '@inertiajs/inertia'
+\+ import { router } from '@inertiajs/svelte'
+
+\- import { createInertiaApp } from '@inertiajs/inertia-svelte'
+\- import { App } from '@inertiajs/inertia-svelte'
+\- import { app } from '@inertiajs/inertia-svelte'
+\- import { InertiaApp } from '@inertiajs/inertia-svelte'
+\+ import { createInertiaApp } from '@inertiajs/svelte'
+
+\- import { page } from '@inertiajs/inertia-svelte'
+\+ import { page } from '@inertiajs/svelte'
+
+\- import { inertia } from '@inertiajs/inertia-svelte'
+\+ import { inertia } from '@inertiajs/svelte'
+
+\- import { useForm } from '@inertiajs/inertia-svelte'
+\+ import { useForm } from '@inertiajs/svelte'
+
+\- import { useRemember } from '@inertiajs/inertia-svelte'
+\- import { remember } from '@inertiajs/inertia-svelte'
+\+ import { remember } from '@inertiajs/svelte'
+
+\- import { Link } from '@inertiajs/inertia-svelte'
+\- import { link } from '@inertiajs/inertia-svelte'
+\- import { InertiaLink } from '@inertiajs/inertia-svelte'
+\+ import { Link } from '@inertiajs/svelte'
+```
+
+</CodeGroup>
+
+It is no longer possible to manually configure Inertia using the `App` export. Instead, you should use the `createInertiaApp()` helper. See the [client-side setup](/client-side-setup#initialize-the-inertia-app) documentation for more information.
+
+## Progress
+
+Previously, the progress indicator was available as a separate plugin (`@inertiajs/progress`). It is now installed and enabled by default.
+
+If you haven't yet, remove the old progress library.
+
+<CodeGroup>
+
+```bash Vue 2 
+npm remove @inertiajs/progress
+```
+
+```bash Vue 3 
+npm remove @inertiajs/progress
+```
+
+```bash React icon="react"
+npm remove @inertiajs/progress
+```
+
+```bash Svelte icon="code"
+npm remove @inertiajs/progress
+```
+
+</CodeGroup>
+
+Next, remove the `InertiaProgress` import and `InertiaProgress.init()` call, as they are no longer required.
+
+```diff
+\- import { InertiaProgress } from '@inertiajs/progress'
+\- InertiaProgress.init()
+```
+
+Finally, if you have defined any progress customizations, you can move them to the `progress`property of the `createInertiaApp()` helper.
+
+```js
+createInertiaApp({
+progress: {
+color: '#29d',
+},
+// ...
+})
+```
+
+If you're using a custom progress indicator, you can disable the default progress indicator by setting the `progress` property to `false`.
+
+```js
+createInertiaApp({
+progress: false,
+// ...
+})
+```
+
+## Setup arguments
+
+We've removed the previously deprecated lowercase `app` argument from the `setup()` method in `createInertiaApp()`. Use `App` instead.
+
+```diff
+createInertiaApp({
+// ...
+\-   setup({ app, props }) {
+\+   setup({ App, props }) {
+// ...
+},
+})
+```
+
+## Simplified usePage
+
+In the Vue 3 adapter, we simplified the `usePage()` hook to no longer require adding `.value` after the `component`, `props`, `url` and `version` properties.
+
+If you're using the `usePage()` hook, remove all instances of `.value`.
+
+```diff
+import { computed } from 'vue'
+\- const appName = computed(() => usePage().props.value.appName)
+\+ const appName = computed(() => usePage().props.appName)
+```

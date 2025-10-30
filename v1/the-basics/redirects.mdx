@@ -2,8 +2,9 @@
 title: Redirects
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
-When making a non-GET Inertia request manually or via a `<a>` element, you should ensure that you always respond with a proper Inertia redirect response.
+When making a non-GET Inertia request manually or via a `{`<a>`}</a>` element, you should ensure that you always respond with a proper Inertia redirect response.
 
 For example, if your controller is creating a new user, your "store" endpoint should return a redirect back to a standard `GET` endpoint, such as your user "index" page. Inertia will automatically follow this redirect and update the page accordingly.
 

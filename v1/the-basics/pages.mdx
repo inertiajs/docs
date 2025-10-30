@@ -1,10 +1,12 @@
 ---
 title: Pages
 ---
+
 import { VueSpecific } from "/snippets/vue-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 When building applications using Inertia, each page in your application typically has its own controller / route and a corresponding JavaScript component. This allows you to retrieve just the data necessary for that page - no API required.
 
@@ -16,7 +18,32 @@ Inertia pages are simply JavaScript components. If you have ever written a Vue, 
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <Layout>
+    <Head title="Welcome" />
+    <h1>Welcome</h1>
+    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+  </Layout>
+</template>
+
+<script>
+import Layout from './Layout'
+import { Head } from '@inertiajs/vue2'
+
+export default {
+  components: {
+    Head,
+    Layout,
+  },
+  props: {
+    user: Object,
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import Layout from './Layout'
 import { Head } from '@inertiajs/vue3'
@@ -48,36 +75,18 @@ export default function Welcome({ user }) {
 }
 ```
 
-```html Svelte 4 icon="code"
+```html Svelte icon="code"
 <script>
   import Layout from './Layout.svelte'
 
   export let user
 </script>
 
-<svelte:head>
-  <title>Welcome</title>
-</svelte:head>
-
 <Layout>
-  <h1>Welcome</h1>
-  <p>Hello {user.name}, welcome to your first Inertia app!</p>
-</Layout>
-```
-
-```html Svelte 5 icon="code"
-<script>
-  import Layout from './Layout.svelte'
-
-  let { user } = $props()
-</script>
-
-<svelte:head>
-  <title>Welcome</title>
-</svelte:head>
-
-<Layout>
-  <h1>Welcome</h1>
+  <svelte:head>
+    <title>Welcome</title>
+  </svelte:head>
+  <H1>Welcome</H1>
   <p>Hello {user.name}, welcome to your first Inertia app!</p>
 </Layout>
 ```
@@ -100,15 +109,38 @@ class UserController extends Controller
 }
 ```
 
-If you attempt to render a page that does not exist, the response will typically be a blank screen. To prevent this, you may set the `inertia.ensure_pages_exist` configuration option to `true`. The Laravel adapter will then throw an `Inertia\ComponentNotFoundException` when a page cannot be found.
-
 ## Creating layouts
 
-While not required, for most projects it makes sense to create a layout component that all of your pages can use. You may have noticed in our page example above that we're wrapping the page content within a `<Layout>` component. Here's an example of such a component:
+While not required, for most projects it makes sense to create a site layout that all of your pages can extend. You may have noticed in our page example above that we're wrapping the page content within a `{`<layout>`}</layout>` component. Here's an example of such a component:
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <main>
+    <header>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </header>
+    <article>
+      <slot />
+    </article>
+  </main>
+</template>
+
+<script>
+import { Link } from '@inertiajs/vue2'
+
+export default {
+  components: {
+    Link,
+  }
+}
+</script>
+```
+
+```html Vue 3 
 <script setup>
 import { Link } from '@inertiajs/vue3'
 </script>
@@ -144,7 +176,7 @@ export default function Layout({ children }) {
 }
 ```
 
-```html Svelte 4 icon="code"
+```html Svelte icon="code"
 <script>
   import { inertia } from '@inertiajs/svelte'
 </script>
@@ -161,25 +193,6 @@ export default function Layout({ children }) {
 </main>
 ```
 
-```html Svelte 5 icon="code"
-<script>
-  import { inertia } from '@inertiajs/svelte'
-
-  let { children } = $props()
-</script>
-
-<main>
-  <header>
-    <a use:inertia href="/">Home</a>
-    <a use:inertia href="/about">About</a>
-    <a use:inertia href="/contact">Contact</a>
-  </header>
-  <article>
-    {@render children()}
-  </article>
-</main>
-```
-
 </CodeGroup>
 
 As you can see, there is nothing Inertia specific within this template. This is just a typical <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> component.
@@ -192,7 +205,32 @@ For example, maybe you have an audio player on a podcast website that you want t
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <div>
+    <H1>Welcome</H1>
+    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+  </div>
+</template>
+
+<script>
+import Layout from './Layout'
+
+export default {
+  // Using a render function...
+  layout: (h, page) => h(Layout, [page]),
+
+  // Using shorthand syntax...
+  layout: Layout,
+
+  props: {
+    user: Object,
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script>
 import Layout from './Layout'
 
@@ -210,7 +248,7 @@ defineProps({ user: Object })
 </script>
 
 <template>
-  <h1>Welcome</h1>
+  <H1>Welcome</H1>
   <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
 </template>
 ```
@@ -232,7 +270,7 @@ Home.layout = page => <Layout children={page} title="Welcome" />
 export default Home
 ```
 
-```html Svelte 4 icon="code"
+```html Svelte icon="code"
 <script context="module">
   export { default as layout } from './Layout.svelte'
 </script>
@@ -241,20 +279,7 @@ export default Home
   export let user
 </script>
 
-<h1>Welcome</h1>
-<p>Hello {user.name}, welcome to your first Inertia app!</p>
-```
-
-```html Svelte 5 icon="code"
-<script module>
-  export { default as layout } from './Layout.svelte'
-</script>
-
-<script>
-  let { user } = $props()
-</script>
-
-<h1>Welcome</h1>
+<H1>Welcome</H1>
 <p>Hello {user.name}, welcome to your first Inertia app!</p>
 ```
 
@@ -264,7 +289,37 @@ You can also create more complex layout arrangements using nested layouts.
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+<template>
+  <div>
+    <H1>Welcome</H1>
+    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+  </div>
+</template>
+
+<script>
+import SiteLayout from './SiteLayout'
+import NestedLayout from './NestedLayout'
+
+export default {
+  // Using a render function...
+  layout: (h, page) => {
+    return h(SiteLayout, [
+      h(NestedLayout, [page]),
+    ])
+  },
+
+  // Using shorthand syntax...
+  layout: [SiteLayout, NestedLayout],
+
+  props: {
+    user: Object,
+  },
+}
+</script>
+```
+
+```html Vue 3 
 <script>
 import SiteLayout from './SiteLayout'
 import NestedLayout from './NestedLayout'
@@ -285,7 +340,7 @@ defineProps({ user: Object })
 </script>
 
 <template>
-  <h1>Welcome</h1>
+  <H1>Welcome</H1>
   <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
 </template>
 ```
@@ -312,17 +367,10 @@ Home.layout = page => (
 export default Home
 ```
 
-```html Svelte 4 icon="code"
+```html Svelte icon="code"
 <script context="module">
   import SiteLayout from './SiteLayout.svelte'
   import NestedLayout from './NestedLayout.svelte'
-
-  // Using a render function...
-  export const layout = (h, page) => {
-    return h(SiteLayout, [h(NestedLayout, [page])])
-  }
-
-  // Using the shorthand...
   export const layout = [SiteLayout, NestedLayout]
 </script>
 
@@ -330,35 +378,13 @@ export default Home
   export let user
 </script>
 
-<h1>Welcome</h1>
-<p>Hello {user.name}, welcome to your first Inertia app!</p>
-```
-
-```html Svelte 5 icon="code"
-<script module>
-  import SiteLayout from './SiteLayout.svelte'
-  import NestedLayout from './NestedLayout.svelte'
-
-  // Using a render function...
-  export const layout = (h, page) => {
-    return h(SiteLayout, [h(NestedLayout, [page])])
-  }
-
-  // Using the shorthand...
-  export const layout = [SiteLayout, NestedLayout]
-</script>
-
-<script>
-  let { user } = $props()
-</script>
-
-<h1>Welcome</h1>
+<H1>Welcome</H1>
 <p>Hello {user.name}, welcome to your first Inertia app!</p>
 ```
 
 </CodeGroup>
 
-<VueSpecific>If you're using Vue 3.3+, you can alternatively use [defineOptions](https://vuejs.org/api/sfc-script-setup.html#defineoptions) to define a layout within `<script setup>`. Older versions of Vue can use the [defineOptions plugin](https://vue-macros.sxzz.moe/macros/define-options.html):
+<VueSpecific>If you're using Vue 2.7 or Vue 3, you can alternatively use the [defineOptions plugin](https://vue-macros.sxzz.moe/macros/define-options.html) to define a layout within `<script setup>`:
 
 ```html
 <script setup>
@@ -371,7 +397,21 @@ If you're using persistent layouts, you may find it convenient to define the def
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import Layout from './Layout'
+
+createInertiaApp({
+  resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    let page = pages[`./Pages/\${name}.vue`]
+    page.default.layout = page.default.layout || Layout
+    return page
+  },
+  // ...
+})
+```
+
+```js Vue 3 
 import Layout from './Layout'
 
 createInertiaApp({
@@ -420,7 +460,21 @@ You can even go a step further and conditionally set the default page layout bas
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import Layout from './Layout'
+
+createInertiaApp({
+  resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    let page = pages[`./Pages/\${name}.vue`]
+    page.default.layout = name.startsWith('Public/') ? undefined : Layout
+    return page
+  },
+  // ...
+})
+```
+
+```js Vue 3 
 import Layout from './Layout'
 
 createInertiaApp({
@@ -456,6 +510,7 @@ createInertiaApp({
     const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
     let page = pages[`./Pages/\${name}.svelte`]
     return { default: page.default, layout: name.startsWith('Public/') ? undefined : Layout }
+    return page
   },
   // ...
 })

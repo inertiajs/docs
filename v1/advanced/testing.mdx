@@ -2,12 +2,13 @@
 title: Testing
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 There are many different ways to test an Inertia application. This page provides a quick overview of the tools available.
 
 ## End-to-end tests
 
-One popular approach to testing your JavaScript page components is to use an end-to-end testing tool like [Cypress](https://www.cypress.io/) or [Pest](https://pestphp.com). These are browser automation tools that allow you to run real simulations of your app in the browser. These tests are known to be slower; however, since they test your application at the same layer as your end users, they can provide a lot of confidence that your app is working correctly. And, since these tests are run in the browser, your JavaScript code is actually executed and tested as well.
+One popular approach to testing your JavaScript page components is to use an end-to-end testing tool like [Cypress](https://www.cypress.io/) or [Laravel Dusk](https://laravel.com/docs/dusk). These are browser automation tools that allow you to run real simulations of your app in the browser. These tests are known to be slower; however, since they test your application at the same layer as your end users, they can provide a lot of confidence that your app is working correctly. And, since these tests are run in the browser, your JavaScript code is actually executed and tested as well.
 
 ## Client-side unit tests
 
@@ -54,19 +55,7 @@ $this->get('/podcasts/41')
 
 As you can see in the example above, you may use these assertion methods to assert against the content of the data provided to the Inertia response. In addition, you may assert that array data has a given length as well as scope your assertions.
 
-You may use the `inertiaProps` method to retrieve the props returned in the response. You can pass a key to retrieve a specific property, and nested properties are supported using "dot" notation.
-
-```php
-$response = $this->get('/podcasts/41');
-// Returns all props...
-$response->inertiaProps();
-// Returns a specific prop...
-$response->inertiaProps('podcast');
-// Returns a nested prop using "dot" notation...
-$response->inertiaProps('podcast.id');
-```
-
-Let's dig into the `assertInertia` method and the available assertions in detail. First, to assert that the Inertia response has a property, you may use the `has` method. You can think of this method as being similar to PHP's `isset` function.
+Let's dig into the available assertions in detail. First, to assert that the Inertia response has a property, you may use the `has` method. You can think of this method as being similar to PHP's `isset` function.
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
@@ -154,66 +143,6 @@ $response->assertInertia(fn (Assert $page) => $page
 ->has('subject')
 ->missing('published_at')
 ->etc()
-)
-);
-```
-
-### Testing Partial Reloads
-
-You may use the `reloadOnly` and `reloadExcept` methods to test how your application responds to [partial reloads](/partial-reloads). These methods perform a follow-up request and allow you to make assertions against the response.
-
-```php
-$response->assertInertia(fn (Assert $page) => $page
-->has('orders')
-->missing('statuses')
-->reloadOnly('statuses', fn (Assert $reload) => $reload
-->missing('orders')
-->has('statuses', 5)
-)
-);
-```
-
-Instead of passing a single prop as a string, you may also pass an array of props to `reloadOnly` or `reloadExcept`.
-
-### Testing Deferred Props
-
-You may use the `loadDeferredProps` method to test how your application responds to [deferred props](/deferred-props). This method performs a follow-up request to load the deferred properties and allows you to make assertions against the response.
-
-```php
-$response->assertInertia(fn (Assert $page) => $page
-->has('users')
-->has('roles')
-->missing('permissions') // Deferred prop not in initial response
-->loadDeferredProps(fn (Assert $reload) => $reload
-->has('permissions')
-->where('permissions.0.name', 'edit users')
-)
-);
-```
-
-You may also load specific deferred prop groups by passing the group name as the first argument to the `loadDeferredProps` method.
-
-```php
-$response->assertInertia(fn (Assert $page) => $page
-->has('users')
-->missing('teams')
-->missing('projects')
-->loadDeferredProps('attributes', fn (Assert $reload) => $reload
-->has('teams', 5)
-->has('projects')
-->missing('permissions') // Different group
-)
-);
-```
-
-Instead of passing a single group as a string, you may also pass an array of groups to `loadDeferredProps`.
-
-```php
-$response->assertInertia(fn (Assert $page) => $page
-->loadDeferredProps(['default', 'attributes'], fn (Assert $reload) => $reload
-->has('permissions')
-->has('teams')
-->has('projects')
 )
 );
 ```

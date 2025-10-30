@@ -2,6 +2,7 @@
 title: Remembering state
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 When navigating browser history, Inertia restores pages using prop data cached in history state. However, Inertia does not restore local page component state since this is beyond its reach. This can lead to outdated pages in your browser history.
 
@@ -11,11 +12,36 @@ To mitigate this issue, you can tell Inertia which local component state to save
 
 ## Saving local state
 
-To save local component state to the history state, use the `useRemember` feature to tell Inertia which data it should remember.
+To save local component state to the history state, use the `remember` feature to tell Inertia which data it should remember.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+{
+  // Option 1: Object...
+  remember: {
+    data: ['form'],
+  },
+
+  // Option 2: Array...
+  remember: ['form'],
+
+  // Option 3: String...
+  remember: 'form',
+
+  data() {
+    return {
+      form: {
+        first_name: null,
+        last_name: null,
+        // ...
+      },
+    }
+  },
+}
+```
+
+```js Vue 3 
 import { useRemember } from '@inertiajs/vue3'
 
 const form = useRemember({
@@ -39,9 +65,9 @@ export default function Profile() {
 ```
 
 ```js Svelte icon="code"
-import { useRemember } from '@inertiajs/svelte'
+import { remember } from '@inertiajs/svelte'
 
-const form = useRemember({
+let form = remember({
   first_name: null,
   last_name: null,
 })
@@ -59,7 +85,24 @@ If your page contains multiple components that use the remember functionality pr
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+{
+  remember: {
+    data: ['form'],
+    key: 'Users/Create',
+  },
+  data() {
+    return {
+      form: {
+        first_name: null,
+        last_name: null,
+      },
+    }
+  },
+}
+```
+
+```js Vue 3 
 import { useRemember } from '@inertiajs/vue3'
 
 const form = useRemember({
@@ -81,9 +124,9 @@ export default function Profile() {
 ```
 
 ```js Svelte icon="code"
-import { page, useRemember } from '@inertiajs/svelte'
+import { page, remember } from '@inertiajs/svelte'
 
-const form = useRemember({
+let form = remember({
   first_name: null,
   last_name: null,
 }, 'Users/Create')
@@ -95,7 +138,26 @@ If you have multiple instances of the same component on the page using the remem
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+{
+  remember: {
+    data: ['form'],
+    key() {
+      return `Users/Edit:\${this.user.id}`
+    }
+  },
+  data() {
+    return {
+      form: {
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+      },
+    }
+  },
+}
+```
+
+```js Vue 3 
 import { useRemember } from '@inertiajs/vue3'
 
 const props = defineProps({ user: Object })
@@ -118,9 +180,9 @@ export default function Profile() {
 ```
 
 ```js Svelte icon="code"
-import { page, useRemember } from '@inertiajs/svelte'
+import { page, remember } from '@inertiajs/svelte'
 
-const form = useRemember({
+let form = remember({
   first_name: $page.props.user.first_name,
   last_name: $page.props.user.last_name,
 }, `Users/Edit:\${$page.props.user.id}`)
@@ -134,7 +196,14 @@ If you're using the [Inertia form helper](/forms#form-helper), you can pass a un
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
+```js Vue 2 
+import { useForm } from '@inertiajs/vue2'
+
+form: useForm('CreateUser', data)
+form: useForm(`EditUser:\${this.user.id}\
+```
+
+```js Vue 3 
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm('CreateUser', data)
@@ -159,39 +228,49 @@ const form = useForm(`EditUser:\${user.id}\
 
 ## Manually saving state
 
-The `useRemember` hook watches for data changes and automatically saves those changes to the history state. Then, Inertia will restore the data on page load.
+The `remember` property in Vue 2, and the `useRemember` hook in Vue 3, React, and Svelte all watch for data changes and automatically save those changes to the history state. Then, Inertia will restore the data on page load.
 
-However, it's also possible to manage this manually using the underlying `remember()` and `restore()` methods exposed by Inertia.
+However, it's also possible to manage this manually using the underlying `remember()` and `restore()` methods in Inertia.
 
 <CodeGroup>
 
-```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
+```js Vue 2 
+import { router } from '@inertiajs/vue2'
 
-// Save local component state to history state
+// Save local component state to history state...
 router.remember(data, 'my-key')
 
-// Restore local component state from history state
+// Restore local component state from history state...
+let data = router.restore('my-key')
+```
+
+```js Vue 3 
+import { router } from '@inertiajs/vue3'
+
+// Save local component state to history state...
+router.remember(data, 'my-key')
+
+// Restore local component state from history state...
 let data = router.restore('my-key')
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
-// Save local component state to history state
+// Save local component state to history state...
 router.remember(data, 'my-key')
 
-// Restore local component state from history state
+// Restore local component state from history state...
 let data = router.restore('my-key')
 ```
 
 ```js Svelte icon="code"
 import { router } from '@inertiajs/svelte'
 
-// Save local component state to history state
+// Save local component state to history state...
 router.remember(data, 'my-key')
 
-// Restore local component state from history state
+// Restore local component state from history state...
 let data = router.restore('my-key')
 ```
 

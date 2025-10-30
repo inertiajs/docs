@@ -2,6 +2,7 @@
 title: Title & meta
 ---
 
+<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the <a href="/v2/getting-started">v2 docs</a> for the latest information.</Warning>
 
 Since Inertia powered JavaScript apps are rendered within the document `<body>`, they are unable to render markup to the document `<head>`, as it's outside of their scope. To help with this, Inertia ships with a `<Head>` component which can be used to set the page `<title>`, `<meta>` tags, and other `<head>` elements.
 
@@ -15,7 +16,16 @@ To add `<head>` elements to your page, use the `<Head>` component. Within this c
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Head } from '@inertiajs/vue2'
+
+<Head>
+  <title>Your page title</title>
+  <meta name="description" content="Your page description">
+</Head>
+```
+
+```jsx Vue 3 
 import { Head } from '@inertiajs/vue3'
 
 <Head>
@@ -48,7 +58,13 @@ If you only need to add a `<title>` to the document `<head>`, you may simply pas
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Head } from '@inertiajs/vue2'
+
+<Head title="Your page title" />
+```
+
+```jsx Vue 3 
 import { Head } from '@inertiajs/vue3'
 
 <Head title="Your page title" />
@@ -79,7 +95,13 @@ After defining the `title` callback, the callback will automatically be invoked 
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Head } from '@inertiajs/vue2'
+
+<Head title="Home">
+```
+
+```jsx Vue 3 
 import { Head } from '@inertiajs/vue3'
 
 <Head title="Home">
@@ -107,7 +129,15 @@ The `title` callback will also be invoked when you set the title using a `<title
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import { Head } from '@inertiajs/vue2'
+
+<Head>
+  <title>Home</title>
+</Head>
+```
+
+```jsx Vue 3 
 import { Head } from '@inertiajs/vue3'
 
 <Head>
@@ -135,7 +165,28 @@ It's possible to have multiple instances of the `<Head>` component throughout yo
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+// Layout.vue
+
+import { Head } from '@inertiajs/vue2'
+
+<Head>
+  <title>My app</title>
+  <meta head-key="description" name="description" content="This is the default description" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</Head>
+
+// About.vue
+
+import { Head } from '@inertiajs/vue2'
+
+<Head>
+  <title>About - My app</title>
+  <meta head-key="description" name="description" content="This is a page specific description" />
+</Head>
+```
+
+```jsx Vue 3 
 // Layout.vue
 
 import { Head } from '@inertiajs/vue3'
@@ -201,7 +252,30 @@ When building a real application, it can sometimes be helpful to create a custom
 
 <CodeGroup>
 
-```html Vue icon="vuejs"
+```html Vue 2 
+\<!-- AppHead.vue -->
+
+<template>
+  <Head :title="title ? `\${title} - My App` : 'My App'">
+    <slot />
+  </Head>
+</template>
+
+<script>
+import { Head } from '@inertiajs/vue2'
+
+export default {
+  components: {
+    Head,
+  },
+  props: {
+    title: String,
+  },
+}
+</script>
+```
+
+```html Vue 3 
 \<!-- AppHead.vue -->
 
 <script setup>
@@ -240,11 +314,17 @@ export default Site
 
 </CodeGroup>
 
-Once you have created the custom component, you can just start using it in your pages.
+Once you have created the custom component, you may simply start using the custom component in your pages.
 
 <CodeGroup>
 
-```jsx Vue icon="vuejs"
+```jsx Vue 2 
+import AppHead from './AppHead'
+
+<AppHead title="About" />
+```
+
+```jsx Vue 3 
 import AppHead from './AppHead'
 
 <AppHead title="About" />
