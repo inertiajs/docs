@@ -10,7 +10,7 @@ One popular approach to testing your JavaScript page components is to use an end
 
 ## Client-side unit tests
 
-Another approach to testing your page components is using a client-side unit testing framework, such as [Jest](https://jestjs.io/) or [Mocha](https://mochajs.org/). This approach allows you to test your JavaScript page components in isolation using Node.js.
+Another approach to testing your page components is using a client-side unit testing framework, such as [Vitest](https://vitest.dev/), [Jest](https://jestjs.io/), or [Mocha](https://mochajs.org/). This approach allows you to test your JavaScript page components in isolation using Node.js.
 
 ## Endpoint tests
 
@@ -20,34 +20,35 @@ However, to make this process even easier, Inertia's Laravel adapter provides ad
 
 ```php
 use Inertia\Testing\AssertableInertia as Assert;
+
 class PodcastsControllerTest extends TestCase
 {
-public function test_can_view_podcast()
-{
-$this->get('/podcasts/41')
-->assertInertia(fn (Assert $page) => $page
-->component('Podcasts/Show')
-->has('podcast', fn (Assert $page) => $page
-->where('id', $podcast->id)
-->where('subject', 'The Laravel Podcast')
-->where('description', 'The Laravel Podcast brings you Laravel and PHP development news and discussion.')
-->has('seasons', 4)
-->has('seasons.4.episodes', 21)
-->has('host', fn (Assert $page) => $page
-->where('id', 1)
-->where('name', 'Matt Stauffer')
-)
-->has('subscribers', 7, fn (Assert $page) => $page
-->where('id', 2)
-->where('name', 'Claudio Dekker')
-->where('platform', 'Apple Podcasts')
-->etc()
-->missing('email')
-->missing('password')
-)
-)
-);
-}
+    public function test_can_view_podcast()
+    {
+        $this->get('/podcasts/41')
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Podcasts/Show')
+                ->has('podcast', fn (Assert $page) => $page
+                    ->where('id', $podcast->id)
+                    ->where('subject', 'The Laravel Podcast')
+                    ->where('description', 'The Laravel Podcast brings you Laravel and PHP development news and discussion.')
+                    ->has('seasons', 4)
+                    ->has('seasons.4.episodes', 21)
+                    ->has('host', fn (Assert $page) => $page
+                        ->where('id', 1)
+                        ->where('name', 'Matt Stauffer')
+                    )
+                    ->has('subscribers', 7, fn (Assert $page) => $page
+                        ->where('id', 2)
+                        ->where('name', 'Claudio Dekker')
+                        ->where('platform', 'Apple Podcasts')
+                        ->etc()
+                        ->missing('email')
+                        ->missing('password')
+                    )
+                )
+            );
+    }
 }
 ```
 
@@ -57,10 +58,13 @@ You may use the `inertiaProps` method to retrieve the props returned in the resp
 
 ```php
 $response = $this->get('/podcasts/41');
+
 // Returns all props...
 $response->inertiaProps();
+
 // Returns a specific prop...
 $response->inertiaProps('podcast');
+
 // Returns a nested prop using "dot" notation...
 $response->inertiaProps('podcast.id');
 ```
@@ -69,10 +73,11 @@ Let's dig into the `assertInertia` method and the available assertions in detail
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-// Checking a root-level property...
-->has('podcast')
-// Checking nested properties using "dot" notation...
-->has('podcast.id')
+    // Checking if a root-level property has 7 items...
+    ->has('podcasts', 7)
+
+    // Checking nested properties using "dot" notation...
+    ->has('podcast.subscribers', 7)
 );
 ```
 
@@ -80,10 +85,11 @@ To assert that an Inertia property has a specified amount of items, you may prov
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-// Checking if a root-level property has 7 items...
-->has('podcasts', 7)
-// Checking nested properties using "dot" notation...
-->has('podcast.subscribers', 7)
+    // Checking if a root-level property has 7 items...
+    ->has('podcasts', 7)
+
+    // Checking nested properties using "dot" notation...
+    ->has('podcast.subscribers', 7)
 );
 ```
 
@@ -91,20 +97,21 @@ The `has` method may also be used to scope properties in order to lessen repetit
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-// Creating a single-level property scope...
-->has('message', fn (Assert $page) => $page
-// We can now continue chaining methods...
-->has('subject')
-->has('comments', 5)
-// And can even create a deeper scope using "dot" notation...
-->has('comments.0', fn (Assert $page) => $page
-->has('body')
-->has('files', 1)
-->has('files.0', fn (Assert $page) => $page
-->has('url')
-)
-)
-)
+    // Creating a single-level property scope...
+    ->has('message', fn (Assert $page) => $page
+        // We can now continue chaining methods...
+        ->has('subject')
+        ->has('comments', 5)
+
+        // And can even create a deeper scope using "dot" notation...
+        ->has('comments.0', fn (Assert $page) => $page
+            ->has('body')
+            ->has('files', 1)
+            ->has('files.0', fn (Assert $page) => $page
+                ->has('url')
+            )
+        )
+    )
 );
 ```
 
@@ -112,11 +119,11 @@ When scoping into Inertia properties that are arrays or collections, you may als
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-// Assert that there are 5 comments and automatically scope into the first comment...
-->has('comments', 5, fn (Assert $page) => $page
-->has('body')
-// ...
-)
+    // Assert that there are 5 comments and automatically scope into the first comment...
+    ->has('comments', 5, fn (Assert $page) => $page
+        ->has('body')
+        // ...
+    )
 );
 ```
 
@@ -124,12 +131,13 @@ To assert that an Inertia property has an expected value, you may use the `where
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('message', fn (Assert $page) => $page
-// Assert that the subject prop matches the given message...
-->where('subject', 'This is an example message')
-// Or, assert against deeply nested values...
-->where('comments.0.files.0.name', 'example-attachment.pdf')
-)
+    ->has('message', fn (Assert $page) => $page
+        // Assert that the subject prop matches the given message...
+        ->where('subject', 'This is an example message')
+
+        // Or, assert against deeply nested values...
+        ->where('comments.0.files.0.name', 'example-attachment.pdf')
+    )
 );
 ```
 
@@ -137,11 +145,11 @@ Inertia's testing methods will automatically fail when you haven't interacted wi
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('message', fn (Assert $page) => $page
-->has('subject')
-->has('comments')
-->etc()
-)
+    ->has('message', fn (Assert $page) => $page
+        ->has('subject')
+        ->has('comments')
+        ->etc()
+    )
 );
 ```
 
@@ -149,11 +157,11 @@ The `missing` method is the exact opposite of the `has` method, ensuring that th
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('message', fn (Assert $page) => $page
-->has('subject')
-->missing('published_at')
-->etc()
-)
+    ->has('message', fn (Assert $page) => $page
+        ->has('subject')
+        ->missing('published_at')
+        ->etc()
+    )
 );
 ```
 
@@ -163,12 +171,12 @@ You may use the `reloadOnly` and `reloadExcept` methods to test how your applica
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('orders')
-->missing('statuses')
-->reloadOnly('statuses', fn (Assert $reload) => $reload
-->missing('orders')
-->has('statuses', 5)
-)
+    ->has('orders')
+    ->missing('statuses')
+    ->reloadOnly('statuses', fn (Assert $reload) => $reload
+        ->missing('orders')
+        ->has('statuses', 5)
+    )
 );
 ```
 
@@ -180,13 +188,13 @@ You may use the `loadDeferredProps` method to test how your application responds
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('users')
-->has('roles')
-->missing('permissions') // Deferred prop not in initial response
-->loadDeferredProps(fn (Assert $reload) => $reload
-->has('permissions')
-->where('permissions.0.name', 'edit users')
-)
+    ->has('users')
+    ->has('roles')
+    ->missing('permissions') // Deferred prop not in initial response
+    ->loadDeferredProps(fn (Assert $reload) => $reload
+        ->has('permissions')
+        ->where('permissions.0.name', 'edit users')
+    )
 );
 ```
 
@@ -194,14 +202,14 @@ You may also load specific deferred prop groups by passing the group name as the
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->has('users')
-->missing('teams')
-->missing('projects')
-->loadDeferredProps('attributes', fn (Assert $reload) => $reload
-->has('teams', 5)
-->has('projects')
-->missing('permissions') // Different group
-)
+    ->has('users')
+    ->missing('teams')
+    ->missing('projects')
+    ->loadDeferredProps('attributes', fn (Assert $reload) => $reload
+        ->has('teams', 5)
+        ->has('projects')
+        ->missing('permissions') // Different group
+    )
 );
 ```
 
@@ -209,10 +217,10 @@ Instead of passing a single group as a string, you may also pass an array of gro
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-->loadDeferredProps(['default', 'attributes'], fn (Assert $reload) => $reload
-->has('permissions')
-->has('teams')
-->has('projects')
-)
+    ->loadDeferredProps(['default', 'attributes'], fn (Assert $reload) => $reload
+        ->has('permissions')
+        ->has('teams')
+        ->has('projects')
+    )
 );
 ```
