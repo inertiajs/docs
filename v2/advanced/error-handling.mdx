@@ -18,12 +18,12 @@ To enable this, configure the `future.useDialogForErrorModal` option in your [ap
 
 ```js
 createInertiaApp({
-// resolve, setup, etc.
-defaults: {
-future: {
-useDialogForErrorModal: true,
-},
-},
+    // resolve, setup, etc.
+    defaults: {
+        future: {
+            useDialogForErrorModal: true,
+        },
+    },
 })
 ```
 
@@ -44,7 +44,9 @@ use Inertia\Inertia;
             return Inertia::render('ErrorPage', ['status' => $response->getStatusCode()])
                 ->toResponse($request)
                 ->setStatusCode($response->getStatusCode());
-        } elseif ($response->getStatusCode() === 419) {
+        }
+
+        if ($response->getStatusCode() === 419) {
             return back()->with([
                 'message' => 'The page expired, please try again.',
             ]);

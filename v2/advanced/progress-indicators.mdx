@@ -12,17 +12,17 @@ Inertia's default progress indicator is a light-weight wrapper around the [NProg
 
 ```js
 createInertiaApp({
-progress: {
-// The delay after which the progress bar will appear, in milliseconds...
-delay: 250,
-// The color of the progress bar...
-color: '#29d',
-// Whether to include the default NProgress styles...
-includeCSS: true,
-// Whether the NProgress spinner will be shown...
-showSpinner: false,
-},
-// ...
+    progress: {
+        // The delay after which the progress bar will appear, in milliseconds...
+        delay: 250,
+        // The color of the progress bar...
+        color: '#29d',
+        // Whether to include the default NProgress styles...
+        includeCSS: true,
+        // Whether the NProgress spinner will be shown...
+        showSpinner: false,
+    },
+    // ...
 })
 ```
 
@@ -30,8 +30,8 @@ You can disable Inertia's default loading indicator by setting the `progress` pr
 
 ```js
 createInertiaApp({
-progress: false,
-// ...
+    progress: false,
+    // ...
 })
 ```
 
@@ -97,6 +97,7 @@ progress.hide()    // Counter = 1, bar hidden
 progress.hide()    // Counter = 2, bar still hidden
 progress.reveal()  // Counter = 1, bar still hidden
 progress.reveal()  // Counter = 0, bar now visible
+
 // Force reveal bypasses the counter
 progress.reveal(true)
 ```
@@ -111,8 +112,8 @@ First, disable Inertia's default loading indicator.
 
 ```js
 createInertiaApp({
-progress: false,
-// ...
+    progress: false,
+    // ...
 })
 ```
 
@@ -171,14 +172,14 @@ We can accomplish this by inspecting the `event.detail.visit` object that's prov
 
 ```js
 router.on('finish', (event) => {
-if (event.detail.visit.completed) {
-NProgress.done()
-} else if (event.detail.visit.interrupted) {
-NProgress.set(0)
-} else if (event.detail.visit.cancelled) {
-NProgress.done()
-NProgress.remove()
-}
+    if (event.detail.visit.completed) {
+        NProgress.done()
+    } else if (event.detail.visit.interrupted) {
+        NProgress.set(0)
+    } else if (event.detail.visit.cancelled) {
+        NProgress.done()
+        NProgress.remove()
+    }
 })
 ```
 
@@ -188,9 +189,9 @@ Let's take this a step further. When files are being uploaded, it would be great
 
 ```js
 router.on('progress', (event) => {
-if (event.detail.progress.percentage) {
-NProgress.set((event.detail.progress.percentage / 100) * 0.9)
-}
+    if (event.detail.progress.percentage) {
+        NProgress.set((event.detail.progress.percentage / 100) * 0.9)
+    }
 })
 ```
 
@@ -218,8 +219,8 @@ Next, we'll update the `finish` event listener to clear any existing timeouts in
 
 ```js
 router.on('finish', (event) => {
-clearTimeout(timeout)
-// ...
+    clearTimeout(timeout)
+    // ...
 })
 ```
 
@@ -227,10 +228,11 @@ In the `finish` event listener, we need to determine if the progress bar has act
 
 ```js
 router.on('finish', (event) => {
-clearTimeout(timeout)
-if (!NProgress.isStarted()) {
-return
-}
+    clearTimeout(timeout)
+
+    if (!NProgress.isStarted()) {
+        return
+    }
 // ...
 })
 ```
@@ -239,10 +241,10 @@ And, finally, we need to do the same check in the `progress` event listener.
 
 ```js
 router.on('progress', event => {
-if (!NProgress.isStarted()) {
-return
-}
-// ...
+    if (!NProgress.isStarted()) {
+        return
+    }
+    // ...
 })
 ```
 
@@ -272,9 +274,12 @@ router.on('progress', (event) => {
 
 router.on('finish', (event) => {
     clearTimeout(timeout)
+
     if (!NProgress.isStarted()) {
         return
-    } else if (event.detail.visit.completed) {
+    }
+
+    if (event.detail.visit.completed) {
         NProgress.done()
     } else if (event.detail.visit.interrupted) {
         NProgress.set(0)
@@ -303,9 +308,12 @@ router.on('progress', (event) => {
 
 router.on('finish', (event) => {
     clearTimeout(timeout)
+
     if (!NProgress.isStarted()) {
         return
-    } else if (event.detail.visit.completed) {
+    }
+
+    if (event.detail.visit.completed) {
         NProgress.done()
     } else if (event.detail.visit.interrupted) {
         NProgress.set(0)
@@ -334,9 +342,12 @@ router.on('progress', (event) => {
 
 router.on('finish', (event) => {
     clearTimeout(timeout)
+
     if (!NProgress.isStarted()) {
         return
-    } else if (event.detail.visit.completed) {
+    }
+
+    if (event.detail.visit.completed) {
         NProgress.done()
     } else if (event.detail.visit.interrupted) {
         NProgress.set(0)

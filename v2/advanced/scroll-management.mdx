@@ -122,12 +122,12 @@ In these situations, you must tell Inertia which scrollable elements to manage b
 
 ```html
 <div class="overflow-y-auto" scroll-region="">
-<!-- Your page content -->
+    <!-- Your page content -->
 </div>
 ```
 
 ## Text fragments
 
-[Text fragments](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments)allow you to link directly to specific text on a page using a special URL syntax like `#:~:text=term`. However, the browser removes the fragment directive before any JavaScript runs, so text fragments only work if the targeted text is present in the initial HTML response.
+[Text fragments](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments) allow you to link directly to specific text on a page using a special URL syntax like `#:~:text=term`. However, the browser removes the fragment directive before any JavaScript runs, so text fragments only work if the targeted text is present in the initial HTML response.
 
 To use text fragments with your Inertia pages, enable [server-side rendering](/v2/advanced/server-side-rendering).
