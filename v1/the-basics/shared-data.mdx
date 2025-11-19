@@ -57,23 +57,23 @@ Once you have shared the data server-side, you will be able to access it within 
 
 ```vue Vue 2
 <template>
-  <main>
-    <header>
-      You are logged in as: {{ user.name }}
-    </header>
-    <article>
-      <slot />
-    </article>
-  </main>
+    <main>
+        <header>
+            You are logged in as: {{ user.name }}
+        </header>
+        <article>
+            <slot />
+        </article>
+    </main>
 </template>
 
 <script>
 export default {
-  computed: {
-    user() {
-      return this.$page.props.auth.user
+    computed: {
+        user() {
+            return this.$page.props.auth.user
+        }
     }
-  }
 }
 </script>
 ```
@@ -89,14 +89,14 @@ const user = computed(() => page.props.auth.user)
 </script>
 
 <template>
-  <main>
-    <header>
-      You are logged in as: {{ user.name }}
-    </header>
-    <article>
-      <slot />
-    </article>
-  </main>
+    <main>
+        <header>
+            You are logged in as: {{ user.name }}
+        </header>
+        <article>
+            <slot />
+        </article>
+    </main>
 </template>
 ```
 
@@ -104,33 +104,33 @@ const user = computed(() => page.props.auth.user)
 import { usePage } from '@inertiajs/react'
 
 export default function Layout({ children }) {
-  const { auth } = usePage().props
+    const { auth } = usePage().props
 
-  return (
-    <main>
-      <header>
-        You are logged in as: {auth.user.name}
-      </header>
-      <article>
-        {children}
-      </article>
-    </main>
-  )
+    return (
+        <main>
+            <header>
+                You are logged in as: {auth.user.name}
+            </header>
+            <article>
+                {children}
+            </article>
+        </main>
+    )
 }
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { page } from '@inertiajs/svelte'
+    import { page } from '@inertiajs/svelte'
 </script>
 
 <main>
-  <header>
-    You are logged in as: {$page.props.auth.user.name}
-  </header>
-  <article>
-    <slot />
-  </article>
+    <header>
+        You are logged in as: {$page.props.auth.user.name}
+    </header>
+    <article>
+        <slot />
+    </article>
 </main>
 ```
 
@@ -162,31 +162,31 @@ Next, display the flash message in a frontend component, such as the site layout
 
 ```vue Vue 2
 <template>
-  <main>
-    <header></header>
-    <article>
-      <div v-if="$page.props.flash.message" class="alert">
-        {{ $page.props.flash.message }}
-      </div>
-      <slot />
-    </article>
-    <footer></footer>
-  </main>
+    <main>
+        <header></header>
+        <article>
+            <div v-if="$page.props.flash.message" class="alert">
+                {{ $page.props.flash.message }}
+            </div>
+            <slot />
+        </article>
+        <footer></footer>
+    </main>
 </template>
 ```
 
 ```vue Vue 3
 <template>
-  <main>
-    <header></header>
-    <article>
-      <div v-if="$page.props.flash.message" class="alert">
-        {{ $page.props.flash.message }}
-      </div>
-      <slot />
-    </article>
-    <footer></footer>
-  </main>
+    <main>
+        <header></header>
+        <article>
+            <div v-if="$page.props.flash.message" class="alert">
+                {{ $page.props.flash.message }}
+            </div>
+            <slot />
+        </article>
+        <footer></footer>
+    </main>
 </template>
 ```
 
@@ -194,37 +194,37 @@ Next, display the flash message in a frontend component, such as the site layout
 import { usePage } from '@inertiajs/react'
 
 export default function Layout({ children }) {
-  const { flash } = usePage().props
+    const { flash } = usePage().props
 
-  return (
-    <main>
-      <header></header>
-      <article>
-        {flash.message && (
-          <div class="alert">{flash.message}</div>
-        )}
-        {children}
-      </article>
-      <footer></footer>
-    </main>
-  )
+    return (
+        <main>
+            <header></header>
+            <article>
+                {flash.message && (
+                    <div class="alert">{flash.message}</div>
+                )}
+                {children}
+            </article>
+            <footer></footer>
+        </main>
+    )
 }
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { page } from '@inertiajs/svelte'
+    import { page } from '@inertiajs/svelte'
 </script>
 
 <main>
-  <header></header>
-  <article>
-    {#if $page.props.flash.message}
-      <div class="alert">{$page.props.flash.message}</div>
-    {/if}
-    <slot />
-  </article>
-  <footer></footer>
+    <header></header>
+    <article>
+        {#if $page.props.flash.message}
+            <div class="alert">{$page.props.flash.message}</div>
+        {/if}
+        <slot />
+    </article>
+    <footer></footer>
 </main>
 ```
 

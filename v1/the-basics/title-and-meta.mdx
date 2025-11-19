@@ -20,8 +20,8 @@ To add `<head>` elements to your page, use the `<Head>` component. Within this c
 import { Head } from '@inertiajs/vue2'
 
 <Head>
-  <title>Your page title</title>
-  <meta name="description" content="Your page description">
+    <title>Your page title</title>
+    <meta name="description" content="Your page description">
 </Head>
 ```
 
@@ -29,8 +29,8 @@ import { Head } from '@inertiajs/vue2'
 import { Head } from '@inertiajs/vue3'
 
 <Head>
-  <title>Your page title</title>
-  <meta name="description" content="Your page description">
+    <title>Your page title</title>
+    <meta name="description" content="Your page description">
 </Head>
 ```
 
@@ -38,15 +38,15 @@ import { Head } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/react'
 
 <Head>
-  <title>Your page title</title>
-  <meta name="description" content="Your page description" />
+    <title>Your page title</title>
+    <meta name="description" content="Your page description" />
 </Head>
 ```
 
 ```html Svelte icon="s"
 <svelte:head>
-  <title>Your page title</title>
-  <meta name="description" content="Your page description" />
+    <title>Your page title</title>
+    <meta name="description" content="Your page description" />
 </svelte:head>
 ```
 
@@ -133,7 +133,7 @@ The `title` callback will also be invoked when you set the title using a `<title
 import { Head } from '@inertiajs/vue2'
 
 <Head>
-  <title>Home</title>
+    <title>Home</title>
 </Head>
 ```
 
@@ -141,7 +141,7 @@ import { Head } from '@inertiajs/vue2'
 import { Head } from '@inertiajs/vue3'
 
 <Head>
-  <title>Home</title>
+    <title>Home</title>
 </Head>
 ```
 
@@ -149,7 +149,7 @@ import { Head } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/react'
 
 <Head>
-  <title>Home</title>
+    <title>Home</title>
 </Head>
 ```
 
@@ -171,9 +171,9 @@ It's possible to have multiple instances of the `<Head>` component throughout yo
 import { Head } from '@inertiajs/vue2'
 
 <Head>
-  <title>My app</title>
-  <meta head-key="description" name="description" content="This is the default description" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>My app</title>
+    <meta head-key="description" name="description" content="This is the default description" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </Head>
 
 // About.vue
@@ -181,8 +181,8 @@ import { Head } from '@inertiajs/vue2'
 import { Head } from '@inertiajs/vue2'
 
 <Head>
-  <title>About - My app</title>
-  <meta head-key="description" name="description" content="This is a page specific description" />
+    <title>About - My app</title>
+    <meta head-key="description" name="description" content="This is a page specific description" />
 </Head>
 ```
 
@@ -192,9 +192,9 @@ import { Head } from '@inertiajs/vue2'
 import { Head } from '@inertiajs/vue3'
 
 <Head>
-  <title>My app</title>
-  <meta head-key="description" name="description" content="This is the default description" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>My app</title>
+    <meta head-key="description" name="description" content="This is the default description" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </Head>
 
 // About.vue
@@ -202,8 +202,8 @@ import { Head } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/vue3'
 
 <Head>
-  <title>About - My app</title>
-  <meta head-key="description" name="description" content="This is a page specific description" />
+    <title>About - My app</title>
+    <meta head-key="description" name="description" content="This is a page specific description" />
 </Head>
 ```
 
@@ -213,9 +213,9 @@ import { Head } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/react'
 
 <Head>
-  <title>My app</title>
-  <meta head-key="description" name="description" content="This is the default description" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>My app</title>
+    <meta head-key="description" name="description" content="This is the default description" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </Head>
 
 // About.js
@@ -223,8 +223,8 @@ import { Head } from '@inertiajs/react'
 import { Head } from '@inertiajs/react'
 
 <Head>
-  <title>About - My app</title>
-  <meta head-key="description" name="description" content="This is a page specific description" />
+    <title>About - My app</title>
+    <meta head-key="description" name="description" content="This is a page specific description" />
 </Head>
 ```
 
@@ -256,21 +256,21 @@ When building a real application, it can sometimes be helpful to create a custom
 <!-- AppHead.vue -->
 
 <template>
-  <Head :title="title ? `${title} - My App` : 'My App'">
-    <slot />
-  </Head>
+    <Head :title="title ? `${title} - My App` : 'My App'">
+        <slot />
+    </Head>
 </template>
 
 <script>
 import { Head } from '@inertiajs/vue2'
 
 export default {
-  components: {
-    Head,
-  },
-  props: {
-    title: String,
-  },
+    components: {
+        Head,
+    },
+    props: {
+        title: String,
+    },
 }
 </script>
 ```
@@ -285,9 +285,9 @@ defineProps({ title: String })
 </script>
 
 <template>
-  <Head :title="title ? `${title} - My App` : 'My App'">
-    <slot />
-  </Head>
+    <Head :title="title ? `${title} - My App` : 'My App'">
+        <slot />
+    </Head>
 </template>
 ```
 
@@ -297,12 +297,12 @@ defineProps({ title: String })
 import { Head } from '@inertiajs/react'
 
 const Site = ({ title, children }) => {
-  return (
-    <Head>
-      <title>{title ? `${title} - My App` : 'My App'}</title>
-      {children}
-    </Head>
-  )
+    return (
+        <Head>
+            <title>{title ? `${title} - My App` : 'My App'}</title>
+            {children}
+        </Head>
+    )
 }
 
 export default Site

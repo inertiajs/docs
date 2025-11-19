@@ -59,19 +59,19 @@ import { renderToString } from '@vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 
 createServer(page =>
-  createInertiaApp({
-    page,
-    render: renderToString,
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-      return pages[`./Pages/${name}.vue`]
-    },
-    setup({ App, props, plugin }) {
-      return createSSRApp({
-        render: () => h(App, props),
-      }).use(plugin)
-    },
-  }),
+    createInertiaApp({
+        page,
+        render: renderToString,
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+            return pages[`./Pages/${name}.vue`]
+        },
+        setup({ App, props, plugin }) {
+            return createSSRApp({
+                render: () => h(App, props),
+            }).use(plugin)
+        },
+    }),
 )
 ```
 
@@ -81,15 +81,15 @@ import createServer from '@inertiajs/react/server'
 import ReactDOMServer from 'react-dom/server'
 
 createServer(page =>
-  createInertiaApp({
-    page,
-    render: ReactDOMServer.renderToString,
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-      return pages[`./Pages/${name}.jsx`]
-    },
-    setup: ({ App, props }) => <App {...props} />,
-  }),
+    createInertiaApp({
+        page,
+        render: ReactDOMServer.renderToString,
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+            return pages[`./Pages/${name}.jsx`]
+        },
+        setup: ({ App, props }) => <App {...props} />,
+    }),
 )
 ```
 
@@ -98,16 +98,16 @@ import { createInertiaApp } from '@inertiajs/svelte'
 import createServer from '@inertiajs/svelte/server'
 
 createServer(page =>
-  createInertiaApp({
-    page,
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-      return pages[`./Pages/${name}.svelte`]
-    },
-    setup({ App, props }) {
-      return App.render(props)
-    },
-  }),
+    createInertiaApp({
+        page,
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+            return pages[`./Pages/${name}.svelte`]
+        },
+        setup({ App, props }) {
+            return App.render(props)
+        },
+    }),
 )
 ```
 
@@ -117,16 +117,16 @@ import createServer from '@inertiajs/svelte/server'
 import { render } from 'svelte/server'
 
 createServer(page =>
-  createInertiaApp({
-    page,
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-      return pages[`./Pages/${name}.svelte`]
-    },
-    setup({ App, props }) {
-      return render(App, { props })
-    },
-  }),
+    createInertiaApp({
+        page,
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+            return pages[`./Pages/${name}.svelte`]
+        },
+        setup({ App, props }) {
+            return render(App, { props })
+        },
+    }),
 )
 ```
 
@@ -149,10 +149,10 @@ import { renderToString } from '@vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 
 createServer(page =>
-  createInertiaApp({
-    // ...
-  }),
-  { cluster: true },
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
 )
 ```
 
@@ -162,10 +162,10 @@ import createServer from '@inertiajs/react/server'
 import ReactDOMServer from 'react-dom/server'
 
 createServer(page =>
-  createInertiaApp({
-    // ...
-  }),
-  { cluster: true },
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
 )
 ```
 
@@ -174,10 +174,10 @@ import { createInertiaApp } from '@inertiajs/svelte'
 import createServer from '@inertiajs/svelte/server'
 
 createServer(page =>
-  createInertiaApp({
-    // ...
-  }),
-  { cluster: true },
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
 )
 ```
 
@@ -187,10 +187,10 @@ import createServer from '@inertiajs/svelte/server'
 import { render } from 'svelte/server'
 
 createServer(page =>
-  createInertiaApp({
-    // ...
-  }),
-  { cluster: true },
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
 )
 ```
 
@@ -258,37 +258,37 @@ Since your website is now being server-side rendered, you can instruct <VueSpeci
 ```diff Vue icon="vuejs"
 \- import { createApp, h } from 'vue'
 \+ import { createSSRApp, h } from 'vue'
-  import { createInertiaApp } from '@inertiajs/vue3'
+    import { createInertiaApp } from '@inertiajs/vue3'
 
-  createInertiaApp({
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-      return pages[`./Pages/${name}.vue`]
-    },
-    setup({ el, App, props, plugin }) {
+    createInertiaApp({
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+            return pages[`./Pages/${name}.vue`]
+        },
+        setup({ el, App, props, plugin }) {
 \-     createApp({ render: () => h(App, props) })
 \+     createSSRApp({ render: () => h(App, props) })
-        .use(plugin)
-        .mount(el)
-    },
-  })
+                .use(plugin)
+                .mount(el)
+        },
+    })
 ```
 
 ```diff React icon="react"
-  import { createInertiaApp } from '@inertiajs/react'
+    import { createInertiaApp } from '@inertiajs/react'
 \- import { createRoot } from 'react-dom/client'
 \+ import { hydrateRoot } from 'react-dom/client'
 
-  createInertiaApp({
-    resolve: name => {
-      const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-      return pages[`./Pages/${name}.jsx`]
-    },
-    setup({ el, App, props }) {
+    createInertiaApp({
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+            return pages[`./Pages/${name}.jsx`]
+        },
+        setup({ el, App, props }) {
 \-     createRoot(el).render(<App {...props} />)
 \+     hydrateRoot(el, <App {...props} />)
-    },
-  })
+        },
+    })
 ```
 
 ```diff Svelte 4 icon="s"
@@ -332,25 +332,25 @@ Since your website is now being server-side rendered, you can instruct <VueSpeci
 <Svelte4Specific>You will also need to set the `hydratable` compiler option to `true` in your `vite.config.js` file:
 
 ```diff
-  import { svelte } from '@sveltejs/vite-plugin-svelte'
-  import laravel from 'laravel-vite-plugin'
-  import { defineConfig } from 'vite'
+    import { svelte } from '@sveltejs/vite-plugin-svelte'
+    import laravel from 'laravel-vite-plugin'
+    import { defineConfig } from 'vite'
 
-  export default defineConfig({
-    plugins: [
-      laravel.default({
-        input: ['resources/css/app.css', 'resources/js/app.js'],
-        ssr: 'resources/js/ssr.js',
-        refresh: true,
-      }),
+    export default defineConfig({
+        plugins: [
+            laravel.default({
+                input: ['resources/css/app.css', 'resources/js/app.js'],
+                ssr: 'resources/js/ssr.js',
+                refresh: true,
+            }),
 \-     svelte(),
 \+     svelte({
 \+       compilerOptions: {
 \+         hydratable: true,
 \+       },
 \+     }),
-    ],
-  })
+        ],
+    })
 ```</Svelte4Specific>## Deployment
 
 When deploying your SSR enabled app to production, you'll need to build both the client-side ( `app.js`) and server-side bundles (`ssr.js`), and then run the SSR server as a background process, typically using a process monitoring tool such as Supervisor.

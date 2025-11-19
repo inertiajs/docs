@@ -25,11 +25,11 @@ defineProps({ user: Object })
 </script>
 
 <template>
-  <Layout>
-    <Head title="Welcome" />
-    <h1>Welcome</h1>
-    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
-  </Layout>
+    <Layout>
+        <Head title="Welcome" />
+        <h1>Welcome</h1>
+        <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+    </Layout>
 </template>
 ```
 
@@ -38,47 +38,47 @@ import Layout from './Layout'
 import { Head } from '@inertiajs/react'
 
 export default function Welcome({ user }) {
-  return (
-    <Layout>
-      <Head title="Welcome" />
-      <h1>Welcome</h1>
-      <p>Hello {user.name}, welcome to your first Inertia app!</p>
-    </Layout>
-  )
+    return (
+        <Layout>
+            <Head title="Welcome" />
+            <h1>Welcome</h1>
+            <p>Hello {user.name}, welcome to your first Inertia app!</p>
+        </Layout>
+    )
 }
 ```
 
 ```html Svelte 4 icon="s"
 <script>
-  import Layout from './Layout.svelte'
+    import Layout from './Layout.svelte'
 
-  export let user
+    export let user
 </script>
 
 <svelte:head>
-  <title>Welcome</title>
+    <title>Welcome</title>
 </svelte:head>
 
 <Layout>
-  <h1>Welcome</h1>
-  <p>Hello {user.name}, welcome to your first Inertia app!</p>
+    <h1>Welcome</h1>
+    <p>Hello {user.name}, welcome to your first Inertia app!</p>
 </Layout>
 ```
 
 ```html Svelte 5 icon="s"
 <script>
-  import Layout from './Layout.svelte'
+    import Layout from './Layout.svelte'
 
-  let { user } = $props()
+    let { user } = $props()
 </script>
 
 <svelte:head>
-  <title>Welcome</title>
+    <title>Welcome</title>
 </svelte:head>
 
 <Layout>
-  <h1>Welcome</h1>
-  <p>Hello {user.name}, welcome to your first Inertia app!</p>
+    <h1>Welcome</h1>
+    <p>Hello {user.name}, welcome to your first Inertia app!</p>
 </Layout>
 ```
 
@@ -91,12 +91,12 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function show(User $user)
-    {
-        return Inertia::render('User/Show', [
-          'user' => $user
-        ]);
-    }
+        public function show(User $user)
+        {
+                return Inertia::render('User/Show', [
+                    'user' => $user
+                ]);
+        }
 }
 ```
 
@@ -114,16 +114,16 @@ import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <main>
-    <header>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact</a>
-    </header>
-    <article>
-      <slot />
-    </article>
-  </main>
+    <main>
+        <header>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </header>
+        <article>
+            <slot />
+        </article>
+    </main>
 </template>
 ```
 
@@ -131,52 +131,52 @@ import { Link } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/react'
 
 export default function Layout({ children }) {
-  return (
-    <main>
-      <header>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-      </header>
-      <article>{children}</article>
-    </main>
-  )
+    return (
+        <main>
+            <header>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </header>
+            <article>{children}</article>
+        </main>
+    )
 }
 ```
 
 ```html Svelte 4 icon="s"
 <script>
-  import { inertia } from '@inertiajs/svelte'
+    import { inertia } from '@inertiajs/svelte'
 </script>
 
 <main>
-  <header>
-    <a use:inertia href="/">Home</a>
-    <a use:inertia href="/about">About</a>
-    <a use:inertia href="/contact">Contact</a>
-  </header>
-  <article>
-    <slot />
-  </article>
+    <header>
+        <a use:inertia href="/">Home</a>
+        <a use:inertia href="/about">About</a>
+        <a use:inertia href="/contact">Contact</a>
+    </header>
+    <article>
+        <slot />
+    </article>
 </main>
 ```
 
 ```html Svelte 5 icon="s"
 <script>
-  import { inertia } from '@inertiajs/svelte'
+    import { inertia } from '@inertiajs/svelte'
 
-  let { children } = $props()
+    let { children } = $props()
 </script>
 
 <main>
-  <header>
-    <a use:inertia href="/">Home</a>
-    <a use:inertia href="/about">About</a>
-    <a use:inertia href="/contact">Contact</a>
-  </header>
-  <article>
-    {@render children()}
-  </article>
+    <header>
+        <a use:inertia href="/">Home</a>
+        <a use:inertia href="/about">About</a>
+        <a use:inertia href="/contact">Contact</a>
+    </header>
+    <article>
+        {@render children()}
+    </article>
 </main>
 ```
 
@@ -197,11 +197,11 @@ For example, maybe you have an audio player on a podcast website that you want t
 import Layout from './Layout'
 
 export default {
-  // Using a render function...
-  layout: (h, page) => h(Layout, [page]),
+    // Using a render function...
+    layout: (h, page) => h(Layout, [page]),
 
-  // Using shorthand syntax...
-  layout: Layout,
+    // Using shorthand syntax...
+    layout: Layout,
 }
 </script>
 
@@ -210,8 +210,8 @@ defineProps({ user: Object })
 </script>
 
 <template>
-  <h1>Welcome</h1>
-  <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+    <h1>Welcome</h1>
+    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
 </template>
 ```
 
@@ -219,12 +219,12 @@ defineProps({ user: Object })
 import Layout from './Layout'
 
 const Home = ({ user }) => {
-  return (
+    return (
 
-      <H1>Welcome</H1>
-      <p>Hello {user.name}, welcome to your first Inertia app!</p>
+            <H1>Welcome</H1>
+            <p>Hello {user.name}, welcome to your first Inertia app!</p>
 
-  )
+    )
 }
 
 Home.layout = page => <Layout children={page} title="Welcome" />
@@ -234,11 +234,11 @@ export default Home
 
 ```html Svelte 4 icon="s"
 <script context="module">
-  export { default as layout } from './Layout.svelte'
+    export { default as layout } from './Layout.svelte'
 </script>
 
 <script>
-  export let user
+    export let user
 </script>
 
 <h1>Welcome</h1>
@@ -247,11 +247,11 @@ export default Home
 
 ```html Svelte 5 icon="s"
 <script module>
-  export { default as layout } from './Layout.svelte'
+    export { default as layout } from './Layout.svelte'
 </script>
 
 <script>
-  let { user } = $props()
+    let { user } = $props()
 </script>
 
 <h1>Welcome</h1>
@@ -270,13 +270,13 @@ import SiteLayout from './SiteLayout'
 import NestedLayout from './NestedLayout'
 
 export default {
-  // Using a render function...
-  layout: (h, page) => {
-    return h(SiteLayout, () => h(NestedLayout, () => page))
-  },
+    // Using a render function...
+    layout: (h, page) => {
+        return h(SiteLayout, () => h(NestedLayout, () => page))
+    },
 
-  // Using the shorthand...
-  layout: [SiteLayout, NestedLayout],
+    // Using the shorthand...
+    layout: [SiteLayout, NestedLayout],
 }
 </script>
 
@@ -285,8 +285,8 @@ defineProps({ user: Object })
 </script>
 
 <template>
-  <h1>Welcome</h1>
-  <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
+    <h1>Welcome</h1>
+    <p>Hello {{ user.name }}, welcome to your first Inertia app!</p>
 </template>
 ```
 
@@ -295,18 +295,18 @@ import SiteLayout from './SiteLayout'
 import NestedLayout from './NestedLayout'
 
 const Home = ({ user }) => {
-  return (
+    return (
 
-      <H1>Welcome</H1>
-      <p>Hello {user.name}, welcome to your first Inertia app!</p>
+            <H1>Welcome</H1>
+            <p>Hello {user.name}, welcome to your first Inertia app!</p>
 
-  )
+    )
 }
 
 Home.layout = page => (
-  <SiteLayout title="Welcome">
-    <NestedLayout children={page} />
-  </SiteLayout>
+    <SiteLayout title="Welcome">
+        <NestedLayout children={page} />
+    </SiteLayout>
 )
 
 export default Home
@@ -314,20 +314,20 @@ export default Home
 
 ```html Svelte 4 icon="s"
 <script context="module">
-  import SiteLayout from './SiteLayout.svelte'
-  import NestedLayout from './NestedLayout.svelte'
+    import SiteLayout from './SiteLayout.svelte'
+    import NestedLayout from './NestedLayout.svelte'
 
-  // Using a render function...
-  export const layout = (h, page) => {
-    return h(SiteLayout, [h(NestedLayout, [page])])
-  }
+    // Using a render function...
+    export const layout = (h, page) => {
+        return h(SiteLayout, [h(NestedLayout, [page])])
+    }
 
-  // Using the shorthand...
-  export const layout = [SiteLayout, NestedLayout]
+    // Using the shorthand...
+    export const layout = [SiteLayout, NestedLayout]
 </script>
 
 <script>
-  export let user
+    export let user
 </script>
 
 <h1>Welcome</h1>
@@ -336,20 +336,20 @@ export default Home
 
 ```html Svelte 5 icon="s"
 <script module>
-  import SiteLayout from './SiteLayout.svelte'
-  import NestedLayout from './NestedLayout.svelte'
+    import SiteLayout from './SiteLayout.svelte'
+    import NestedLayout from './NestedLayout.svelte'
 
-  // Using a render function...
-  export const layout = (h, page) => {
-    return h(SiteLayout, [h(NestedLayout, [page])])
-  }
+    // Using a render function...
+    export const layout = (h, page) => {
+        return h(SiteLayout, [h(NestedLayout, [page])])
+    }
 
-  // Using the shorthand...
-  export const layout = [SiteLayout, NestedLayout]
+    // Using the shorthand...
+    export const layout = [SiteLayout, NestedLayout]
 </script>
 
 <script>
-  let { user } = $props()
+    let { user } = $props()
 </script>
 
 <h1>Welcome</h1>
@@ -380,13 +380,13 @@ If you're using persistent layouts, you may find it convenient to define the def
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    let page = pages[`./Pages/${name}.vue`]
-    page.default.layout = page.default.layout || Layout
-    return page
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+        let page = pages[`./Pages/${name}.vue`]
+        page.default.layout = page.default.layout || Layout
+        return page
+    },
+    // ...
 })
 ```
 
@@ -394,13 +394,13 @@ createInertiaApp({
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-    let page = pages[`./Pages/${name}.jsx`]
-    page.default.layout = page.default.layout || (page => <Layout children={page} />)
-    return page
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+        let page = pages[`./Pages/${name}.jsx`]
+        page.default.layout = page.default.layout || (page => <Layout children={page} />)
+        return page
+    },
+    // ...
 })
 ```
 
@@ -408,12 +408,12 @@ createInertiaApp({
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-    let page = pages[`./Pages/${name}.svelte`]
-    return { default: page.default, layout: page.layout || Layout }
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+        let page = pages[`./Pages/${name}.svelte`]
+        return { default: page.default, layout: page.layout || Layout }
+    },
+    // ...
 })
 ```
 
@@ -429,13 +429,13 @@ You can even go a step further and conditionally set the default page layout bas
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    let page = pages[`./Pages/${name}.vue`]
-    page.default.layout = name.startsWith('Public/') ? undefined : Layout
-    return page
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+        let page = pages[`./Pages/${name}.vue`]
+        page.default.layout = name.startsWith('Public/') ? undefined : Layout
+        return page
+    },
+    // ...
 })
 ```
 
@@ -443,13 +443,13 @@ createInertiaApp({
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-    let page = pages[`./Pages/${name}.jsx`]
-    page.default.layout = name.startsWith('Public/') ? undefined : page => <Layout children={page} />
-    return page
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+        let page = pages[`./Pages/${name}.jsx`]
+        page.default.layout = name.startsWith('Public/') ? undefined : page => <Layout children={page} />
+        return page
+    },
+    // ...
 })
 ```
 
@@ -457,12 +457,12 @@ createInertiaApp({
 import Layout from './Layout'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-    let page = pages[`./Pages/${name}.svelte`]
-    return { default: page.default, layout: name.startsWith('Public/') ? undefined : Layout }
-  },
-  // ...
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+        let page = pages[`./Pages/${name}.svelte`]
+        return { default: page.default, layout: name.startsWith('Public/') ? undefined : Layout }
+    },
+    // ...
 })
 ```
 

@@ -66,7 +66,7 @@ You can also lazily evaluate the `preserveScroll` option based on the response b
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -74,7 +74,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -82,7 +82,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 

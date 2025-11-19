@@ -38,12 +38,12 @@ If you need to pass additional request options to the poll helper, you can pass 
 import { usePoll } from '@inertiajs/vue3'
 
 usePoll(2000, {
-  onStart() {
-      console.log('Polling request started')
-  },
-  onFinish() {
-      console.log('Polling request finished')
-  }
+    onStart() {
+            console.log('Polling request started')
+    },
+    onFinish() {
+            console.log('Polling request finished')
+    }
 })
 ```
 
@@ -51,12 +51,12 @@ usePoll(2000, {
 import { usePoll } from '@inertiajs/react'
 
 usePoll(2000, {
-  onStart() {
-      console.log('Polling request started')
-  },
-  onFinish() {
-      console.log('Polling request finished')
-  }
+    onStart() {
+            console.log('Polling request started')
+    },
+    onFinish() {
+            console.log('Polling request finished')
+    }
 })
 ```
 
@@ -64,12 +64,12 @@ usePoll(2000, {
 import { usePoll } from '@inertiajs/svelte'
 
 usePoll(2000, {
-  onStart() {
-      console.log('Polling request started')
-  },
-  onFinish() {
-      console.log('Polling request finished')
-  }
+    onStart() {
+            console.log('Polling request started')
+    },
+    onFinish() {
+            console.log('Polling request finished')
+    }
 })
 ```
 
@@ -98,16 +98,16 @@ const { start, stop } = usePoll(2000, {}, {
 import { usePoll } from '@inertiajs/react'
 
 export default () => {
-  const { start, stop } = usePoll(2000, {}, {
-      autoStart: false,
-  })
+    const { start, stop } = usePoll(2000, {}, {
+            autoStart: false,
+    })
 
-  return (
-      <div>
-          <button onClick={start}>Start polling</button>
-          <button onClick={stop}>Stop polling</button>
-      </div>
-  )
+    return (
+            <div>
+                    <button onClick={start}>Start polling</button>
+                    <button onClick={stop}>Stop polling</button>
+            </div>
+    )
 }
 ```
 
@@ -115,7 +115,7 @@ export default () => {
 import { usePoll } from '@inertiajs/svelte'
 
 const { start, stop } = usePoll(2000, {}, {
-  autoStart: false,
+    autoStart: false,
 })
 ```
 
@@ -147,7 +147,7 @@ usePoll(2000, {}, {
 import { usePoll } from '@inertiajs/svelte'
 
 usePoll(2000, {}, {
-  keepAlive: true,
+    keepAlive: true,
 })
 ```
 

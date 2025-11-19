@@ -219,8 +219,8 @@ import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Link href="/users" prefetch cache-tags="users">Users</Link>
-  <Link href="/dashboard" prefetch :cache-tags="['dashboard', 'stats']">Dashboard</Link>
+    <Link href="/users" prefetch cache-tags="users">Users</Link>
+    <Link href="/dashboard" prefetch :cache-tags="['dashboard', 'stats']">Dashboard</Link>
 </template>
 ```
 
@@ -313,11 +313,11 @@ import { Form } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Form action="/users" method="post" :invalidate-cache-tags="['users', 'dashboard']">
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form action="/users" method="post" :invalidate-cache-tags="['users', 'dashboard']">
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 </template>
 ```
 
@@ -325,23 +325,23 @@ import { Form } from '@inertiajs/vue3'
 import { Form } from '@inertiajs/react'
 
 export default () => (
-  <Form action="/users" method="post" invalidateCacheTags={['users', 'dashboard']}>
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form action="/users" method="post" invalidateCacheTags={['users', 'dashboard']}>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 )
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte'
 </script>
 
 <Form action="/users" method="post" invalidateCacheTags={['users', 'dashboard']}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
@@ -355,14 +355,14 @@ When using the `useForm` helper, you can include `invalidateCacheTags` in the vi
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
-  name: '',
-  email: '',
+    name: '',
+    email: '',
 })
 
 const submit = () => {
-  form.post('/users', {
-    invalidateCacheTags: ['users', 'dashboard']
-  })
+    form.post('/users', {
+        invalidateCacheTags: ['users', 'dashboard']
+    })
 }
 ```
 
@@ -370,15 +370,15 @@ const submit = () => {
 import { useForm } from '@inertiajs/react'
 
 const { data, setData, post } = useForm({
-  name: '',
-  email: '',
+    name: '',
+    email: '',
 })
 
 function submit(e) {
-  e.preventDefault()
-  post('/users', {
-    invalidateCacheTags: ['users', 'dashboard']
-  })
+    e.preventDefault()
+    post('/users', {
+        invalidateCacheTags: ['users', 'dashboard']
+    })
 }
 ```
 
@@ -386,14 +386,14 @@ function submit(e) {
 import { useForm } from '@inertiajs/svelte'
 
 const form = useForm({
-  name: '',
-  email: '',
+    name: '',
+    email: '',
 })
 
 function submit() {
-  $form.post('/users', {
-    invalidateCacheTags: ['users', 'dashboard']
-  })
+    $form.post('/users', {
+        invalidateCacheTags: ['users', 'dashboard']
+    })
 }
 ```
 
@@ -403,11 +403,11 @@ You can also invalidate cache tags with programmatic visits by including `invali
 
 ```js
 router.delete(`/users/${userId}`, {}, {
-  invalidateCacheTags: ['users', 'dashboard']
+    invalidateCacheTags: ['users', 'dashboard']
 })
 
 router.post('/posts', postData, {
-  invalidateCacheTags: ['posts', 'recent-posts']
+    invalidateCacheTags: ['posts', 'recent-posts']
 })
 ```
 

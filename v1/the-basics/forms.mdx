@@ -12,35 +12,35 @@ While it's possible to make classic HTML form submissions with Inertia, it's not
 
 ```vue Vue 2
 <template>
-  <form @submit.prevent="submit">
-    <label for="first_name">First name:</label>
-    <input id="first_name" v-model="form.first_name" />
-    <label for="last_name">Last name:</label>
-    <input id="last_name" v-model="form.last_name" />
-    <label for="email">Email:</label>
-    <input id="email" v-model="form.email" />
-    <button type="submit">Submit</button>
-  </form>
+    <form @submit.prevent="submit">
+        <label for="first_name">First name:</label>
+        <input id="first_name" v-model="form.first_name" />
+        <label for="last_name">Last name:</label>
+        <input id="last_name" v-model="form.last_name" />
+        <label for="email">Email:</label>
+        <input id="email" v-model="form.email" />
+        <button type="submit">Submit</button>
+    </form>
 </template>
 
 <script>
 import { router } from '@inertiajs/vue2'
 
 export default {
-  data() {
-    return {
-      form: {
-        first_name: null,
-        last_name: null,
-        email: null,
-      },
-    }
-  },
-  methods: {
-    submit() {
-      router.post('/users', this.form)
+    data() {
+        return {
+            form: {
+                first_name: null,
+                last_name: null,
+                email: null,
+            },
+        }
     },
-  },
+    methods: {
+        submit() {
+            router.post('/users', this.form)
+        },
+    },
 }
 </script>
 ```
@@ -51,26 +51,26 @@ import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const form = reactive({
-  first_name: null,
-  last_name: null,
-  email: null,
+    first_name: null,
+    last_name: null,
+    email: null,
 })
 
 function submit() {
-  router.post('/users', form)
+    router.post('/users', form)
 }
 </script>
 
 <template>
-  <form @submit.prevent="submit">
-    <label for="first_name">First name:</label>
-    <input id="first_name" v-model="form.first_name" />
-    <label for="last_name">Last name:</label>
-    <input id="last_name" v-model="form.last_name" />
-    <label for="email">Email:</label>
-    <input id="email" v-model="form.email" />
-    <button type="submit">Submit</button>
-  </form>
+    <form @submit.prevent="submit">
+        <label for="first_name">First name:</label>
+        <input id="first_name" v-model="form.first_name" />
+        <label for="last_name">Last name:</label>
+        <input id="last_name" v-model="form.last_name" />
+        <label for="email">Email:</label>
+        <input id="email" v-model="form.email" />
+        <button type="submit">Submit</button>
+    </form>
 </template>
 ```
 
@@ -79,66 +79,66 @@ import { useState } from 'react'
 import { router } from '@inertiajs/react'
 
 export default function Edit() {
-  const [values, setValues] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-  })
+    const [values, setValues] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+    })
 
-  function handleChange(e) {
-    const key = e.target.id;
-    const value = e.target.value
-    setValues(values => ({
-        ...values,
-        [key]: value,
-    }))
-  }
+    function handleChange(e) {
+        const key = e.target.id;
+        const value = e.target.value
+        setValues(values => ({
+                ...values,
+                [key]: value,
+        }))
+    }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    router.post('/users', values)
-  }
+    function handleSubmit(e) {
+        e.preventDefault()
+        router.post('/users', values)
+    }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="first_name">First name:</label>
-      <input id="first_name" value={values.first_name} onChange={handleChange} />
-      <label htmlFor="last_name">Last name:</label>
-      <input id="last_name" value={values.last_name} onChange={handleChange} />
-      <label htmlFor="email">Email:</label>
-      <input id="email" value={values.email} onChange={handleChange} />
-      <button type="submit">Submit</button>
-    </form>
-  )
+    return (
+        <form onSubmit={handleSubmit}>
+            <label htmlFor="first_name">First name:</label>
+            <input id="first_name" value={values.first_name} onChange={handleChange} />
+            <label htmlFor="last_name">Last name:</label>
+            <input id="last_name" value={values.last_name} onChange={handleChange} />
+            <label htmlFor="email">Email:</label>
+            <input id="email" value={values.email} onChange={handleChange} />
+            <button type="submit">Submit</button>
+        </form>
+    )
 }
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte'
 
-  let values = {
-    first_name: null,
-    last_name: null,
-    email: null,
-  }
+    let values = {
+        first_name: null,
+        last_name: null,
+        email: null,
+    }
 
-  function handleSubmit() {
-    router.post('/users', values)
-  }
+    function handleSubmit() {
+        router.post('/users', values)
+    }
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-  <label for="first_name">First name:</label>
-  <input id="first_name" bind:value={values.first_name}>
+    <label for="first_name">First name:</label>
+    <input id="first_name" bind:value={values.first_name}>
 
-  <label for="last_name">Last name:</label>
-  <input id="last_name" bind:value={values.last_name}>
+    <label for="last_name">Last name:</label>
+    <input id="last_name" bind:value={values.last_name}>
 
-  <label for="email">Email:</label>
-  <input id="email" bind:value={values.email}>
+    <label for="email">Email:</label>
+    <input id="email" bind:value={values.email}>
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </form>
 ```
 
@@ -151,23 +151,23 @@ Instead, your server-side route / controller typically issues a [redirect](/v1/t
 ```php
 class UsersController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('Users/Index', [
-          'users' => User::all(),
-        ]);
-    }
+        public function index()
+        {
+                return Inertia::render('Users/Index', [
+                    'users' => User::all(),
+                ]);
+        }
 
-    public function store(Request $request)
-    {
-        User::create($request->validate([
-          'first_name' => ['required', 'max:50'],
-          'last_name' => ['required', 'max:50'],
-          'email' => ['required', 'max:50', 'email'],
-        ]));
+        public function store(Request $request)
+        {
+                User::create($request->validate([
+                    'first_name' => ['required', 'max:50'],
+                    'last_name' => ['required', 'max:50'],
+                    'email' => ['required', 'max:50', 'email'],
+                ]));
 
-        return to_route('users.index');
-    }
+                return to_route('users.index');
+        }
 }
 ```
 
@@ -187,33 +187,33 @@ Since working with forms is so common, Inertia includes a form helper designed t
 
 ```vue Vue 2
 <template>
-  <form @submit.prevent="form.post('/login')">
-    <!-- email -->
-    <input type="text" v-model="form.email">
-    <div v-if="form.errors.email">{{ form.errors.email }}</div>
-    <!-- password -->
-    <input type="password" v-model="form.password">
-    <div v-if="form.errors.password">{{ form.errors.password }}</div>
-    <!-- remember me -->
-    <input type="checkbox" v-model="form.remember"> Remember Me
-    <!-- submit -->
-    <button type="submit" :disabled="form.processing">Login</button>
-  </form>
+    <form @submit.prevent="form.post('/login')">
+        <!-- email -->
+        <input type="text" v-model="form.email">
+        <div v-if="form.errors.email">{{ form.errors.email }}</div>
+        <!-- password -->
+        <input type="password" v-model="form.password">
+        <div v-if="form.errors.password">{{ form.errors.password }}</div>
+        <!-- remember me -->
+        <input type="checkbox" v-model="form.remember"> Remember Me
+        <!-- submit -->
+        <button type="submit" :disabled="form.processing">Login</button>
+    </form>
 </template>
 
 <script>
 import { useForm } from '@inertiajs/vue2'
 
 export default {
-  data() {
-    return {
-      form: useForm({
-        email: null,
-        password: null,
-        remember: false,
-      }),
-    }
-  },
+    data() {
+        return {
+            form: useForm({
+                email: null,
+                password: null,
+                remember: false,
+            }),
+        }
+    },
 }
 </script>
 ```
@@ -223,25 +223,25 @@ export default {
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
-  email: null,
-  password: null,
-  remember: false,
+    email: null,
+    password: null,
+    remember: false,
 })
 </script>
 
 <template>
-  <form @submit.prevent="form.post('/login')">
-    <!-- email -->
-    <input type="text" v-model="form.email">
-    <div v-if="form.errors.email">{{ form.errors.email }}</div>
-    <!-- password -->
-    <input type="password" v-model="form.password">
-    <div v-if="form.errors.password">{{ form.errors.password }}</div>
-    <!-- remember me -->
-    <input type="checkbox" v-model="form.remember"> Remember Me
-    <!-- submit -->
-    <button type="submit" :disabled="form.processing">Login</button>
-  </form>
+    <form @submit.prevent="form.post('/login')">
+        <!-- email -->
+        <input type="text" v-model="form.email">
+        <div v-if="form.errors.email">{{ form.errors.email }}</div>
+        <!-- password -->
+        <input type="password" v-model="form.password">
+        <div v-if="form.errors.password">{{ form.errors.password }}</div>
+        <!-- remember me -->
+        <input type="checkbox" v-model="form.remember"> Remember Me
+        <!-- submit -->
+        <button type="submit" :disabled="form.processing">Login</button>
+    </form>
 </template>
 ```
 
@@ -249,25 +249,25 @@ const form = useForm({
 import { useForm } from '@inertiajs/react'
 
 const { data, setData, post, processing, errors } = useForm({
-  email: '',
-  password: '',
-  remember: false,
+    email: '',
+    password: '',
+    remember: false,
 })
 
 function submit(e) {
-  e.preventDefault()
-  post('/login')
+    e.preventDefault()
+    post('/login')
 }
 
 return (
-  <form onSubmit={submit}>
-    <input type="text" value={data.email} onChange={e => setData('email', e.target.value)} />
-    {errors.email && <div>{errors.email}</div>}
-    <input type="password" value={data.password} onChange={e => setData('password', e.target.value)} />
-    {errors.password && <div>{errors.password}</div>}
-    <input type="checkbox" checked={data.remember} onChange={e => setData('remember', e.target.checked)} /> Remember Me
-    <button type="submit" disabled={processing}>Login</button>
-  </form>
+    <form onSubmit={submit}>
+        <input type="text" value={data.email} onChange={e => setData('email', e.target.value)} />
+        {errors.email && <div>{errors.email}</div>}
+        <input type="password" value={data.password} onChange={e => setData('password', e.target.value)} />
+        {errors.password && <div>{errors.password}</div>}
+        <input type="checkbox" checked={data.remember} onChange={e => setData('remember', e.target.checked)} /> Remember Me
+        <button type="submit" disabled={processing}>Login</button>
+    </form>
 )
 ```
 
@@ -276,27 +276,27 @@ return (
 import { useForm } from '@inertiajs/svelte'
 
 let form = useForm({
-  email: null,
-  password: null,
-  remember: false,
+    email: null,
+    password: null,
+    remember: false,
 })
 
 function submit() {
-  $form.post('/login')
+    $form.post('/login')
 }
 </script>
 
 <form on:submit|preventDefault={submit}>
-  <input type="text" bind:value={$form.email} />
-  {#if $form.errors.email}
-    <div class="form-error">{$form.errors.email}</div>
-  {/if}
-  <input type="password" bind:value={$form.password} />
-  {#if $form.errors.password}
-    <div class="form-error">{$form.errors.password}</div>
-  {/if}
-  <input type="checkbox" bind:checked={$form.remember} /> Remember Me
-  <button type="submit" disabled={$form.processing}>Submit</button>
+    <input type="text" bind:value={$form.email} />
+    {#if $form.errors.email}
+        <div class="form-error">{$form.errors.email}</div>
+    {/if}
+    <input type="password" bind:value={$form.password} />
+    {#if $form.errors.password}
+        <div class="form-error">{$form.errors.password}</div>
+    {/if}
+    <input type="checkbox" bind:checked={$form.remember} /> Remember Me
+    <button type="submit" disabled={$form.processing}>Submit</button>
 </form>
 ```
 
@@ -352,15 +352,15 @@ The submit methods support all of the typical [visit options](/v1/the-basics/man
 
 ```js Vue 2
 form.post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => form.reset('password'),
+    preserveScroll: true,
+    onSuccess: () => form.reset('password'),
 })
 ```
 
 ```js Vue 3
 form.post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => form.reset('password'),
+    preserveScroll: true,
+    onSuccess: () => form.reset('password'),
 })
 ```
 
@@ -368,15 +368,15 @@ form.post('/profile', {
 const { post, reset } = useForm({ ... })
 
 post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => reset('password'),
+    preserveScroll: true,
+    onSuccess: () => reset('password'),
 })
 ```
 
 ```js Svelte icon="s"
 $form.post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => $form.reset('password'),
+    preserveScroll: true,
+    onSuccess: () => $form.reset('password'),
 })
 ```
 
@@ -388,38 +388,38 @@ If you need to modify the form data before it's sent to the server, you can do s
 
 ```js Vue 2
 form
-  .transform((data) => ({
-    ...data,
-    remember: data.remember ? 'on' : '',
-  }))
-  .post('/login')
+    .transform((data) => ({
+        ...data,
+        remember: data.remember ? 'on' : '',
+    }))
+    .post('/login')
 ```
 
 ```js Vue 3
 form
-  .transform((data) => ({
-    ...data,
-    remember: data.remember ? 'on' : '',
-  }))
-  .post('/login')
+    .transform((data) => ({
+        ...data,
+        remember: data.remember ? 'on' : '',
+    }))
+    .post('/login')
 ```
 
 ```js React icon="react"
 const { transform } = useForm({ ... })
 
 transform((data) => ({
-  ...data,
-  remember: data.remember ? 'on' : '',
+    ...data,
+    remember: data.remember ? 'on' : '',
 }))
 ```
 
 ```js Svelte icon="s"
 $form
-  .transform((data) => ({
-    ...data,
-    remember: data.remember ? 'on' : '',
-  }))
-  .post('/login')
+    .transform((data) => ({
+        ...data,
+        remember: data.remember ? 'on' : '',
+    }))
+    .post('/login')
 ```
 
 </CodeGroup>
@@ -454,13 +454,13 @@ If your form is uploading files, the current progress event is available via the
 
 ```vue Vue 2
 <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-  {{ form.progress.percentage }}%
+    {{ form.progress.percentage }}%
 </progress>
 ```
 
 ```vue Vue 3
 <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-  {{ form.progress.percentage }}%
+    {{ form.progress.percentage }}%
 </progress>
 ```
 
@@ -468,17 +468,17 @@ If your form is uploading files, the current progress event is available via the
 const { progress } = useForm({ ... })
 
 {progress && (
-  <progress value={progress.percentage} max="100">
-    {progress.percentage}%
-  </progress>
+    <progress value={progress.percentage} max="100">
+        {progress.percentage}%
+    </progress>
 )}
 ```
 
 ```svelte Svelte icon="s"
 {#if $form.progress}
-  <progress value={$form.progress.percentage} max="100">
-    {$form.progress.percentage}%
-  </progress>
+    <progress value={$form.progress.percentage} max="100">
+        {$form.progress.percentage}%
+    </progress>
 {/if}
 ```
 
@@ -504,7 +504,7 @@ const { errors } = useForm({ ... })
 
 ```svelte Svelte icon="s"
 {#if $form.errors.email}
-  <div>{$form.errors.email}</div>
+    <div>{$form.errors.email}</div>
 {/if}
 ```
 
@@ -562,8 +562,8 @@ form.setError('field', 'Your error message.');
 
 // Set multiple errors at once...
 form.setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -573,8 +573,8 @@ form.setError('field', 'Your error message.');
 
 // Set multiple errors at once...
 form.setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -586,8 +586,8 @@ setError('field', 'Your error message.');
 
 // Set multiple errors at once...
 setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -597,8 +597,8 @@ $form.setError('field', 'Your error message.');
 
 // Set multiple errors at once
 $form.setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -661,8 +661,8 @@ form.defaults('email', 'updated-default@example.com')
 
 // Update the default value of multiple fields...
 form.defaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -675,8 +675,8 @@ form.defaults('email', 'updated-default@example.com')
 
 // Update the default value of multiple fields...
 form.defaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -691,8 +691,8 @@ setDefaults('email', 'updated-default@example.com')
 
 // Update the default value of multiple fields...
 setDefaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -705,8 +705,8 @@ $form.defaults('email', 'updated-default@example.com')
 
 // Change the default value of multiple fields...
 $form.defaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -732,7 +732,7 @@ const { isDirty } = useForm({ ... })
 
 ```html Svelte icon="s"
 {#if $form.isDirty}
-  <div>There are unsaved form changes.</div>
+    <div>There are unsaved form changes.</div>
 {/if}
 ```
 

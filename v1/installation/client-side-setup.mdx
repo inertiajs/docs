@@ -45,17 +45,17 @@ import Vue from 'vue'
 import { createInertiaApp } from '@inertiajs/vue2'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    return pages[`./Pages/${name}.vue`]
-  },
-  setup({ el, App, props, plugin }) {
-    Vue.use(plugin)
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+        return pages[`./Pages/${name}.vue`]
+    },
+    setup({ el, App, props, plugin }) {
+        Vue.use(plugin)
 
-    new Vue({
-      render: h => h(App, props),
-    }).$mount(el)
-  },
+        new Vue({
+            render: h => h(App, props),
+        }).$mount(el)
+    },
 })
 ```
 
@@ -64,15 +64,15 @@ import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    return pages[`./Pages/${name}.vue`]
-  },
-  setup({ el, App, props, plugin }) {
-    createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .mount(el)
-  },
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+        return pages[`./Pages/${name}.vue`]
+    },
+    setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .mount(el)
+    },
 })
 ```
 
@@ -81,13 +81,13 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-    return pages[`./Pages/${name}.jsx`]
-  },
-  setup({ el, App, props }) {
-    createRoot(el).render(<App {...props} />)
-  },
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+        return pages[`./Pages/${name}.jsx`]
+    },
+    setup({ el, App, props }) {
+        createRoot(el).render(<App {...props} />)
+    },
 })
 ```
 
@@ -95,13 +95,13 @@ createInertiaApp({
 import { createInertiaApp } from '@inertiajs/svelte'
 
 createInertiaApp({
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-    return pages[`./Pages/${name}.svelte`]
-  },
-  setup({ el, App, props }) {
-    new App({ target: el, props })
-  },
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+        return pages[`./Pages/${name}.svelte`]
+    },
+    setup({ el, App, props }) {
+        new App({ target: el, props })
+    },
 })
 ```
 
@@ -118,8 +118,8 @@ The `resolve` callback tells Inertia how to load a page component. It receives a
 ```js Vue 2
 // Vite
 resolve: name => {
-  const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-  return pages[`./Pages/${name}.vue`]
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    return pages[`./Pages/${name}.vue`]
 },
 
 // Webpack
@@ -129,8 +129,8 @@ resolve: name => require(`./Pages/${name}`),
 ```js Vue 3
 // Vite
 resolve: name => {
-  const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-  return pages[`./Pages/${name}.vue`]
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    return pages[`./Pages/${name}.vue`]
 },
 
 // Webpack
@@ -140,8 +140,8 @@ resolve: name => require(`./Pages/${name}`),
 ```js React icon="react"
 // Vite
 resolve: name => {
-  const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-  return pages[`./Pages/${name}.jsx`]
+    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+    return pages[`./Pages/${name}.jsx`]
 },
 
 // Webpack
@@ -151,8 +151,8 @@ resolve: name => require(`./Pages/${name}`),
 ```js Svelte icon="s"
 // Vite
 resolve: name => {
-  const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-  return pages[`./Pages/${name}.svelte`]
+    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+    return pages[`./Pages/${name}.svelte`]
 },
 
 // Webpack

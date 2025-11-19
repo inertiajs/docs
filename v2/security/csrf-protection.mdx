@@ -20,9 +20,9 @@ import { router, usePage } from '@inertiajs/vue3'
 const page = usePage()
 
 router.post('/users', {
-  _token: page.props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: page.props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -32,9 +32,9 @@ import { router, usePage } from '@inertiajs/react'
 const props = usePage().props
 
 router.post('/users', {
-  _token: props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -42,9 +42,9 @@ router.post('/users', {
 import { page, router } from '@inertiajs/svelte'
 
 router.post('/users', {
-  _token: $page.props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: $page.props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 

@@ -14,7 +14,7 @@ If you would like the request to always use a `FormData` object regardless of wh
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -22,7 +22,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -30,7 +30,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -49,24 +49,24 @@ Let's examine a complete file upload example using Inertia. This example include
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
-  name: null,
-  avatar: null,
+    name: null,
+    avatar: null,
 })
 
 function submit() {
-  form.post('/users')
+    form.post('/users')
 }
 </script>
 
 <template>
-  <form @submit.prevent="submit">
-    <input type="text" v-model="form.name" />
-    <input type="file" @input="form.avatar = $event.target.files[0]" />
-    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-      {{ form.progress.percentage }}%
-    </progress>
-    <button type="submit">Submit</button>
-  </form>
+    <form @submit.prevent="submit">
+        <input type="text" v-model="form.name" />
+        <input type="file" @input="form.avatar = $event.target.files[0]" />
+        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+            {{ form.progress.percentage }}%
+        </progress>
+        <button type="submit">Submit</button>
+    </form>
 </template>
 ```
 
@@ -74,79 +74,79 @@ function submit() {
 import { useForm } from '@inertiajs/react'
 
 const { data, setData, post, progress } = useForm({
-  name: null,
-  avatar: null,
+    name: null,
+    avatar: null,
 })
 
 function submit(e) {
-  e.preventDefault()
-  post('/users')
+    e.preventDefault()
+    post('/users')
 }
 
 return (
-  <form onSubmit={submit}>
-    <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} />
-    <input type="file" onChange={e => setData('avatar', e.target.files[0])} />
-    {progress && (
-      <progress value={progress.percentage} max="100">
-        {progress.percentage}%
-      </progress>
-    )}
-    <button type="submit">Submit</button>
-  </form>
+    <form onSubmit={submit}>
+        <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} />
+        <input type="file" onChange={e => setData('avatar', e.target.files[0])} />
+        {progress && (
+            <progress value={progress.percentage} max="100">
+                {progress.percentage}%
+            </progress>
+        )}
+        <button type="submit">Submit</button>
+    </form>
 )
 ```
 
 ```svelte Svelte 4 icon="s"
 <script>
-  import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte'
 
-  const form = useForm({
-    name: null,
-    avatar: null,
-  })
+    const form = useForm({
+        name: null,
+        avatar: null,
+    })
 
-  function submit() {
-    $form.post('/users')
-  }
+    function submit() {
+        $form.post('/users')
+    }
 </script>
 
 <form on:submit|preventDefault={submit}>
-  <input type="text" bind:value={$form.name} />
-  <input type="file" on:input={e => $form.avatar = e.target.files[0]} />
-  {#if $form.progress}
-    <progress value={$form.progress.percentage} max="100">
-      {$form.progress.percentage}%
-    </progress>
-  {/if}
-  <button type="submit">Submit</button>
+    <input type="text" bind:value={$form.name} />
+    <input type="file" on:input={e => $form.avatar = e.target.files[0]} />
+    {#if $form.progress}
+        <progress value={$form.progress.percentage} max="100">
+            {$form.progress.percentage}%
+        </progress>
+    {/if}
+    <button type="submit">Submit</button>
 </form>
 ```
 
 ```svelte Svelte 5 icon="s"
 <script>
-  import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte'
 
-  const form = useForm({
-    name: null,
-    avatar: null,
-  })
+    const form = useForm({
+        name: null,
+        avatar: null,
+    })
 
-  function submit(e) {
-    e.preventDefault()
-    $form.post('/users')
-  }
+    function submit(e) {
+        e.preventDefault()
+        $form.post('/users')
+    }
 </script>
 
 <form onsubmit={submit}>
-  <input type="text" bind:value={$form.name} />
-  <input type="file" oninput={e => $form.avatar = e.target.files[0]} />
-  {#if $form.progress}
-    <progress value={$form.progress.percentage} max="100">
-      {$form.progress.percentage}%
-    </progress>
-  {/if}
-  <button type="submit">Submit</button>
+    <input type="text" bind:value={$form.name} />
+    <input type="file" oninput={e => $form.avatar = e.target.files[0]} />
+    {#if $form.progress}
+        <progress value={$form.progress.percentage} max="100">
+            {$form.progress.percentage}%
+        </progress>
+    {/if}
+    <button type="submit">Submit</button>
 </form>
 ```
 
@@ -166,8 +166,8 @@ However, some frameworks, such as [Laravel](https://laravel.com/docs/routing#for
 import { router } from '@inertiajs/vue3'
 
 router.post(`/users/${user.id}`, {
-  _method: 'put',
-  avatar: form.avatar,
+    _method: 'put',
+    avatar: form.avatar,
 })
 ```
 
@@ -175,8 +175,8 @@ router.post(`/users/${user.id}`, {
 import { router } from '@inertiajs/react'
 
 router.post(`/users/${user.id}`, {
-  _method: 'put',
-  avatar: form.avatar,
+    _method: 'put',
+    avatar: form.avatar,
 })
 ```
 
@@ -184,8 +184,8 @@ router.post(`/users/${user.id}`, {
 import { router } from '@inertiajs/svelte'
 
 router.post(`/users/${user.id}`, {
-  _method: 'put',
-  avatar: form.avatar,
+    _method: 'put',
+    avatar: form.avatar,
 })
 ```
 

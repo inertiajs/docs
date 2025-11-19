@@ -18,8 +18,8 @@ To save local component state to the history state, use the `useRemember` featur
 import { useRemember } from '@inertiajs/vue3'
 
 const form = useRemember({
-  first_name: null,
-  last_name: null,
+    first_name: null,
+    last_name: null,
 })
 ```
 
@@ -27,13 +27,13 @@ const form = useRemember({
 import { useRemember } from '@inertiajs/react'
 
 export default function Profile() {
-  const [formState, setFormState] = useRemember({
-    first_name: null,
-    last_name: null,
-    // ...
-  })
+    const [formState, setFormState] = useRemember({
+        first_name: null,
+        last_name: null,
+        // ...
+    })
 
-  // ...
+    // ...
 }
 ```
 
@@ -41,8 +41,8 @@ export default function Profile() {
 import { useRemember } from '@inertiajs/svelte'
 
 const form = useRemember({
-  first_name: null,
-  last_name: null,
+    first_name: null,
+    last_name: null,
 })
 
 // ...
@@ -62,8 +62,8 @@ If your page contains multiple components that use the remember functionality pr
 import { useRemember } from '@inertiajs/vue3'
 
 const form = useRemember({
-  first_name: null,
-  last_name: null,
+    first_name: null,
+    last_name: null,
 }, 'Users/Create')
 ```
 
@@ -71,10 +71,10 @@ const form = useRemember({
 import { useRemember } from '@inertiajs/react'
 
 export default function Profile() {
-  const [formState, setFormState] = useRemember({
-    first_name: null,
-    last_name: null,
-  }, 'Users/Create')
+    const [formState, setFormState] = useRemember({
+        first_name: null,
+        last_name: null,
+    }, 'Users/Create')
 }
 ```
 
@@ -82,8 +82,8 @@ export default function Profile() {
 import { page, useRemember } from '@inertiajs/svelte'
 
 const form = useRemember({
-  first_name: null,
-  last_name: null,
+    first_name: null,
+    last_name: null,
 }, 'Users/Create')
 ```
 
@@ -99,8 +99,8 @@ import { useRemember } from '@inertiajs/vue3'
 const props = defineProps({ user: Object })
 
 const form = useRemember({
-  first_name: null,
-  last_name: null,
+    first_name: null,
+    last_name: null,
 }, `Users/Edit:${props.user.id}`)
 ```
 
@@ -108,10 +108,10 @@ const form = useRemember({
 import { useRemember } from '@inertiajs/react'
 
 export default function Profile() {
-  const [formState, setFormState] = useRemember({
-    first_name: props.user.first_name,
-    last_name: props.user.last_name,
-  }, `Users/Edit:${this.user.id}`)
+    const [formState, setFormState] = useRemember({
+        first_name: props.user.first_name,
+        last_name: props.user.last_name,
+    }, `Users/Edit:${this.user.id}`)
 }
 ```
 
@@ -119,8 +119,8 @@ export default function Profile() {
 import { page, useRemember } from '@inertiajs/svelte'
 
 const form = useRemember({
-  first_name: $page.props.user.first_name,
-  last_name: $page.props.user.last_name,
+    first_name: $page.props.user.first_name,
+    last_name: $page.props.user.last_name,
 }, `Users/Edit:${$page.props.user.id}`)
 ```
 

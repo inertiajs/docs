@@ -15,30 +15,30 @@ Vite enables code splitting (or lazy-loading as they call it) by default when us
 <CodeGroup>
 
 ```diff Vue icon="vuejs"
-  resolve: name => {
+    resolve: name => {
 -   const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
 -   return pages[`./Pages/${name}.vue`]
 +   const pages = import.meta.glob('./Pages/**/*.vue')
 +   return pages[`./Pages/${name}.vue`]()
-  },
+    },
 ```
 
 ```diff React icon="react"
-  resolve: name => {
+    resolve: name => {
 -   const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
 -   return pages[`./Pages/${name}.jsx`]
 +   const pages = import.meta.glob('./Pages/**/*.jsx')
 +   return pages[`./Pages/${name}.jsx`]()
-  },
+    },
 ```
 
 ```diff Svelte icon="s"
-  resolve: name => {
+    resolve: name => {
 -   const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
 -   return pages[`./Pages/${name}.svelte`]
 +   const pages = import.meta.glob('./Pages/**/*.svelte')
 +   return pages[`./Pages/${name}.svelte`]()
-  },
+    },
 ```
 
 </CodeGroup>

@@ -20,11 +20,11 @@ import { Form } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Form action="/users" method="post">
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form action="/users" method="post">
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 </template>
 ```
 
@@ -32,23 +32,23 @@ import { Form } from '@inertiajs/vue3'
 import { Form } from '@inertiajs/react'
 
 export default () => (
-  <Form action="/users" method="post">
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form action="/users" method="post">
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 )
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte'
 </script>
 
 <Form action="/users" method="post">
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
@@ -62,31 +62,31 @@ The component also supports nested data structures, file uploads, and dotted key
 
 ```vue Vue icon="vuejs"
 <Form action="/reports" method="post">
-  <input type="text" name="name" />
-  <textarea name="report[description]"></textarea>
-  <input type="text" name="report[tags][]" />
-  <input type="file" name="documents" multiple />
-  <button type="submit">Create Report</button>
+    <input type="text" name="name" />
+    <textarea name="report[description]"></textarea>
+    <input type="text" name="report[tags][]" />
+    <input type="file" name="documents" multiple />
+    <button type="submit">Create Report</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/reports" method="post">
-  <input type="text" name="name" />
-  <textarea name="report[description]"></textarea>
-  <input type="text" name="report[tags][]" />
-  <input type="file" name="documents" multiple />
-  <button type="submit">Create Report</button>
+    <input type="text" name="name" />
+    <textarea name="report[description]"></textarea>
+    <input type="text" name="report[tags][]" />
+    <input type="file" name="documents" multiple />
+    <button type="submit">Create Report</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form action="/reports" method="post">
-  <input type="text" name="name" />
-  <textarea name="report[description]"></textarea>
-  <input type="text" name="report[tags][]" />
-  <input type="file" name="documents" multiple />
-  <button type="submit">Create Report</button>
+    <input type="text" name="name" />
+    <textarea name="report[description]"></textarea>
+    <input type="text" name="report[tags][]" />
+    <input type="file" name="documents" multiple />
+    <button type="submit">Create Report</button>
 </Form>
 ```
 
@@ -98,34 +98,34 @@ You can pass a `transform` prop to modify the form data before submission. This 
 
 ```vue Vue icon="vuejs"
 <Form
-  action="/posts"
-  method="post"
-  :transform="data => ({ ...data, user_id: 123 })"
+    action="/posts"
+    method="post"
+    :transform="data => ({ ...data, user_id: 123 })"
 \>
-  <input type="text" name="title" />
-  <button type="submit">Create Post</button>
+    <input type="text" name="title" />
+    <button type="submit">Create Post</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form
-  action="/posts"
-  method="post"
-  transform={data => ({ ...data, user_id: 123 })}
+    action="/posts"
+    method="post"
+    transform={data => ({ ...data, user_id: 123 })}
 \>
-  <input type="text" name="title" />
-  <button type="submit">Create Post</button>
+    <input type="text" name="title" />
+    <button type="submit">Create Post</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form
-  action="/posts"
-  method="post"
-  transform={data => ({ ...data, user_id: 123 })}
+    action="/posts"
+    method="post"
+    transform={data => ({ ...data, user_id: 123 })}
 \>
-  <input type="text" name="title" />
-  <button type="submit">Create Post</button>
+    <input type="text" name="title" />
+    <button type="submit">Create Post</button>
 </Form>
 ```
 
@@ -144,11 +144,11 @@ import { store } from 'App/Http/Controllers/UserController'
 </script>
 
 <template>
-  <Form :action="store()">
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form :action="store()">
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 </template>
 ```
 
@@ -157,24 +157,24 @@ import { Form } from '@inertiajs/react'
 import { store } from 'App/Http/Controllers/UserController'
 
 export default () => (
-  <Form action={store()}>
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button type="submit">Create User</button>
-  </Form>
+    <Form action={store()}>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
 )
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { Form } from '@inertiajs/svelte'
-  import { store } from 'App/Http/Controllers/UserController'
+    import { Form } from '@inertiajs/svelte'
+    import { store } from 'App/Http/Controllers/UserController'
 </script>
 
 <Form action={store()}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
@@ -188,49 +188,49 @@ You can set default values for form inputs using standard HTML attributes. Use <
 
 ```vue Vue icon="vuejs"
 <Form action="/users" method="post">
-  <input type="text" name="name" defaultValue="John Doe" />
+    <input type="text" name="name" defaultValue="John Doe" />
 
-  <select name="country">
-    <option value="us">United States</option>
-    <option value="ca">Canada</option>
-    <option value="uk" selected>United Kingdom</option>
-  </select>
+    <select name="country">
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk" selected>United Kingdom</option>
+    </select>
 
-  <input type="checkbox" name="subscribe" value="yes" defaultChecked />
+    <input type="checkbox" name="subscribe" value="yes" defaultChecked />
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/users" method="post">
-  <input type="text" name="name" defaultValue="John Doe" />
+    <input type="text" name="name" defaultValue="John Doe" />
 
-  <select name="country" defaultValue="uk">
-    <option value="us">United States</option>
-    <option value="ca">Canada</option>
-    <option value="uk">United Kingdom</option>
-  </select>
+    <select name="country" defaultValue="uk">
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk">United Kingdom</option>
+    </select>
 
-  <input type="checkbox" name="subscribe" value="yes" defaultChecked />
+    <input type="checkbox" name="subscribe" value="yes" defaultChecked />
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form action="/users" method="post">
-  <input type="text" name="name" value="John Doe" />
+    <input type="text" name="name" value="John Doe" />
 
-  <select name="country" value="uk">
-    <option value="us">United States</option>
-    <option value="ca">Canada</option>
-    <option value="uk">United Kingdom</option>
-  </select>
+    <select name="country" value="uk">
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk">United Kingdom</option>
+    </select>
 
-  <input type="checkbox" name="subscribe" value="yes" checked />
+    <input type="checkbox" name="subscribe" value="yes" checked />
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </Form>
 ```
 
@@ -248,135 +248,135 @@ The `<Form>` component exposes reactive state and helper methods through its def
 
 ```vue Vue icon="vuejs"
 <Form
-  action="/users"
-  method="post"
-  #default="{
-    errors,
-    hasErrors,
-    processing,
-    progress,
-    wasSuccessful,
-    recentlySuccessful,
-    setError,
-    clearErrors,
-    resetAndClearErrors,
-    defaults,
-    isDirty,
-    reset,
-    submit,
-  }"
+    action="/users"
+    method="post"
+    #default="{
+        errors,
+        hasErrors,
+        processing,
+        progress,
+        wasSuccessful,
+        recentlySuccessful,
+        setError,
+        clearErrors,
+        resetAndClearErrors,
+        defaults,
+        isDirty,
+        reset,
+        submit,
+    }"
 \>
-  <input type="text" name="name" />
+    <input type="text" name="name" />
 
-  <div v-if="errors.name">
-    {{ errors.name }}
-  </div>
+    <div v-if="errors.name">
+        {{ errors.name }}
+    </div>
 
-  <button type="submit" :disabled="processing">
-    {{ processing ? 'Creating...' : 'Create User' }}
-  </button>
+    <button type="submit" :disabled="processing">
+        {{ processing ? 'Creating...' : 'Create User' }}
+    </button>
 
-  <div v-if="wasSuccessful">User created successfully!</div>
+    <div v-if="wasSuccessful">User created successfully!</div>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/users" method="post">
-  {({
-    errors,
-    hasErrors,
-    processing,
-    progress,
-    wasSuccessful,
-    recentlySuccessful,
-    setError,
-    clearErrors,
-    resetAndClearErrors,
-    defaults,
-    isDirty,
-    reset,
-    submit,
-  }) => (
+    {({
+        errors,
+        hasErrors,
+        processing,
+        progress,
+        wasSuccessful,
+        recentlySuccessful,
+        setError,
+        clearErrors,
+        resetAndClearErrors,
+        defaults,
+        isDirty,
+        reset,
+        submit,
+    }) => (
 
-      <input type="text" name="name" />
+            <input type="text" name="name" />
 
-      {errors.name && <div>{errors.name}</div>}
+            {errors.name && <div>{errors.name}</div>}
 
-      <button type="submit" disabled={processing}>
-        {processing ? 'Creating...' : 'Create User'}
-      </button>
+            <button type="submit" disabled={processing}>
+                {processing ? 'Creating...' : 'Create User'}
+            </button>
 
-      {wasSuccessful && <div>User created successfully!</div>}
+            {wasSuccessful && <div>User created successfully!</div>}
 
-  )}
+    )}
 </Form>
 ```
 
 ```html Svelte 4 icon="s"
 <Form
-  action="/users"
-  method="post"
-  let:errors
-  let:hasErrors
-  let:processing
-  let:progress
-  let:wasSuccessful
-  let:recentlySuccessful
-  let:setError
-  let:clearErrors
-  let:resetAndClearErrors
-  let:defaults
-  let:isDirty
-  let:reset
-  let:submit
+    action="/users"
+    method="post"
+    let:errors
+    let:hasErrors
+    let:processing
+    let:progress
+    let:wasSuccessful
+    let:recentlySuccessful
+    let:setError
+    let:clearErrors
+    let:resetAndClearErrors
+    let:defaults
+    let:isDirty
+    let:reset
+    let:submit
 \>
-  <input type="text" name="name" />
+    <input type="text" name="name" />
 
-  {#if errors.name}
-    <div>{errors.name}</div>
-  {/if}
+    {#if errors.name}
+        <div>{errors.name}</div>
+    {/if}
 
-  <button type="submit" disabled={processing}>
-    {processing ? 'Creating...' : 'Create User'}
-  </button>
+    <button type="submit" disabled={processing}>
+        {processing ? 'Creating...' : 'Create User'}
+    </button>
 
-  {#if wasSuccessful}
-    <div>User created successfully!</div>
-  {/if}
+    {#if wasSuccessful}
+        <div>User created successfully!</div>
+    {/if}
 </Form>
 ```
 
 ```html Svelte 5 icon="s"
 <Form action="/users" method="post">
-  {#snippet children({
-    errors,
-    hasErrors,
-    processing,
-    progress,
-    wasSuccessful,
-    recentlySuccessful,
-    setError,
-    clearErrors,
-    resetAndClearErrors,
-    defaults,
-    isDirty,
-    reset,
-    submit,
-  })}
-    <input type="text" name="name" />
+    {#snippet children({
+        errors,
+        hasErrors,
+        processing,
+        progress,
+        wasSuccessful,
+        recentlySuccessful,
+        setError,
+        clearErrors,
+        resetAndClearErrors,
+        defaults,
+        isDirty,
+        reset,
+        submit,
+    })}
+        <input type="text" name="name" />
 
-    {#if errors.name}
-      <div>{errors.name}</div>
-    {/if}
+        {#if errors.name}
+            <div>{errors.name}</div>
+        {/if}
 
-    <button type="submit" disabled={processing}>
-      {processing ? 'Creating...' : 'Create User'}
-    </button>
+        <button type="submit" disabled={processing}>
+            {processing ? 'Creating...' : 'Create User'}
+        </button>
 
-    {#if wasSuccessful}
-      <div>User created successfully!</div>
-    {/if}
-  {/snippet}
+        {#if wasSuccessful}
+            <div>User created successfully!</div>
+        {/if}
+    {/snippet}
 </Form>
 ```
 
@@ -390,39 +390,39 @@ The `errors` object uses dotted notation for nested fields, allowing you to disp
 
 ```vue Vue icon="vuejs"
 <Form action="/users" method="post" #default="{ errors }">
-  <input type="text" name="user.name" />
-  <div v-if="errors['user.name']">{{ errors['user.name'] }}</div>
+    <input type="text" name="user.name" />
+    <div v-if="errors['user.name']">{{ errors['user.name'] }}</div>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/users" method="post">
-  {({ errors }) => (
+    {({ errors }) => (
 
-      <input type="text" name="user.name" />
-      {errors['user.name'] && <div>{errors['user.name']}</div>}
+            <input type="text" name="user.name" />
+            {errors['user.name'] && <div>{errors['user.name']}</div>}
 
-  )}
+    )}
 </Form>
 ```
 
 ```html Svelte 4 icon="s"
 <Form action="/users" method="post" let:errors>
-  <input type="text" name="user.name" />
-  {#if errors['user.name']}
-    <div>{errors['user.name']}</div>
-  {/if}
+    <input type="text" name="user.name" />
+    {#if errors['user.name']}
+        <div>{errors['user.name']}</div>
+    {/if}
 </Form>
 ```
 
 ```html Svelte 5 icon="s"
 <Form action="/users" method="post">
-  {#snippet children({ errors })}
-    <input type="text" name="user.name" />
-    {#if errors['user.name']}
-      <div>{errors['user.name']}</div>
-    {/if}
-  {/snippet}
+    {#snippet children({ errors })}
+        <input type="text" name="user.name" />
+        {#if errors['user.name']}
+            <div>{errors['user.name']}</div>
+        {/if}
+    {/snippet}
 </Form>
 ```
 
@@ -436,79 +436,79 @@ In addition to `action` and `method`, the `<Form>` component accepts several pro
 
 ```vue Vue icon="vuejs"
 <Form
-  action="/profile"
-  method="put"
-  error-bag="profile"
-  query-string-array-format="indices"
-  :headers="{ 'X-Custom-Header': 'value' }"
-  :show-progress="false"
-  :transform="data => ({ ...data, timestamp: Date.now() })"
-  :invalidate-cache-tags="['users', 'dashboard']"
-  disable-while-processing
-  :options="{
-    preserveScroll: true,
-    preserveState: true,
-    preserveUrl: true,
-    replace: true,
-    only: ['users', 'flash'],
-    except: ['secret'],
-    reset: ['page'],
-  }"
+    action="/profile"
+    method="put"
+    error-bag="profile"
+    query-string-array-format="indices"
+    :headers="{ 'X-Custom-Header': 'value' }"
+    :show-progress="false"
+    :transform="data => ({ ...data, timestamp: Date.now() })"
+    :invalidate-cache-tags="['users', 'dashboard']"
+    disable-while-processing
+    :options="{
+        preserveScroll: true,
+        preserveState: true,
+        preserveUrl: true,
+        replace: true,
+        only: ['users', 'flash'],
+        except: ['secret'],
+        reset: ['page'],
+    }"
 \>
-  <input type="text" name="name" />
-  <button type="submit">Update</button>
+    <input type="text" name="name" />
+    <button type="submit">Update</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form
-  action="/profile"
-  method="put"
-  errorBag="profile"
-  queryStringArrayFormat="indices"
-  headers={{ 'X-Custom-Header': 'value' }}
-  showProgress={false}
-  transform={data => ({ ...data, timestamp: Date.now() })}
-  invalidateCacheTags={['users', 'dashboard']}
-  disableWhileProcessing
-  options={{
-    preserveScroll: true,
-    preserveState: true,
-    preserveUrl: true,
-    replace: true,
-    only: ['users', 'flash'],
-    except: ['secret'],
-    reset: ['page'],
-  }}
+    action="/profile"
+    method="put"
+    errorBag="profile"
+    queryStringArrayFormat="indices"
+    headers={{ 'X-Custom-Header': 'value' }}
+    showProgress={false}
+    transform={data => ({ ...data, timestamp: Date.now() })}
+    invalidateCacheTags={['users', 'dashboard']}
+    disableWhileProcessing
+    options={{
+        preserveScroll: true,
+        preserveState: true,
+        preserveUrl: true,
+        replace: true,
+        only: ['users', 'flash'],
+        except: ['secret'],
+        reset: ['page'],
+    }}
 \>
-  <input type="text" name="name" />
-  <button type="submit">Update</button>
+    <input type="text" name="name" />
+    <button type="submit">Update</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form
-  action="/profile"
-  method="put"
-  errorBag="profile"
-  queryStringArrayFormat="indices"
-  headers={{ 'X-Custom-Header': 'value' }}
-  showProgress={false}
-  transform={data => ({ ...data, timestamp: Date.now() })}
-  invalidateCacheTags={['users', 'dashboard']}
-  disableWhileProcessing
-  options={{
-    preserveScroll: true,
-    preserveState: true,
-    preserveUrl: true,
-    replace: true,
-    only: ['users', 'flash'],
-    except: ['secret'],
-    reset: ['page'],
-  }}
+    action="/profile"
+    method="put"
+    errorBag="profile"
+    queryStringArrayFormat="indices"
+    headers={{ 'X-Custom-Header': 'value' }}
+    showProgress={false}
+    transform={data => ({ ...data, timestamp: Date.now() })}
+    invalidateCacheTags={['users', 'dashboard']}
+    disableWhileProcessing
+    options={{
+        preserveScroll: true,
+        preserveState: true,
+        preserveUrl: true,
+        replace: true,
+        only: ['users', 'flash'],
+        except: ['secret'],
+        reset: ['page'],
+    }}
 \>
-  <input type="text" name="name" />
-  <button type="submit">Update</button>
+    <input type="text" name="name" />
+    <button type="submit">Update</button>
 </Form>
 ```
 
@@ -550,73 +550,73 @@ The `<Form>` component emits all the standard visit [events](/v2/advanced/events
 
 ```vue Vue icon="vuejs"
 <Form
-  action="/users"
-  method="post"
-  @before="handleBefore"
-  @start="handleStart"
-  @progress="handleProgress"
-  @success="handleSuccess"
-  @error="handleError"
-  @finish="handleFinish"
-  @cancel="handleCancel"
-  @cancelToken="handleCancelToken"
+    action="/users"
+    method="post"
+    @before="handleBefore"
+    @start="handleStart"
+    @progress="handleProgress"
+    @success="handleSuccess"
+    @error="handleError"
+    @finish="handleFinish"
+    @cancel="handleCancel"
+    @cancelToken="handleCancelToken"
 \>
-  <input type="text" name="name" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form
-  action="/users"
-  method="post"
-  onCancelToken={handleCancelToken}
-  onBefore={handleBefore}
-  onStart={handleStart}
-  onProgress={handleProgress}
-  onCancel={handleCancel}
-  onSuccess={handleSuccess}
-  onError={handleError}
-  onFinish={handleFinish}
+    action="/users"
+    method="post"
+    onCancelToken={handleCancelToken}
+    onBefore={handleBefore}
+    onStart={handleStart}
+    onProgress={handleProgress}
+    onCancel={handleCancel}
+    onSuccess={handleSuccess}
+    onError={handleError}
+    onFinish={handleFinish}
 \>
-  <input type="text" name="name" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
 ```html Svelte 4 icon="s"
 <Form
-  action="/users"
-  method="post"
-  on:cancelToken={handleCancelToken}
-  on:before={handleBefore}
-  on:start={handleStart}
-  on:progress={handleProgress}
-  on:cancel={handleCancel}
-  on:success={handleSuccess}
-  on:error={handleError}
-  on:finish={handleFinish}
+    action="/users"
+    method="post"
+    on:cancelToken={handleCancelToken}
+    on:before={handleBefore}
+    on:start={handleStart}
+    on:progress={handleProgress}
+    on:cancel={handleCancel}
+    on:success={handleSuccess}
+    on:error={handleError}
+    on:finish={handleFinish}
 \>
-  <input type="text" name="name" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
 ```html Svelte 5 icon="s"
 <Form
-  action="/users"
-  method="post"
-  onCancelToken={handleCancelToken}
-  onBefore={handleBefore}
-  onStart={handleStart}
-  onProgress={handleProgress}
-  onCancel={handleCancel}
-  onSuccess={handleSuccess}
-  onError={handleError}
-  onFinish={handleFinish}
+    action="/users"
+    method="post"
+    onCancelToken={handleCancelToken}
+    onBefore={handleBefore}
+    onStart={handleStart}
+    onProgress={handleProgress}
+    onCancel={handleCancel}
+    onSuccess={handleSuccess}
+    onError={handleError}
+    onFinish={handleFinish}
 \>
-  <input type="text" name="name" />
-  <button type="submit">Create User</button>
+    <input type="text" name="name" />
+    <button type="submit">Create User</button>
 </Form>
 ```
 
@@ -633,48 +633,48 @@ The `Form` component provides several attributes that allow you to reset the for
 ```vue Vue icon="vuejs"
 <!-- Reset the entire form on success -->
 <Form action="/users" method="post" resetOnSuccess>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 <!-- Reset specific fields on success -->
 <Form action="/users" method="post" :resetOnSuccess="['name']">
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 // Reset the entire form on success
 <Form action="/users" method="post" resetOnSuccess>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 // Reset specific fields on success
 <Form action="/users" method="post" resetOnSuccess={['name']}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <!-- Reset the entire form on success -->
 <Form action="/users" method="post" resetOnSuccess>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 <!-- Reset specific fields on success -->
 <Form action="/users" method="post" resetOnSuccess={['name']}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
@@ -687,48 +687,48 @@ The `Form` component provides several attributes that allow you to reset the for
 ```vue Vue icon="vuejs"
 <!-- Reset the entire form on success -->
 <Form action="/users" method="post" resetOnError>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 <!-- Reset specific fields on success -->
 <Form action="/users" method="post" :resetOnError="['name']">
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 // Reset the entire form on success
 <Form action="/users" method="post" resetOnError>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 // Reset specific fields on success
 <Form action="/users" method="post" resetOnError={['name']}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <!-- Reset the entire form on success -->
 <Form action="/users" method="post" resetOnError>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 
 <!-- Reset specific fields on success -->
 <Form action="/users" method="post" resetOnError={['name']}>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
@@ -742,17 +742,17 @@ The `Form` component provides the `setDefaultsOnSuccess` attribute to set the cu
 
 ```vue Vue icon="vuejs"
 <Form action="/users" method="post" setDefaultsOnSuccess>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/users" method="post" setDefaultsOnSuccess>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
@@ -774,28 +774,28 @@ The `<Form>` component supports dotted key notation for creating nested objects 
 
 ```vue Vue icon="vuejs"
 <Form action="/users" method="post">
-  <input type="text" name="user.name" />
-  <input type="text" name="user.skills[]" />
-  <input type="text" name="address.street" />
-  <button type="submit">Submit</button>
+    <input type="text" name="user.name" />
+    <input type="text" name="user.skills[]" />
+    <input type="text" name="address.street" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/users" method="post">
-  <input type="text" name="user.name" />
-  <input type="text" name="user.skills[]" />
-  <input type="text" name="address.street" />
-  <button type="submit">Submit</button>
+    <input type="text" name="user.name" />
+    <input type="text" name="user.skills[]" />
+    <input type="text" name="address.street" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form action="/users" method="post">
-  <input type="text" name="user.name" />
-  <input type="text" name="user.skills[]" />
-  <input type="text" name="address.street" />
-  <button type="submit">Submit</button>
+    <input type="text" name="user.name" />
+    <input type="text" name="user.skills[]" />
+    <input type="text" name="address.street" />
+    <button type="submit">Submit</button>
 </Form>
 ```
 
@@ -805,13 +805,13 @@ The example above would generate the following data structure.
 
 ```json
 {
-  "user": {
-    "name": "John Doe",
-    "skills": ["JavaScript"]
-  },
-  "address": {
-    "street": "123 Main St"
-  }
+    "user": {
+        "name": "John Doe",
+        "skills": ["JavaScript"]
+    },
+    "address": {
+        "street": "123 Main St"
+    }
 }
 ```
 
@@ -821,25 +821,25 @@ If you need literal dots in your field names (not as nested object separators), 
 
 ```vue Vue icon="vuejs"
 <Form action="/config" method="post">
-  <input type="text" name="app\.name" />
-  <input type="text" name="settings.theme\.mode" />
-  <button type="submit">Save</button>
+    <input type="text" name="app\.name" />
+    <input type="text" name="settings.theme\.mode" />
+    <button type="submit">Save</button>
 </Form>
 ```
 
 ```jsx React icon="react"
 <Form action="/config" method="post">
-  <input type="text" name="app\.name" />
-  <input type="text" name="settings.theme\.mode" />
-  <button type="submit">Save</button>
+    <input type="text" name="app\.name" />
+    <input type="text" name="settings.theme\.mode" />
+    <button type="submit">Save</button>
 </Form>
 ```
 
 ```html Svelte icon="s"
 <Form action="/config" method="post">
-  <input type="text" name="app\.name" />
-  <input type="text" name="settings.theme\.mode" />
-  <button type="submit">Save</button>
+    <input type="text" name="app\.name" />
+    <input type="text" name="settings.theme\.mode" />
+    <button type="submit">Save</button>
 </Form>
 ```
 
@@ -849,10 +849,10 @@ The example above would generate the following data structure.
 
 ```json
 {
-  "app.name": "My Application",
-  "settings": {
-    "theme.mode": "dark"
-  }
+    "app.name": "My Application",
+    "settings": {
+        "theme.mode": "dark"
+    }
 }
 ```
 
@@ -870,17 +870,17 @@ import { Form } from '@inertiajs/vue3'
 const formRef = ref()
 
 const handleSubmit = () => {
-  formRef.value.submit()
+    formRef.value.submit()
 }
 </script>
 
 <template>
-  <Form ref="formRef" action="/users" method="post">
-    <input type="text" name="name" />
-    <button type="submit">Submit</button>
-  </Form>
+    <Form ref="formRef" action="/users" method="post">
+        <input type="text" name="name" />
+        <button type="submit">Submit</button>
+    </Form>
 
-  <button @click="handleSubmit">Submit Programmatically</button>
+    <button @click="handleSubmit">Submit Programmatically</button>
 </template>
 ```
 
@@ -889,39 +889,39 @@ import { useRef } from 'react'
 import { Form } from '@inertiajs/react'
 
 export default function CreateUser() {
-  const formRef = useRef()
+    const formRef = useRef()
 
-  const handleSubmit = () => {
-    formRef.current.submit()
-  }
+    const handleSubmit = () => {
+        formRef.current.submit()
+    }
 
-  return (
+    return (
 
-      <Form ref={formRef} action="/users" method="post">
-        <input type="text" name="name" />
-        <button type="submit">Submit</button>
-      </Form>
+            <Form ref={formRef} action="/users" method="post">
+                <input type="text" name="name" />
+                <button type="submit">Submit</button>
+            </Form>
 
-      <button onClick={handleSubmit}>Submit Programmatically</button>
+            <button onClick={handleSubmit}>Submit Programmatically</button>
 
-  )
+    )
 }
 ```
 
 ```html Svelte icon="s"
 <script>
-  import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte'
 
-  let formRef
+    let formRef
 
-  function handleSubmit() {
-    formRef.submit()
-  }
+    function handleSubmit() {
+        formRef.submit()
+    }
 </script>
 
 <Form bind:this={formRef} action="/users" method="post">
-  <input type="text" name="name" />
-  <button type="submit">Submit</button>
+    <input type="text" name="name" />
+    <button type="submit">Submit</button>
 </Form>
 
 <button on:click={handleSubmit}>Submit Programmatically</button>
@@ -942,25 +942,25 @@ In addition to the `<Form>` component, Inertia also provides a `useForm` helper 
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
-  email: null,
-  password: null,
-  remember: false,
+    email: null,
+    password: null,
+    remember: false,
 })
 </script>
 
 <template>
-  <form @submit.prevent="form.post('/login')">
-    <!-- email -->
-    <input type="text" v-model="form.email">
-    <div v-if="form.errors.email">{{ form.errors.email }}</div>
-    <!-- password -->
-    <input type="password" v-model="form.password">
-    <div v-if="form.errors.password">{{ form.errors.password }}</div>
-    <!-- remember me -->
-    <input type="checkbox" v-model="form.remember"> Remember Me
-    <!-- submit -->
-    <button type="submit" :disabled="form.processing">Login</button>
-  </form>
+    <form @submit.prevent="form.post('/login')">
+        <!-- email -->
+        <input type="text" v-model="form.email">
+        <div v-if="form.errors.email">{{ form.errors.email }}</div>
+        <!-- password -->
+        <input type="password" v-model="form.password">
+        <div v-if="form.errors.password">{{ form.errors.password }}</div>
+        <!-- remember me -->
+        <input type="checkbox" v-model="form.remember"> Remember Me
+        <!-- submit -->
+        <button type="submit" :disabled="form.processing">Login</button>
+    </form>
 </template>
 ```
 
@@ -968,84 +968,84 @@ const form = useForm({
 import { useForm } from '@inertiajs/react'
 
 const { data, setData, post, processing, errors } = useForm({
-  email: '',
-  password: '',
-  remember: false,
+    email: '',
+    password: '',
+    remember: false,
 })
 
 function submit(e) {
-  e.preventDefault()
-  post('/login')
+    e.preventDefault()
+    post('/login')
 }
 
 return (
-  <form onSubmit={submit}>
-    <input type="text" value={data.email} onChange={e => setData('email', e.target.value)} />
-    {errors.email && <div>{errors.email}</div>}
-    <input type="password" value={data.password} onChange={e => setData('password', e.target.value)} />
-    {errors.password && <div>{errors.password}</div>}
-    <input type="checkbox" checked={data.remember} onChange={e => setData('remember', e.target.checked)} /> Remember Me
-    <button type="submit" disabled={processing}>Login</button>
-  </form>
+    <form onSubmit={submit}>
+        <input type="text" value={data.email} onChange={e => setData('email', e.target.value)} />
+        {errors.email && <div>{errors.email}</div>}
+        <input type="password" value={data.password} onChange={e => setData('password', e.target.value)} />
+        {errors.password && <div>{errors.password}</div>}
+        <input type="checkbox" checked={data.remember} onChange={e => setData('remember', e.target.checked)} /> Remember Me
+        <button type="submit" disabled={processing}>Login</button>
+    </form>
 )
 ```
 
 ```html Svelte 4 icon="s"
 <script>
-  import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte'
 
-  const form = useForm({
-    email: null,
-    password: null,
-    remember: false,
-  })
+    const form = useForm({
+        email: null,
+        password: null,
+        remember: false,
+    })
 
-  function submit() {
-    $form.post('/login')
-  }
+    function submit() {
+        $form.post('/login')
+    }
 </script>
 
 <form on:submit|preventDefault={submit}>
-  <input type="text" bind:value={$form.email} />
-  {#if $form.errors.email}
-    <div class="form-error">{$form.errors.email}</div>
-  {/if}
-  <input type="password" bind:value={$form.password} />
-  {#if $form.errors.password}
-    <div class="form-error">{$form.errors.password}</div>
-  {/if}
-  <input type="checkbox" bind:checked={$form.remember} /> Remember Me
-  <button type="submit" disabled={$form.processing}>Submit</button>
+    <input type="text" bind:value={$form.email} />
+    {#if $form.errors.email}
+        <div class="form-error">{$form.errors.email}</div>
+    {/if}
+    <input type="password" bind:value={$form.password} />
+    {#if $form.errors.password}
+        <div class="form-error">{$form.errors.password}</div>
+    {/if}
+    <input type="checkbox" bind:checked={$form.remember} /> Remember Me
+    <button type="submit" disabled={$form.processing}>Submit</button>
 </form>
 ```
 
 ```svelte Svelte 5 icon="s"
 <script>
-  import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte'
 
-  const form = useForm({
-    email: null,
-    password: null,
-    remember: false,
-  })
+    const form = useForm({
+        email: null,
+        password: null,
+        remember: false,
+    })
 
-  function submit(e) {
-    e.preventDefault()
-    $form.post('/login')
-  }
+    function submit(e) {
+        e.preventDefault()
+        $form.post('/login')
+    }
 </script>
 
 <form onsubmit={submit}>
-  <input type="text" bind:value={$form.email} />
-  {#if $form.errors.email}
-    <div class="form-error">{$form.errors.email}</div>
-  {/if}
-  <input type="password" bind:value={$form.password} />
-  {#if $form.errors.password}
-    <div class="form-error">{$form.errors.password}</div>
-  {/if}
-  <input type="checkbox" bind:checked={$form.remember} /> Remember Me
-  <button type="submit" disabled={$form.processing}>Submit</button>
+    <input type="text" bind:value={$form.email} />
+    {#if $form.errors.email}
+        <div class="form-error">{$form.errors.email}</div>
+    {/if}
+    <input type="password" bind:value={$form.password} />
+    {#if $form.errors.password}
+        <div class="form-error">{$form.errors.password}</div>
+    {/if}
+    <input type="checkbox" bind:checked={$form.remember} /> Remember Me
+    <button type="submit" disabled={$form.processing}>Submit</button>
 </form>
 ```
 
@@ -1092,8 +1092,8 @@ The submit methods support all of the typical [visit options](/v2/the-basics/man
 
 ```js Vue icon="vuejs"
 form.post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => form.reset('password'),
+    preserveScroll: true,
+    onSuccess: () => form.reset('password'),
 })
 ```
 
@@ -1101,15 +1101,15 @@ form.post('/profile', {
 const { post, reset } = useForm({ ... })
 
 post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => reset('password'),
+    preserveScroll: true,
+    onSuccess: () => reset('password'),
 })
 ```
 
 ```js Svelte icon="s"
 $form.post('/profile', {
-  preserveScroll: true,
-  onSuccess: () => $form.reset('password'),
+    preserveScroll: true,
+    onSuccess: () => $form.reset('password'),
 })
 ```
 
@@ -1121,29 +1121,29 @@ If you need to modify the form data before it's sent to the server, you can do s
 
 ```js Vue icon="vuejs"
 form
-  .transform((data) => ({
-    ...data,
-    remember: data.remember ? 'on' : '',
-  }))
-  .post('/login')
+    .transform((data) => ({
+        ...data,
+        remember: data.remember ? 'on' : '',
+    }))
+    .post('/login')
 ```
 
 ```js React icon="react"
 const { transform } = useForm({ ... })
 
 transform((data) => ({
-  ...data,
-  remember: data.remember ? 'on' : '',
+    ...data,
+    remember: data.remember ? 'on' : '',
 }))
 ```
 
 ```js Svelte icon="s"
 $form
-  .transform((data) => ({
-    ...data,
-    remember: data.remember ? 'on' : '',
-  }))
-  .post('/login')
+    .transform((data) => ({
+        ...data,
+        remember: data.remember ? 'on' : '',
+    }))
+    .post('/login')
 ```
 
 </CodeGroup>
@@ -1174,7 +1174,7 @@ If your form is uploading files, the current progress event is available via the
 
 ```vue Vue icon="vuejs"
 <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-  {{ form.progress.percentage }}%
+    {{ form.progress.percentage }}%
 </progress>
 ```
 
@@ -1182,17 +1182,17 @@ If your form is uploading files, the current progress event is available via the
 const { progress } = useForm({ ... })
 
 {progress && (
-  <progress value={progress.percentage} max="100">
-    {progress.percentage}%
-  </progress>
+    <progress value={progress.percentage} max="100">
+        {progress.percentage}%
+    </progress>
 )}
 ```
 
 ```svelte Svelte icon="s"
 {#if $form.progress}
-  <progress value={$form.progress.percentage} max="100">
-    {$form.progress.percentage}%
-  </progress>
+    <progress value={$form.progress.percentage} max="100">
+        {$form.progress.percentage}%
+    </progress>
 {/if}
 ```
 
@@ -1216,7 +1216,7 @@ const { errors } = useForm({ ... })
 
 ```svelte Svelte icon="s"
 {#if $form.errors.email}
-  <div>{$form.errors.email}</div>
+    <div>{$form.errors.email}</div>
 {/if}
 ```
 
@@ -1266,8 +1266,8 @@ form.setError('field', 'Your error message.');
 
 // Set multiple errors at once...
 form.setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -1279,8 +1279,8 @@ setError('field', 'Your error message.');
 
 // Set multiple errors at once...
 setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -1290,8 +1290,8 @@ $form.setError('field', 'Your error message.');
 
 // Set multiple errors at once
 $form.setError({
-  foo: 'Your error message for the foo field.',
-  bar: 'Some other error for the bar field.'
+    foo: 'Your error message for the foo field.',
+    bar: 'Some other error for the bar field.'
 });
 ```
 
@@ -1384,8 +1384,8 @@ form.defaults('email', 'updated-default@example.com')
 
 // Update the default value of multiple fields...
 form.defaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -1400,8 +1400,8 @@ setDefaults('email', 'updated-default@example.com')
 
 // Update the default value of multiple fields...
 setDefaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -1414,8 +1414,8 @@ $form.defaults('email', 'updated-default@example.com')
 
 // Change the default value of multiple fields...
 $form.defaults({
-  name: 'Updated Example',
-  email: 'updated-default@example.com',
+    name: 'Updated Example',
+    email: 'updated-default@example.com',
 })
 ```
 
@@ -1439,7 +1439,7 @@ const { isDirty } = useForm({ ... })
 
 ```html Svelte icon="s"
 {#if $form.isDirty}
-  <div>There are unsaved form changes.</div>
+    <div>There are unsaved form changes.</div>
 {/if}
 ```
 
@@ -1509,8 +1509,8 @@ import { useForm } from '@inertiajs/vue3'
 import { store } from 'App/Http/Controllers/UserController'
 
 const form = useForm({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 
 form.submit(store())
@@ -1521,8 +1521,8 @@ import { useForm } from '@inertiajs/react'
 import { store } from 'App/Http/Controllers/UserController'
 
 const form = useForm({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 
 form.submit(store())
@@ -1533,8 +1533,8 @@ import { useForm } from '@inertiajs/svelte'
 import { store } from 'App/Http/Controllers/UserController'
 
 const form = useForm({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 
 form.submit(store())
@@ -1549,23 +1549,23 @@ When using Inertia, you don't typically inspect form responses client-side like 
 ```php
 class UsersController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('Users/Index', [
-          'users' => User::all(),
-        ]);
-    }
+        public function index()
+        {
+                return Inertia::render('Users/Index', [
+                    'users' => User::all(),
+                ]);
+        }
 
-    public function store(Request $request)
-    {
-        User::create($request->validate([
-          'first_name' => ['required', 'max:50'],
-          'last_name' => ['required', 'max:50'],
-          'email' => ['required', 'max:50', 'email'],
-        ]));
+        public function store(Request $request)
+        {
+                User::create($request->validate([
+                    'first_name' => ['required', 'max:50'],
+                    'last_name' => ['required', 'max:50'],
+                    'email' => ['required', 'max:50', 'email'],
+                ]));
 
-        return to_route('users.index');
-    }
+                return to_route('users.index');
+        }
 }
 ```
 
@@ -1591,26 +1591,26 @@ import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const form = reactive({
-  first_name: null,
-  last_name: null,
-  email: null,
+    first_name: null,
+    last_name: null,
+    email: null,
 })
 
 function submit() {
-  router.post('/users', form)
+    router.post('/users', form)
 }
 </script>
 
 <template>
-  <form @submit.prevent="submit">
-    <label for="first_name">First name:</label>
-    <input id="first_name" v-model="form.first_name" />
-    <label for="last_name">Last name:</label>
-    <input id="last_name" v-model="form.last_name" />
-    <label for="email">Email:</label>
-    <input id="email" v-model="form.email" />
-    <button type="submit">Submit</button>
-  </form>
+    <form @submit.prevent="submit">
+        <label for="first_name">First name:</label>
+        <input id="first_name" v-model="form.first_name" />
+        <label for="last_name">Last name:</label>
+        <input id="last_name" v-model="form.last_name" />
+        <label for="email">Email:</label>
+        <input id="email" v-model="form.email" />
+        <button type="submit">Submit</button>
+    </form>
 </template>
 ```
 
@@ -1619,96 +1619,96 @@ import { useState } from 'react'
 import { router } from '@inertiajs/react'
 
 export default function Edit() {
-  const [values, setValues] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-  })
+    const [values, setValues] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+    })
 
-  function handleChange(e) {
-    const key = e.target.id;
-    const value = e.target.value
-    setValues(values => ({
-        ...values,
-        [key]: value,
-    }))
-  }
+    function handleChange(e) {
+        const key = e.target.id;
+        const value = e.target.value
+        setValues(values => ({
+                ...values,
+                [key]: value,
+        }))
+    }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    router.post('/users', values)
-  }
+    function handleSubmit(e) {
+        e.preventDefault()
+        router.post('/users', values)
+    }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="first_name">First name:</label>
-      <input id="first_name" value={values.first_name} onChange={handleChange} />
-      <label htmlFor="last_name">Last name:</label>
-      <input id="last_name" value={values.last_name} onChange={handleChange} />
-      <label htmlFor="email">Email:</label>
-      <input id="email" value={values.email} onChange={handleChange} />
-      <button type="submit">Submit</button>
-    </form>
-  )
+    return (
+        <form onSubmit={handleSubmit}>
+            <label htmlFor="first_name">First name:</label>
+            <input id="first_name" value={values.first_name} onChange={handleChange} />
+            <label htmlFor="last_name">Last name:</label>
+            <input id="last_name" value={values.last_name} onChange={handleChange} />
+            <label htmlFor="email">Email:</label>
+            <input id="email" value={values.email} onChange={handleChange} />
+            <button type="submit">Submit</button>
+        </form>
+    )
 }
 ```
 
 ```html Svelte 4 icon="s"
 <script>
-  import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte'
 
-  let values = {
-    first_name: null,
-    last_name: null,
-    email: null,
-  }
+    let values = {
+        first_name: null,
+        last_name: null,
+        email: null,
+    }
 
-  function submit() {
-    router.post('/users', values)
-  }
+    function submit() {
+        router.post('/users', values)
+    }
 </script>
 
 <form on:submit|preventDefault={submit}>
-  <label for="first_name">First name:</label>
-  <input id="first_name" bind:value={values.first_name}>
+    <label for="first_name">First name:</label>
+    <input id="first_name" bind:value={values.first_name}>
 
-  <label for="last_name">Last name:</label>
-  <input id="last_name" bind:value={values.last_name}>
+    <label for="last_name">Last name:</label>
+    <input id="last_name" bind:value={values.last_name}>
 
-  <label for="email">Email:</label>
-  <input id="email" bind:value={values.email}>
+    <label for="email">Email:</label>
+    <input id="email" bind:value={values.email}>
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </form>
 ```
 
 ```html Svelte 5 icon="s"
 <script>
-  import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte'
 
-  let values = {
-    first_name: null,
-    last_name: null,
-    email: null,
-  }
+    let values = {
+        first_name: null,
+        last_name: null,
+        email: null,
+    }
 
-  function submit(e) {
-    e.preventDefault()
-    router.post('/users', values)
-  }
+    function submit(e) {
+        e.preventDefault()
+        router.post('/users', values)
+    }
 </script>
 
 <form onsubmit={submit}>
-  <label for="first_name">First name:</label>
-  <input id="first_name" bind:value={values.first_name}>
+    <label for="first_name">First name:</label>
+    <input id="first_name" bind:value={values.first_name}>
 
-  <label for="last_name">Last name:</label>
-  <input id="last_name" bind:value={values.last_name}>
+    <label for="last_name">Last name:</label>
+    <input id="last_name" bind:value={values.last_name}>
 
-  <label for="email">Email:</label>
-  <input id="email" bind:value={values.email}>
+    <label for="email">Email:</label>
+    <input id="email" bind:value={values.email}>
 
-  <button type="submit">Submit</button>
+    <button type="submit">Submit</button>
 </form>
 ```
 

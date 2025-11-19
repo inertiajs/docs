@@ -14,7 +14,7 @@ To register an event listener, use the `router.on()` method.
 import { router } from '@inertiajs/vue3'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -22,7 +22,7 @@ router.on('start', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -30,7 +30,7 @@ router.on('start', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -44,7 +44,7 @@ Under the hood, Inertia uses native browser events, so you can also interact wit
 import { router } from '@inertiajs/vue3'
 
 document.addEventListener('inertia:start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -52,7 +52,7 @@ document.addEventListener('inertia:start', (event) => {
 import { router } from '@inertiajs/react'
 
 document.addEventListener('inertia:start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -60,7 +60,7 @@ document.addEventListener('inertia:start', (event) => {
 import { router } from '@inertiajs/svelte'
 
 document.addEventListener('inertia:start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -76,7 +76,7 @@ When you register an event listener, Inertia automatically returns a callback th
 import { router } from '@inertiajs/vue3'
 
 let removeStartEventListener = router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 
 // Remove the listener...
@@ -87,7 +87,7 @@ removeStartEventListener()
 import { router } from '@inertiajs/react'
 
 let removeStartEventListener = router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 
 // Remove the listener...
@@ -98,7 +98,7 @@ removeStartEventListener()
 import { router } from '@inertiajs/svelte'
 
 let removeStartEventListener = router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 
 // Remove the listener...
@@ -116,9 +116,9 @@ import { router } from '@inertiajs/vue3'
 import { onUnmounted } from 'vue'
 
 onUnmounted(
-  router.on('start', (event) => {
-    console.log(`Starting a visit to ${event.detail.visit.url}`)
-  })
+    router.on('start', (event) => {
+        console.log(`Starting a visit to ${event.detail.visit.url}`)
+    })
 )
 ```
 
@@ -127,9 +127,9 @@ import { useEffect } from 'react'
 import { router } from '@inertiajs/react'
 
 useEffect(() => {
-  return router.on('start', (event) => {
-    console.log(`Starting a visit to ${event.detail.visit.url}`)
-  })
+    return router.on('start', (event) => {
+        console.log(`Starting a visit to ${event.detail.visit.url}`)
+    })
 }, [])
 ```
 
@@ -138,9 +138,9 @@ import { router } from '@inertiajs/svelte'
 import { onMount } from 'svelte'
 
 onMount(() => {
-  return router.on('start', (event) => {
-    console.log(`Starting a visit to ${event.detail.visit.url}`)
-  })
+    return router.on('start', (event) => {
+        console.log(`Starting a visit to ${event.detail.visit.url}`)
+    })
 })
 ```
 
@@ -148,9 +148,9 @@ onMount(() => {
 import { router } from '@inertiajs/svelte'
 
 $effect(() => {
-  return router.on('start', (event) => {
-    console.log(`Starting a visit to ${event.detail.visit.url}`)
-  })
+    return router.on('start', (event) => {
+        console.log(`Starting a visit to ${event.detail.visit.url}`)
+    })
 })
 ```
 
@@ -164,7 +164,7 @@ Alternatively, if you're using native browser events, you can remove the event l
 import { router } from '@inertiajs/vue3'
 
 let startEventListener = (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 }
 
 document.addEventListener('inertia:start', startEventListener)
@@ -177,7 +177,7 @@ document.removeEventListener('inertia:start', startEventListener)
 import { router } from '@inertiajs/react'
 
 let startEventListener = (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 }
 
 document.addEventListener('inertia:start', startEventListener)
@@ -190,7 +190,7 @@ document.removeEventListener('inertia:start', startEventListener)
 import { router } from '@inertiajs/svelte'
 
 let startEventListener = (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 }
 
 document.addEventListener('inertia:start', startEventListener)
@@ -211,9 +211,9 @@ Some events, such as `before`, `exception`, and `invalid`, support cancellation,
 import { router } from '@inertiajs/vue3'
 
 router.on('before', (event) => {
-  if (!confirm('Are you sure you want to navigate away?')) {
-    event.preventDefault()
-  }
+    if (!confirm('Are you sure you want to navigate away?')) {
+        event.preventDefault()
+    }
 })
 ```
 
@@ -221,9 +221,9 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('before', (event) => {
-  if (!confirm('Are you sure you want to navigate away?')) {
-    event.preventDefault()
-  }
+    if (!confirm('Are you sure you want to navigate away?')) {
+        event.preventDefault()
+    }
 })
 ```
 
@@ -231,9 +231,9 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('before', (event) => {
-  if (!confirm('Are you sure you want to navigate away?')) {
-    event.preventDefault()
-  }
+    if (!confirm('Are you sure you want to navigate away?')) {
+        event.preventDefault()
+    }
 })
 ```
 
@@ -247,7 +247,7 @@ For convenience, if you register your event listener using `router.on()`, you ca
 import { router } from '@inertiajs/vue3'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -255,7 +255,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -263,7 +263,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -281,7 +281,7 @@ The `before` event fires when a request is about to be made to the server. This 
 import { router } from '@inertiajs/vue3'
 
 router.on('before', (event) => {
-  console.log(`About to make a visit to ${event.detail.visit.url}`)
+    console.log(`About to make a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -289,7 +289,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('before', (event) => {
-  console.log(`About to make a visit to ${event.detail.visit.url}`)
+    console.log(`About to make a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -297,7 +297,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('before', (event) => {
-  console.log(`About to make a visit to ${event.detail.visit.url}`)
+    console.log(`About to make a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -311,7 +311,7 @@ The primary purpose of this event is to allow you to prevent a visit from happen
 import { router } from '@inertiajs/vue3'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -319,7 +319,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -327,7 +327,7 @@ router.on('before', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('before', (event) => {
-  return confirm('Are you sure you want to navigate away?')
+    return confirm('Are you sure you want to navigate away?')
 })
 ```
 
@@ -343,7 +343,7 @@ The `start` event fires when a request to the server has started. This is useful
 import { router } from '@inertiajs/vue3'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -351,7 +351,7 @@ router.on('start', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -359,7 +359,7 @@ router.on('start', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('start', (event) => {
-  console.log(`Starting a visit to ${event.detail.visit.url}`)
+    console.log(`Starting a visit to ${event.detail.visit.url}`)
 })
 ```
 
@@ -377,7 +377,7 @@ The `progress` event fires as progress increments during file uploads.
 import { router } from '@inertiajs/vue3'
 
 router.on('progress', (event) => {
-  this.form.progress = event.detail.progress.percentage
+    this.form.progress = event.detail.progress.percentage
 })
 ```
 
@@ -385,7 +385,7 @@ router.on('progress', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('progress', (event) => {
-  this.form.progress = event.detail.progress.percentage
+    this.form.progress = event.detail.progress.percentage
 })
 ```
 
@@ -393,7 +393,7 @@ router.on('progress', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('progress', (event) => {
-  this.form.progress = event.detail.progress.percentage
+    this.form.progress = event.detail.progress.percentage
 })
 ```
 
@@ -411,7 +411,7 @@ The `success` event fires on successful page visits, unless validation errors ar
 import { router } from '@inertiajs/vue3'
 
 router.on('success', (event) => {
-  console.log(`Successfully made a visit to ${event.detail.page.url}`)
+    console.log(`Successfully made a visit to ${event.detail.page.url}`)
 })
 ```
 
@@ -419,7 +419,7 @@ router.on('success', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('success', (event) => {
-  console.log(`Successfully made a visit to ${event.detail.page.url}`)
+    console.log(`Successfully made a visit to ${event.detail.page.url}`)
 })
 ```
 
@@ -427,7 +427,7 @@ router.on('success', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('success', (event) => {
-  console.log(`Successfully made a visit to ${event.detail.page.url}`)
+    console.log(`Successfully made a visit to ${event.detail.page.url}`)
 })
 ```
 
@@ -445,7 +445,7 @@ The `error` event fires when validation errors are present on "successful" page 
 import { router } from '@inertiajs/vue3'
 
 router.on('error', (errors) => {
-  console.log(errors)
+    console.log(errors)
 })
 ```
 
@@ -453,7 +453,7 @@ router.on('error', (errors) => {
 import { router } from '@inertiajs/react'
 
 router.on('error', (errors) => {
-  console.log(errors)
+    console.log(errors)
 })
 ```
 
@@ -461,7 +461,7 @@ router.on('error', (errors) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('error', (errors) => {
-  console.log(errors)
+    console.log(errors)
 })
 ```
 
@@ -481,8 +481,8 @@ This event is fired for all response types, including `200`, `400`, and `500`res
 import { router } from '@inertiajs/vue3'
 
 router.on('invalid', (event) => {
-  console.log(`An invalid Inertia response was received.`)
-  console.log(event.detail.response)
+    console.log(`An invalid Inertia response was received.`)
+    console.log(event.detail.response)
 })
 ```
 
@@ -490,8 +490,8 @@ router.on('invalid', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('invalid', (event) => {
-  console.log(`An invalid Inertia response was received.`)
-  console.log(event.detail.response)
+    console.log(`An invalid Inertia response was received.`)
+    console.log(event.detail.response)
 })
 ```
 
@@ -499,8 +499,8 @@ router.on('invalid', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('invalid', (event) => {
-  console.log(`An invalid Inertia response was received.`)
-  console.log(event.detail.response)
+    console.log(`An invalid Inertia response was received.`)
+    console.log(event.detail.response)
 })
 ```
 
@@ -514,9 +514,9 @@ You may cancel the `invalid` event to prevent Inertia from showing the non-Inert
 import { router } from '@inertiajs/vue3'
 
 router.on('invalid', (event) => {
-  event.preventDefault()
+    event.preventDefault()
 
-  // Handle the invalid response yourself...
+    // Handle the invalid response yourself...
 })
 ```
 
@@ -524,9 +524,9 @@ router.on('invalid', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('invalid', (event) => {
-  event.preventDefault()
+    event.preventDefault()
 
-  // Handle the invalid response yourself...
+    // Handle the invalid response yourself...
 })
 ```
 
@@ -534,9 +534,9 @@ router.on('invalid', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('invalid', (event) => {
-  event.preventDefault()
+    event.preventDefault()
 
-  // Handle the invalid response yourself...
+    // Handle the invalid response yourself...
 })
 ```
 
@@ -552,8 +552,8 @@ The `exception` event fires on unexpected XHR errors such as network interruptio
 import { router } from '@inertiajs/vue3'
 
 router.on('exception', (event) => {
-  console.log(`An unexpected error occurred during an Inertia visit.`)
-  console.log(event.detail.error)
+    console.log(`An unexpected error occurred during an Inertia visit.`)
+    console.log(event.detail.error)
 })
 ```
 
@@ -561,8 +561,8 @@ router.on('exception', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('exception', (event) => {
-  console.log(`An unexpected error occurred during an Inertia visit.`)
-  console.log(event.detail.error)
+    console.log(`An unexpected error occurred during an Inertia visit.`)
+    console.log(event.detail.error)
 })
 ```
 
@@ -570,8 +570,8 @@ router.on('exception', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('exception', (event) => {
-  console.log(`An unexpected error occurred during an Inertia visit.`)
-  console.log(event.detail.error)
+    console.log(`An unexpected error occurred during an Inertia visit.`)
+    console.log(event.detail.error)
 })
 ```
 
@@ -585,8 +585,8 @@ You may cancel the `exception` event to prevent the error from being thrown.
 import { router } from '@inertiajs/vue3'
 
 router.on('exception', (event) => {
-  event.preventDefault()
-  // Handle the error yourself
+    event.preventDefault()
+    // Handle the error yourself
 })
 ```
 
@@ -594,8 +594,8 @@ router.on('exception', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('exception', (event) => {
-  event.preventDefault()
-  // Handle the error yourself
+    event.preventDefault()
+    // Handle the error yourself
 })
 ```
 
@@ -603,8 +603,8 @@ router.on('exception', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('exception', (event) => {
-  event.preventDefault()
-  // Handle the error yourself
+    event.preventDefault()
+    // Handle the error yourself
 })
 ```
 
@@ -622,7 +622,7 @@ The `finish` event fires after an XHR request has completed for both "successful
 import { router } from '@inertiajs/vue3'
 
 router.on('finish', (event) => {
-  NProgress.done()
+    NProgress.done()
 })
 ```
 
@@ -630,7 +630,7 @@ router.on('finish', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('finish', (event) => {
-  NProgress.done()
+    NProgress.done()
 })
 ```
 
@@ -638,7 +638,7 @@ router.on('finish', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('finish', (event) => {
-  NProgress.done()
+    NProgress.done()
 })
 ```
 
@@ -656,7 +656,7 @@ The `navigate` event fires on successful page visits, as well as when navigating
 import { router } from '@inertiajs/vue3'
 
 router.on('navigate', (event) => {
-  console.log(`Navigated to ${event.detail.page.url}`)
+    console.log(`Navigated to ${event.detail.page.url}`)
 })
 ```
 
@@ -664,7 +664,7 @@ router.on('navigate', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('navigate', (event) => {
-  console.log(`Navigated to ${event.detail.page.url}`)
+    console.log(`Navigated to ${event.detail.page.url}`)
 })
 ```
 
@@ -672,7 +672,7 @@ router.on('navigate', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('navigate', (event) => {
-  console.log(`Navigated to ${event.detail.page.url}`)
+    console.log(`Navigated to ${event.detail.page.url}`)
 })
 ```
 
@@ -690,7 +690,7 @@ The `prefetching` event fires when the router starts prefetching a page.
 import { router } from '@inertiajs/vue3'
 
 router.on('prefetching', (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`)
+    console.log(`Prefetching ${event.detail.page.url}`)
 })
 ```
 
@@ -698,7 +698,7 @@ router.on('prefetching', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('prefetching', (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`)
+    console.log(`Prefetching ${event.detail.page.url}`)
 })
 ```
 
@@ -706,7 +706,7 @@ router.on('prefetching', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('prefetching', (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`)
+    console.log(`Prefetching ${event.detail.page.url}`)
 })
 ```
 
@@ -724,7 +724,7 @@ The `prefetched` event fires when the router has successfully prefetched a page.
 import { router } from '@inertiajs/vue3'
 
 router.on('prefetched', (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`)
+    console.log(`Prefetched ${event.detail.page.url}`)
 })
 ```
 
@@ -732,7 +732,7 @@ router.on('prefetched', (event) => {
 import { router } from '@inertiajs/react'
 
 router.on('prefetched', (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`)
+    console.log(`Prefetched ${event.detail.page.url}`)
 })
 ```
 
@@ -740,7 +740,7 @@ router.on('prefetched', (event) => {
 import { router } from '@inertiajs/svelte'
 
 router.on('prefetched', (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`)
+    console.log(`Prefetched ${event.detail.page.url}`)
 })
 ```
 

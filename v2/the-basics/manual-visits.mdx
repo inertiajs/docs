@@ -10,34 +10,34 @@ In addition to [creating links](/v2/the-basics/links), it's also possible to man
 import { router } from '@inertiajs/vue3'
 
 router.visit(url, {
-  method: 'get',
-  data: {},
-  replace: false,
-  preserveState: false,
-  preserveScroll: false,
-  only: [],
-  except: [],
-  headers: {},
-  errorBag: null,
-  forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
-  viewTransition: false,
-  onCancelToken: cancelToken => {},
-  onCancel: () => {},
-  onBefore: visit => {},
-  onStart: visit => {},
-  onProgress: progress => {},
-  onSuccess: page => {},
-  onError: errors => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    method: 'get',
+    data: {},
+    replace: false,
+    preserveState: false,
+    preserveScroll: false,
+    only: [],
+    except: [],
+    headers: {},
+    errorBag: null,
+    forceFormData: false,
+    queryStringArrayFormat: 'brackets',
+    async: false,
+    showProgress: true,
+    fresh: false,
+    reset: [],
+    preserveUrl: false,
+    prefetch: false,
+    viewTransition: false,
+    onCancelToken: cancelToken => {},
+    onCancel: () => {},
+    onBefore: visit => {},
+    onStart: visit => {},
+    onProgress: progress => {},
+    onSuccess: page => {},
+    onError: errors => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -45,34 +45,34 @@ router.visit(url, {
 import { router } from '@inertiajs/react'
 
 router.visit(url, {
-  method: 'get',
-  data: {},
-  replace: false,
-  preserveState: false,
-  preserveScroll: false,
-  only: [],
-  except: [],
-  headers: {},
-  errorBag: null,
-  forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
-  viewTransition: false,
-  onCancelToken: cancelToken => {},
-  onCancel: () => {},
-  onBefore: visit => {},
-  onStart: visit => {},
-  onProgress: progress => {},
-  onSuccess: page => {},
-  onError: errors => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    method: 'get',
+    data: {},
+    replace: false,
+    preserveState: false,
+    preserveScroll: false,
+    only: [],
+    except: [],
+    headers: {},
+    errorBag: null,
+    forceFormData: false,
+    queryStringArrayFormat: 'brackets',
+    async: false,
+    showProgress: true,
+    fresh: false,
+    reset: [],
+    preserveUrl: false,
+    prefetch: false,
+    viewTransition: false,
+    onCancelToken: cancelToken => {},
+    onCancel: () => {},
+    onBefore: visit => {},
+    onStart: visit => {},
+    onProgress: progress => {},
+    onSuccess: page => {},
+    onError: errors => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -80,34 +80,34 @@ router.visit(url, {
 import { router } from '@inertiajs/svelte'
 
 router.visit(url, {
-  method: 'get',
-  data: {},
-  replace: false,
-  preserveState: false,
-  preserveScroll: false,
-  only: [],
-  except: [],
-  headers: {},
-  errorBag: null,
-  forceFormData: false,
-  queryStringArrayFormat: 'brackets',
-  async: false,
-  showProgress: true,
-  fresh: false,
-  reset: [],
-  preserveUrl: false,
-  prefetch: false,
-  viewTransition: false,
-  onCancelToken: cancelToken => {},
-  onCancel: () => {},
-  onBefore: visit => {},
-  onStart: visit => {},
-  onProgress: progress => {},
-  onSuccess: page => {},
-  onError: errors => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    method: 'get',
+    data: {},
+    replace: false,
+    preserveState: false,
+    preserveScroll: false,
+    only: [],
+    except: [],
+    headers: {},
+    errorBag: null,
+    forceFormData: false,
+    queryStringArrayFormat: 'brackets',
+    async: false,
+    showProgress: true,
+    fresh: false,
+    reset: [],
+    preserveUrl: false,
+    prefetch: false,
+    viewTransition: false,
+    onCancelToken: cancelToken => {},
+    onCancel: () => {},
+    onBefore: visit => {},
+    onStart: visit => {},
+    onProgress: progress => {},
+    onSuccess: page => {},
+    onError: errors => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -256,11 +256,11 @@ You may use the `data` option to add data to the request.
 import { router } from '@inertiajs/vue3'
 
 router.visit('/users', {
-  method: 'post',
-  data: {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-  },
+    method: 'post',
+    data: {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+    },
 })
 ```
 
@@ -268,11 +268,11 @@ router.visit('/users', {
 import { router } from '@inertiajs/react'
 
 router.visit('/users', {
-  method: 'post',
-  data: {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-  },
+    method: 'post',
+    data: {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+    },
 })
 ```
 
@@ -280,11 +280,11 @@ router.visit('/users', {
 import { router } from '@inertiajs/svelte'
 
 router.visit('/users', {
-  method: 'post',
-  data: {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-  },
+    method: 'post',
+    data: {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+    },
 })
 ```
 
@@ -298,8 +298,8 @@ For convenience, the `get()`, `post()`, `put()`, and `patch()`methods all accept
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -307,8 +307,8 @@ router.post('/users', {
 import { router } from '@inertiajs/react'
 
 router.post('/users', {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -316,8 +316,8 @@ router.post('/users', {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -333,9 +333,9 @@ The `headers` option allows you to add custom headers to a request.
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  headers: {
-    'Custom-Header': 'value',
-  },
+    headers: {
+        'Custom-Header': 'value',
+    },
 })
 ```
 
@@ -343,9 +343,9 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  headers: {
-    'Custom-Header': 'value',
-  },
+    headers: {
+        'Custom-Header': 'value',
+    },
 })
 ```
 
@@ -353,9 +353,9 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  headers: {
-    'Custom-Header': 'value',
-  },
+    headers: {
+        'Custom-Header': 'value',
+    },
 })
 ```
 
@@ -374,17 +374,17 @@ import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 
 createInertiaApp({
-  // ...
-  defaults: {
-    visitOptions: (href, options) => {
-      return {
-        headers: {
-          ...options.headers,
-          'X-Custom-Header': 'value',
+    // ...
+    defaults: {
+        visitOptions: (href, options) => {
+            return {
+                headers: {
+                    ...options.headers,
+                    'X-Custom-Header': 'value',
+                },
+            }
         },
-      }
     },
-  },
 })
 ```
 
@@ -393,17 +393,17 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 
 createInertiaApp({
-  // ...
-  defaults: {
-    visitOptions: (href, options) => {
-      return {
-        headers: {
-          ...options.headers,
-          'X-Custom-Header': 'value',
+    // ...
+    defaults: {
+        visitOptions: (href, options) => {
+            return {
+                headers: {
+                    ...options.headers,
+                    'X-Custom-Header': 'value',
+                },
+            }
         },
-      }
     },
-  },
 })
 ```
 
@@ -411,17 +411,17 @@ createInertiaApp({
 import { createInertiaApp } from '@inertiajs/svelte'
 
 createInertiaApp({
-  // ...
-  defaults: {
-    visitOptions: (href, options) => {
-      return {
-        headers: {
-          ...options.headers,
-          'X-Custom-Header': 'value',
+    // ...
+    defaults: {
+        visitOptions: (href, options) => {
+            return {
+                headers: {
+                    ...options.headers,
+                    'X-Custom-Header': 'value',
+                },
+            }
         },
-      }
     },
-  },
 })
 ```
 
@@ -437,7 +437,7 @@ When making visits / requests that include files, Inertia will automatically con
 import { router } from '@inertiajs/vue3'
 
 router.post('/companies', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -445,7 +445,7 @@ router.post('/companies', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/companies', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -453,7 +453,7 @@ router.post('/companies', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/companies', data, {
-  forceFormData: true,
+    forceFormData: true,
 })
 ```
 
@@ -499,17 +499,17 @@ You can use the `router.push` and `router.replace` method to make client-side vi
 import { router } from '@inertiajs/vue3'
 
 router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
+    url: '/users',
+    component: 'Users',
+    props: { search: 'John' },
+    clearHistory: false,
+    encryptHistory: false,
+    preserveScroll: false,
+    preserveState: false,
+    errorBag: null,
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onFinish: (visit) => {},
 })
 ```
 
@@ -517,17 +517,17 @@ router.push({
 import { router } from '@inertiajs/react'
 
 router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
+    url: '/users',
+    component: 'Users',
+    props: { search: 'John' },
+    clearHistory: false,
+    encryptHistory: false,
+    preserveScroll: false,
+    preserveState: false,
+    errorBag: null,
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onFinish: (visit) => {},
 })
 ```
 
@@ -535,17 +535,17 @@ router.push({
 import { router } from '@inertiajs/svelte'
 
 router.push({
-  url: '/users',
-  component: 'Users',
-  props: { search: 'John' },
-  clearHistory: false,
-  encryptHistory: false,
-  preserveScroll: false,
-  preserveState: false,
-  errorBag: null,
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onFinish: (visit) => {},
+    url: '/users',
+    component: 'Users',
+    props: { search: 'John' },
+    clearHistory: false,
+    encryptHistory: false,
+    preserveScroll: false,
+    preserveState: false,
+    errorBag: null,
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onFinish: (visit) => {},
 })
 ```
 
@@ -565,7 +565,7 @@ import { router } from '@inertiajs/vue3'
 router.push({ url: '/users', component: 'Users' })
 
 router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
+    props: (currentProps) => ({ ...currentProps, search: 'John' })
 })
 ```
 
@@ -575,7 +575,7 @@ import { router } from '@inertiajs/react'
 router.push({ url: '/users', component: 'Users' })
 
 router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
+    props: (currentProps) => ({ ...currentProps, search: 'John' })
 })
 ```
 
@@ -585,7 +585,7 @@ import { router } from '@inertiajs/svelte'
 router.push({ url: '/users', component: 'Users' })
 
 router.replace({
-  props: (currentProps) => ({ ...currentProps, search: 'John' })
+    props: (currentProps) => ({ ...currentProps, search: 'John' })
 })
 ```
 
@@ -648,27 +648,27 @@ All three methods support dot notation for nested props and can accept a callbac
 import { router } from '@inertiajs/vue3'
 
 router.prependToProp('notifications', (current, props) => {
-  return {
-    id: Date.now(),
-    message: `Hello ${props.user.name}\
+    return {
+        id: Date.now(),
+        message: `Hello ${props.user.name}\
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
 router.prependToProp('notifications', (current, props) => {
-  return {
-    id: Date.now(),
-    message: `Hello ${props.user.name}\
+    return {
+        id: Date.now(),
+        message: `Hello ${props.user.name}\
 ```
 
 ```js Svelte icon="s"
 import { router } from '@inertiajs/svelte'
 
 router.prependToProp('notifications', (current, props) => {
-  return {
-    id: Date.now(),
-    message: `Hello ${props.user.name}\
+    return {
+        id: Date.now(),
+        message: `Hello ${props.user.name}\
 ```
 
 </CodeGroup>
@@ -737,7 +737,7 @@ You can also lazily evaluate the `preserveState` option based on the response by
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  preserveState: (page) => page.props.someProp === 'value',
+    preserveState: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -745,7 +745,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  preserveState: (page) => page.props.someProp === 'value',
+    preserveState: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -753,7 +753,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  preserveState: (page) => page.props.someProp === 'value',
+    preserveState: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -819,7 +819,7 @@ You can also lazily evaluate the `preserveScroll` option based on the response b
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -827,7 +827,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -835,7 +835,7 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  preserveScroll: (page) => page.props.someProp === 'value',
+    preserveScroll: (page) => page.props.someProp === 'value',
 })
 ```
 
@@ -907,7 +907,7 @@ You can cancel a visit using a cancel token, which Inertia automatically generat
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
+    onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
 })
 
 // Cancel the visit...
@@ -918,7 +918,7 @@ this.cancelToken.cancel()
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
+    onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
 })
 
 // Cancel the visit...
@@ -929,7 +929,7 @@ this.cancelToken.cancel()
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
+    onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
 })
 
 // Cancel the visit...
@@ -950,15 +950,15 @@ In addition to Inertia's [global events](/v2/advanced/events), Inertia also prov
 import { router } from '@inertiajs/vue3'
 
 router.post('/users', data, {
-  onBefore: (visit) => {},
-  onStart: (visit) => {},
-  onProgress: (progress) => {},
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onCancel: () => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    onBefore: (visit) => {},
+    onStart: (visit) => {},
+    onProgress: (progress) => {},
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onCancel: () => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -966,15 +966,15 @@ router.post('/users', data, {
 import { router } from '@inertiajs/react'
 
 router.post('/users', data, {
-  onBefore: (visit) => {},
-  onStart: (visit) => {},
-  onProgress: (progress) => {},
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onCancel: () => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    onBefore: (visit) => {},
+    onStart: (visit) => {},
+    onProgress: (progress) => {},
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onCancel: () => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -982,15 +982,15 @@ router.post('/users', data, {
 import { router } from '@inertiajs/svelte'
 
 router.post('/users', data, {
-  onBefore: (visit) => {},
-  onStart: (visit) => {},
-  onProgress: (progress) => {},
-  onSuccess: (page) => {},
-  onError: (errors) => {},
-  onCancel: () => {},
-  onFinish: visit => {},
-  onPrefetching: () => {},
-  onPrefetched: () => {},
+    onBefore: (visit) => {},
+    onStart: (visit) => {},
+    onProgress: (progress) => {},
+    onSuccess: (page) => {},
+    onError: (errors) => {},
+    onCancel: () => {},
+    onFinish: visit => {},
+    onPrefetching: () => {},
+    onPrefetched: () => {},
 })
 ```
 
@@ -1028,15 +1028,15 @@ It's also possible to return a promise from the `onSuccess()` and `onError()` ca
 import { router } from '@inertiajs/vue3'
 
 router.post(url, {
-  onSuccess: () => {
-    return Promise.all([
-      this.firstTask(),
-      this.secondTask()
-    ])
-  }
-  onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
-  },
+    onSuccess: () => {
+        return Promise.all([
+            this.firstTask(),
+            this.secondTask()
+        ])
+    }
+    onFinish: visit => {
+        // Not called until firstTask() and secondTask() have finished
+    },
 })
 ```
 
@@ -1044,15 +1044,15 @@ router.post(url, {
 import { router } from '@inertiajs/react'
 
 router.post(url, {
-  onSuccess: () => {
-    return Promise.all([
-      this.firstTask(),
-      this.secondTask()
-    ])
-  }
-  onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
-  },
+    onSuccess: () => {
+        return Promise.all([
+            this.firstTask(),
+            this.secondTask()
+        ])
+    }
+    onFinish: visit => {
+        // Not called until firstTask() and secondTask() have finished
+    },
 })
 ```
 
@@ -1060,15 +1060,15 @@ router.post(url, {
 import { router } from '@inertiajs/svelte'
 
 router.post(url, {
-  onSuccess: () => {
-    return Promise.all([
-      this.firstTask(),
-      this.secondTask()
-    ])
-  }
-  onFinish: visit => {
-    // Not called until firstTask() and secondTask() have finished
-  },
+    onSuccess: () => {
+        return Promise.all([
+            this.firstTask(),
+            this.secondTask()
+        ])
+    }
+    onFinish: visit => {
+        // Not called until firstTask() and secondTask() have finished
+    },
 })
 ```
 

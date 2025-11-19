@@ -20,9 +20,9 @@ However, if you need to handle CSRF protection manually, one approach is to incl
 import { router } from '@inertiajs/vue2'
 
 router.post('/users', {
-  _token: this.$page.props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: this.$page.props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -32,9 +32,9 @@ import { router, usePage } from '@inertiajs/vue3'
 const page = usePage()
 
 router.post('/users', {
-  _token: page.props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: page.props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -44,9 +44,9 @@ import { router, usePage } from '@inertiajs/react'
 const props = usePage().props
 
 router.post('/users', {
-  _token: props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
@@ -54,9 +54,9 @@ router.post('/users', {
 import { page, router } from '@inertiajs/svelte'
 
 router.post('/users', {
-  _token: $page.props.csrf_token,
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+    _token: $page.props.csrf_token,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
 })
 ```
 
