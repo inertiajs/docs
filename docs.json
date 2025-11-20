@@ -3,9 +3,7 @@
     "theme": "linden",
     "name": "Inertia.js Documentation",
     "colors": {
-        "primary": "#2563EB",
-        "light": "#2563EB",
-        "dark": "#2563EB"
+        "primary": "#2563EB"
     },
     "favicon": "/favicon.svg",
     "fonts": {
