@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export const SvelteSpecific = ({ children }) => {
     const [code, setCode] = useState(
-        localStorage.getItem("code").replace(/"/g, "") || null,
+        localStorage.getItem("code")?.replace(/"/g, "") || null,
     );
 
     const callback = useCallback((event) => {
