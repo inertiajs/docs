@@ -211,7 +211,7 @@ Next, let's update the `start` event listener to start a new timeout that will s
 
 ```js
 router.on('start', () => {
-timeout = setTimeout(() => NProgress.start(), 250)
+    timeout = setTimeout(() => NProgress.start(), 250)
 })
 ```
 
@@ -233,7 +233,7 @@ router.on('finish', (event) => {
     if (!NProgress.isStarted()) {
         return
     }
-// ...
+    // ...
 })
 ```
 

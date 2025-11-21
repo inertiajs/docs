@@ -14,31 +14,31 @@ Vite enables code splitting (or lazy-loading as they call it) by default when us
 
 <CodeGroup>
 
-```diff Vue icon="vuejs"
-    resolve: name => {
--   const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
--   return pages[`./Pages/${name}.vue`]
-+   const pages = import.meta.glob('./Pages/**/*.vue')
-+   return pages[`./Pages/${name}.vue`]()
-    },
+```js Vue icon="vuejs"
+resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true }) // [!code --:2]
+    return pages[`./Pages/${name}.vue`]
+    const pages = import.meta.glob('./Pages/**/*.vue') // [!code ++:2]
+    return pages[`./Pages/${name}.vue`]()
+},
 ```
 
-```diff React icon="react"
-    resolve: name => {
--   const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
--   return pages[`./Pages/${name}.jsx`]
-+   const pages = import.meta.glob('./Pages/**/*.jsx')
-+   return pages[`./Pages/${name}.jsx`]()
-    },
+```js React icon="react"
+resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true }) // [!code --:2]
+    return pages[`./Pages/${name}.jsx`]
+    const pages = import.meta.glob('./Pages/**/*.jsx') // [!code ++:2]
+    return pages[`./Pages/${name}.jsx`]()
+},
 ```
 
-```diff Svelte icon="s"
-    resolve: name => {
--   const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
--   return pages[`./Pages/${name}.svelte`]
-+   const pages = import.meta.glob('./Pages/**/*.svelte')
-+   return pages[`./Pages/${name}.svelte`]()
-    },
+```js Svelte icon="s"
+resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true }) // [!code --:2]
+    return pages[`./Pages/${name}.svelte`]
+    const pages = import.meta.glob('./Pages/**/*.svelte') // [!code ++:2]
+    return pages[`./Pages/${name}.svelte`]()
+},
 ```
 
 </CodeGroup>
@@ -65,19 +65,19 @@ Finally, update the `resolve` callback in your app's initialization code to use 
 
 <CodeGroup>
 
-```diff Vue icon="vuejs"
-- resolve: name => require(`./Pages/${name}`),
-+ resolve: name => import(`./Pages/${name}`),
+```js Vue icon="vuejs"
+resolve: name => require(`./Pages/${name}`), // [!code --]
+resolve: name => import(`./Pages/${name}`), // [!code ++]
 ```
 
-```diff React icon="react"
-- resolve: name => require(`./Pages/${name}`),
-+ resolve: name => import(`./Pages/${name}`),
+```js React icon="react"
+resolve: name => require(`./Pages/${name}`), // [!code --]
+resolve: name => import(`./Pages/${name}`), // [!code ++]
 ```
 
-```diff Svelte icon="s"
-- resolve: name => require(`./Pages/${name}.svelte`),
-+ resolve: name => import(`./Pages/${name}.svelte`),
+```js Svelte icon="s"
+resolve: name => require(`./Pages/${name}.svelte`), // [!code --]
+resolve: name => import(`./Pages/${name}.svelte`), // [!code ++]
 ```
 
 </CodeGroup>

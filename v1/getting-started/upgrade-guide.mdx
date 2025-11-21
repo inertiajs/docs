@@ -74,123 +74,123 @@ Here is a complete list of all the import changes:
 
 <CodeGroup>
 
-```diff Vue 2
-- import { Inertia } from '@inertiajs/inertia'
-+ import { router } from '@inertiajs/vue2'
+```js Vue 2
+import { Inertia } from '@inertiajs/inertia' // [!code --]
+import { router } from '@inertiajs/vue2' // [!code ++]
 
-- import createServer from '@inertiajs/server'
-+ import createServer from '@inertiajs/vue2/server'
+import createServer from '@inertiajs/server' // [!code --]
+import createServer from '@inertiajs/vue2/server' // [!code ++]
 
-- import { createInertiaApp } from '@inertiajs/inertia-vue'
-- import { App } from '@inertiajs/inertia-vue'
-- import { app } from '@inertiajs/inertia-vue'
-- import { InertiaApp } from '@inertiajs/inertia-vue'
-- import { plugin } from '@inertiajs/inertia-vue'
-+ import { createInertiaApp } from '@inertiajs/vue2'
+import { createInertiaApp } from '@inertiajs/inertia-vue' // [!code --:5]
+import { App } from '@inertiajs/inertia-vue'
+import { app } from '@inertiajs/inertia-vue'
+import { InertiaApp } from '@inertiajs/inertia-vue'
+import { plugin } from '@inertiajs/inertia-vue'
+import { createInertiaApp } from '@inertiajs/vue2' // [!code ++]
 
-- import { Head } from '@inertiajs/inertia-vue'
-- import { InertiaHead } from '@inertiajs/inertia-vue'
-+ import { Head } from '@inertiajs/vue2'
+import { Head } from '@inertiajs/inertia-vue' // [!code --:2]
+import { InertiaHead } from '@inertiajs/inertia-vue'
+import { Head } from '@inertiajs/vue2' // [!code ++]
 
-- import { Link } from '@inertiajs/inertia-vue'
-- import { link } from '@inertiajs/inertia-vue'
-- import { InertiaLink } from '@inertiajs/inertia-vue'
-+ import { Link } from '@inertiajs/vue2'
+import { Link } from '@inertiajs/inertia-vue' // [!code --:3]
+import { link } from '@inertiajs/inertia-vue'
+import { InertiaLink } from '@inertiajs/inertia-vue'
+import { Link } from '@inertiajs/vue2' // [!code ++]
 ```
 
-```diff Vue 3
-- import { Inertia } from '@inertiajs/inertia'
-+ import { router } from '@inertiajs/vue3'
+```js Vue 3
+import { Inertia } from '@inertiajs/inertia' // [!code --]
+import { router } from '@inertiajs/vue3' // [!code ++]
 
-- import createServer from '@inertiajs/server'
-+ import createServer from '@inertiajs/vue3/server'
+import createServer from '@inertiajs/server' // [!code --]
+import createServer from '@inertiajs/vue3/server' // [!code ++]
 
-- import { createInertiaApp } from '@inertiajs/inertia-vue3'
-- import { App } from '@inertiajs/inertia-vue3'
-- import { app } from '@inertiajs/inertia-vue3'
-- import { plugin } from '@inertiajs/inertia-vue3'
-- import { InertiaApp } from '@inertiajs/inertia-vue3'
-+ import { createInertiaApp } from '@inertiajs/vue3'
+import { createInertiaApp } from '@inertiajs/inertia-vue3' // [!code --:5]
+import { App } from '@inertiajs/inertia-vue3'
+import { app } from '@inertiajs/inertia-vue3'
+import { plugin } from '@inertiajs/inertia-vue3'
+import { InertiaApp } from '@inertiajs/inertia-vue3'
+import { createInertiaApp } from '@inertiajs/vue3' // [!code ++]
 
-- import { usePage } from '@inertiajs/inertia-vue3'
-+ import { usePage } from '@inertiajs/vue3'
+import { usePage } from '@inertiajs/inertia-vue3' // [!code --]
+import { usePage } from '@inertiajs/vue3' // [!code ++]
 
-- import { useForm } from '@inertiajs/inertia-vue3'
-+ import { useForm } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/inertia-vue3' // [!code --]
+import { useForm } from '@inertiajs/vue3' // [!code ++]
 
-- import { useRemember } from '@inertiajs/inertia-vue3'
-+ import { useRemember } from '@inertiajs/vue3'
+import { useRemember } from '@inertiajs/inertia-vue3' // [!code --]
+import { useRemember } from '@inertiajs/vue3' // [!code ++]
 
-- import { Head } from '@inertiajs/inertia-vue3'
-- import { InertiaHead } from '@inertiajs/inertia-vue3'
-+ import { Head } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/inertia-vue3' // [!code --:2]
+import { InertiaHead } from '@inertiajs/inertia-vue3'
+import { Head } from '@inertiajs/vue3' // [!code ++]
 
-- import { Link } from '@inertiajs/inertia-vue3'
-- import { link } from '@inertiajs/inertia-vue3'
-- import { InertiaLink } from '@inertiajs/inertia-vue3'
-+ import { Link } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/inertia-vue3' // [!code --:3]
+import { link } from '@inertiajs/inertia-vue3'
+import { InertiaLink } from '@inertiajs/inertia-vue3'
+import { Link } from '@inertiajs/vue3' // [!code ++]
 ```
 
-```diff React icon="react"
-- import { Inertia } from '@inertiajs/inertia'
-+ import { router } from '@inertiajs/react'
+```js React icon="react"
+import { Inertia } from '@inertiajs/inertia' // [!code --]
+import { router } from '@inertiajs/react' // [!code ++]
 
-- import createServer from '@inertiajs/server'
-+ import createServer from '@inertiajs/react/server'
+import createServer from '@inertiajs/server' // [!code --]
+import createServer from '@inertiajs/react/server' // [!code ++]
 
-- import { createInertiaApp } from '@inertiajs/inertia-react'
-- import { App } from '@inertiajs/inertia-react'
-- import { app } from '@inertiajs/inertia-react'
-- import { InertiaApp } from '@inertiajs/inertia-react'
-+ import { createInertiaApp } from '@inertiajs/react'
+import { createInertiaApp } from '@inertiajs/inertia-react' // [!code --:4]
+import { App } from '@inertiajs/inertia-react'
+import { app } from '@inertiajs/inertia-react'
+import { InertiaApp } from '@inertiajs/inertia-react'
+import { createInertiaApp } from '@inertiajs/react' // [!code ++]
 
-- import { usePage } from '@inertiajs/inertia-react'
-+ import { usePage } from '@inertiajs/react'
+import { usePage } from '@inertiajs/inertia-react' // [!code --]
+import { usePage } from '@inertiajs/react' // [!code ++]
 
-- import { useForm } from '@inertiajs/inertia-react'
-+ import { useForm } from '@inertiajs/react'
+import { useForm } from '@inertiajs/inertia-react' // [!code --]
+import { useForm } from '@inertiajs/react' // [!code ++]
 
-- import { useRemember } from '@inertiajs/inertia-react'
-- import { useRememberedState } from '@inertiajs/inertia-react'
-+ import { useRemember } from '@inertiajs/react'
+import { useRemember } from '@inertiajs/inertia-react' // [!code --:2]
+import { useRememberedState } from '@inertiajs/inertia-react'
+import { useRemember } from '@inertiajs/react' // [!code ++]
 
-- import { Head } from '@inertiajs/inertia-react'
-- import { InertiaHead } from '@inertiajs/inertia-react'
-+ import { Head } from '@inertiajs/react'
+import { Head } from '@inertiajs/inertia-react' // [!code --:2]
+import { InertiaHead } from '@inertiajs/inertia-react'
+import { Head } from '@inertiajs/react' // [!code ++]
 
-- import { Link } from '@inertiajs/inertia-react'
-- import { link } from '@inertiajs/inertia-react'
-- import { InertiaLink } from '@inertiajs/inertia-react'
-+ import { Link } from '@inertiajs/react'
+import { Link } from '@inertiajs/inertia-react' // [!code --:3]
+import { link } from '@inertiajs/inertia-react'
+import { InertiaLink } from '@inertiajs/inertia-react'
+import { Link } from '@inertiajs/react' // [!code ++]
 ```
 
-```diff Svelte icon="s"
-- import { Inertia } from '@inertiajs/inertia'
-+ import { router } from '@inertiajs/svelte'
+```js Svelte icon="s"
+import { Inertia } from '@inertiajs/inertia' // [!code --]
+import { router } from '@inertiajs/svelte' // [!code ++]
 
-- import { createInertiaApp } from '@inertiajs/inertia-svelte'
-- import { App } from '@inertiajs/inertia-svelte'
-- import { app } from '@inertiajs/inertia-svelte'
-- import { InertiaApp } from '@inertiajs/inertia-svelte'
-+ import { createInertiaApp } from '@inertiajs/svelte'
+import { createInertiaApp } from '@inertiajs/inertia-svelte' // [!code --:4]
+import { App } from '@inertiajs/inertia-svelte'
+import { app } from '@inertiajs/inertia-svelte'
+import { InertiaApp } from '@inertiajs/inertia-svelte'
+import { createInertiaApp } from '@inertiajs/svelte' // [!code ++]
 
-- import { page } from '@inertiajs/inertia-svelte'
-+ import { page } from '@inertiajs/svelte'
+import { page } from '@inertiajs/inertia-svelte' // [!code --]
+import { page } from '@inertiajs/svelte' // [!code ++]
 
-- import { inertia } from '@inertiajs/inertia-svelte'
-+ import { inertia } from '@inertiajs/svelte'
+import { inertia } from '@inertiajs/inertia-svelte' // [!code --]
+import { inertia } from '@inertiajs/svelte' // [!code ++]
 
-- import { useForm } from '@inertiajs/inertia-svelte'
-+ import { useForm } from '@inertiajs/svelte'
+import { useForm } from '@inertiajs/inertia-svelte' // [!code --]
+import { useForm } from '@inertiajs/svelte' // [!code ++]
 
-- import { useRemember } from '@inertiajs/inertia-svelte'
-- import { remember } from '@inertiajs/inertia-svelte'
-+ import { remember } from '@inertiajs/svelte'
+import { useRemember } from '@inertiajs/inertia-svelte' // [!code --:2]
+import { remember } from '@inertiajs/inertia-svelte'
+import { remember } from '@inertiajs/svelte' // [!code ++]
 
-- import { Link } from '@inertiajs/inertia-svelte'
-- import { link } from '@inertiajs/inertia-svelte'
-- import { InertiaLink } from '@inertiajs/inertia-svelte'
-+ import { Link } from '@inertiajs/svelte'
+import { Link } from '@inertiajs/inertia-svelte' // [!code --:3]
+import { link } from '@inertiajs/inertia-svelte'
+import { InertiaLink } from '@inertiajs/inertia-svelte'
+import { Link } from '@inertiajs/svelte' // [!code ++]
 ```
 
 </CodeGroup>
@@ -225,9 +225,9 @@ npm remove @inertiajs/progress
 
 Next, remove the `InertiaProgress` import and `InertiaProgress.init()` call, as they are no longer required.
 
-```diff
-- import { InertiaProgress } from '@inertiajs/progress'
-- InertiaProgress.init()
+```js
+import { InertiaProgress } from '@inertiajs/progress' // [!code --:2]
+InertiaProgress.init()
 ```
 
 Finally, if you have defined any progress customizations, you can move them to the `progress`property of the `createInertiaApp()` helper.
@@ -254,13 +254,13 @@ createInertiaApp({
 
 We've removed the previously deprecated lowercase `app` argument from the `setup()` method in `createInertiaApp()`. Use `App` instead.
 
-```diff
+```js
 createInertiaApp({
     // ...
--   setup({ app, props }) {
-+   setup({ App, props }) {
-    // ...
-},
+    setup({ app, props }) { // [!code --]
+    setup({ App, props }) { // [!code ++]
+        // ...
+    },
 })
 ```
 
@@ -270,8 +270,8 @@ In the Vue 3 adapter, we simplified the `usePage()` hook to no longer require ad
 
 If you're using the `usePage()` hook, remove all instances of `.value`.
 
-```diff
+```js
 import { computed } from 'vue'
-- const appName = computed(() => usePage().props.value.appName)
-+ const appName = computed(() => usePage().props.appName)
+const appName = computed(() => usePage().props.value.appName) // [!code --]
+const appName = computed(() => usePage().props.appName) // [!code ++]
 ```

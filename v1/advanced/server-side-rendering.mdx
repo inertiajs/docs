@@ -154,12 +154,12 @@ When creating this file, be sure to add anything that's missing from your `app.j
 
 Next, we need to update our Vite configuration to build our new `ssr.js` file. We can do this by adding a `ssr` property to Laravel's Vite plugin configuration in our `vite.config.js`file.
 
-```diff
+```js
 export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
-+           ssr: 'resources/js/ssr.js',
+            ssr: 'resources/js/ssr.js', // [!code ++]
             refresh: true,
         }),
         // ...
@@ -171,11 +171,11 @@ export default defineConfig({
 
 Next, let's update the `build` script in our `package.json` file to also build our new `ssr.js` file.
 
-```diff
+```json
 "scripts": {
     "dev": "vite",
--   "build": "vite build"
-+   "build": "vite build && vite build --ssr"
+    "build": "vite build" // [!code --]
+    "build": "vite build && vite build --ssr" // [!code ++]
 },
 ```
 
@@ -215,62 +215,62 @@ Since your website is now being server-side rendered, you can instruct <VueSpeci
 // No changes required
 ```
 
-```diff Vue 3
-- import { createApp, h } from 'vue'
-+ import { createSSRApp, h } from 'vue'
-    import { createInertiaApp } from '@inertiajs/vue3'
+```js Vue 3
+import { createApp, h } from 'vue' // [!code --]
+import { createSSRApp, h } from 'vue' // [!code ++]
+import { createInertiaApp } from '@inertiajs/vue3'
 
-    createInertiaApp({
-        resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-            return pages[`./Pages/${name}.vue`]
-        },
-        setup({ el, App, props, plugin }) {
--     createApp({ render: () => h(App, props) })
-+     createSSRApp({ render: () => h(App, props) })
-                .use(plugin)
-                .mount(el)
-        },
-    })
+createInertiaApp({
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+        return pages[`./Pages/${name}.vue`]
+    },
+    setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) }) // [!code --]
+        createSSRApp({ render: () => h(App, props) }) // [!code ++]
+            .use(plugin)
+            .mount(el)
+    },
+})
 ```
 
-```diff React icon="react"
-    import { createInertiaApp } from '@inertiajs/react'
-- import { createRoot } from 'react-dom/client'
-+ import { hydrateRoot } from 'react-dom/client'
+```js React icon="react"
+import { createInertiaApp } from '@inertiajs/react'
+import { createRoot } from 'react-dom/client' // [!code --]
+import { hydrateRoot } from 'react-dom/client' // [!code ++]
 
-    createInertiaApp({
-        resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-            return pages[`./Pages/${name}.jsx`]
-        },
-        setup({ el, App, props }) {
--     createRoot(el).render(<App {...props} />)
-+     hydrateRoot(el, <App {...props} />)
-        },
-    })
+createInertiaApp({
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
+        return pages[`./Pages/${name}.jsx`]
+    },
+    setup({ el, App, props }) {
+        createRoot(el).render(<App {...props} />) // [!code --]
+        hydrateRoot(el, <App {...props} />) // [!code ++]
+    },
+})
 ```
 
-```diff Svelte icon="s"
-    import { svelte } from '@sveltejs/vite-plugin-svelte'
-    import laravel from 'laravel-vite-plugin'
-    import { defineConfig } from 'vite'
+```js Svelte icon="s"
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import laravel from 'laravel-vite-plugin'
+import { defineConfig } from 'vite'
 
-    export default defineConfig({
-        plugins: [
-            laravel.default({
-                input: ['resources/css/app.css', 'resources/js/app.js'],
-                ssr: 'resources/js/ssr.js',
-                refresh: true,
-            }),
--     svelte(),
-+     svelte({
-+       compilerOptions: {
-+         hydratable: true,
-+       },
-+     }),
-        ],
-    })
+export default defineConfig({
+    plugins: [
+        laravel.default({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            ssr: 'resources/js/ssr.js',
+            refresh: true,
+        }),
+        svelte(), // [!code --]
+        svelte({ // [!code ++:5]
+            compilerOptions: {
+                hydratable: true,
+            },
+        }),
+    ],
+})
 ```
 
 </CodeGroup>
@@ -279,21 +279,21 @@ Since your website is now being server-side rendered, you can instruct <VueSpeci
 
 You'll also need to enable hydration in your `app.js` file:
 
-```diff
-   import { createInertiaApp } from '@inertiajs/svelte'
+```js
+import { createInertiaApp } from '@inertiajs/svelte'
 
-   createInertiaApp({
-     resolve: name => {
-       const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-       return pages[`./Pages/${name}.svelte`]
-     },
--   setup({ el, App, props }) {
--     new App({ target: el, props })
--   },
-+   setup({ el, App }) {
-+     new App({ target: el, hydrate: true })
-+   },
-   })
+createInertiaApp({
+    resolve: name => {
+        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
+        return pages[`./Pages/${name}.svelte`]
+    },
+    setup({ el, App, props }) { // [!code --:3]
+        new App({ target: el, props })
+    },
+    setup({ el, App }) { // [!code ++:3]
+        new App({ target: el, hydrate: true })
+    },
+})
 ```
 
 </SvelteSpecific>
