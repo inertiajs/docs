@@ -327,7 +327,7 @@ createInertiaApp({
     },
     setup({ el, App, props }) {
         mount(App, { target: el, props }) // [!code --]
-        if (el.dataset.serverRendered === 'true') { // [!code ++:4]
+        if (el.dataset.serverRendered === 'true') { // [!code ++:5]
             hydrate(App, { target: el, props })
         } else {
             mount(App, { target: el, props })
@@ -355,7 +355,7 @@ export default defineConfig({
             refresh: true,
         }),
         svelte(), // [!code --]
-        svelte({ // [!code ++:4]
+        svelte({ // [!code ++:5]
             compilerOptions: {
                 hydratable: true,
             },
