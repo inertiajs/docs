@@ -62,7 +62,7 @@ The easiest way to implement this is using server-side middleware. Simply includ
 
 When a CSRF token mismatch occurs, your server-side framework will likely throw an exception that results in an error response. For example, when using Laravel, a `TokenMismatchException` is thrown which results in a `419` error page. Since that isn't a valid Inertia response, the error is shown in a modal.
 
-<video controls><source src="/mp4/csrf-mismatch-modal.mp4" type="video/mp4"></source></video>
+<video controls className="w-full rounded-xl" src="/mp4/csrf-mismatch-modal.mp4"></video>
 
 Obviously, this isn't a great user experience. A better way to handle these errors is to return a redirect back to the previous page, along with a flash message that the page expired. This will result in a valid Inertia response with the flash message available as a prop which you can then display to the user. Of course, you'll need to share your [flash messages](/shared-data#flash-messages) with Inertia for this to work.
 
@@ -86,4 +86,4 @@ use Symfony\Component\HttpFoundation\Response;
 
 The end result is a much better experience for your users. Instead of seeing the error modal, the user is instead presented with a message that the page "expired" and are asked to try again.
 
-<video controls><source src="/mp4/csrf-mismatch-warning.mp4" type="video/mp4"></source></video>
+<video controls className="w-full rounded-xl" src="/mp4/csrf-mismatch-warning.mp4"></video>
