@@ -10,7 +10,15 @@ The very first request to an Inertia app is just a regular, full-page browser re
 
 This HTML response includes the site assets (CSS, JavaScript) as well as a root `<div>` in the page's body. The root `<div>` serves as a mounting point for the client-side app, and includes a `data-page` attribute with a JSON encoded [page object](#the-page-object) for the initial page. Inertia uses this information to boot your client-side framework and display the initial page component.
 
-```html
+```http
+REQUEST
+GET: http://example.com/events/80
+Accept: text/html, application/xhtml+xml
+
+RESPONSE
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+
 <html>
     <head>
         <title>My app</title>
@@ -18,7 +26,7 @@ This HTML response includes the site assets (CSS, JavaScript) as well as a root 
         <script src="/js/app.js" defer></script>
     </head>
     <body>
-        <div id="app" data-page='{"component":"Event","props":{"event":{"id":80,"title":"Birthday party","start_date":"2019-06-02","description":"Come out and celebrate Jonathan&apos;s 36th birthday party!"}},"url":"/events/80","version":"c32b8e4965f418ad16eaebba1d4e960f"}'></div>
+        <div id="app" data-page='{"component":"Event","props":{"errors":{},"event":{"id":80,"title":"Birthday party","start_date":"2019-06-02","description":"Come out and celebrate Jonathan&apos;s 36th birthday party!"}},"url":"/events/80","version":"c32b8e4965f418ad16eaebba1d4e960f"}'></div>
     </body>
 </html>
 ```
@@ -31,10 +39,24 @@ Once the Inertia app has been booted, all subsequent requests to the site are ma
 
 When the server detects the `X-Inertia` header, instead of responding with a full HTML document, it returns a JSON response with an encoded [page object](#the-page-object).
 
-```json
+```http
+REQUEST
+GET: http://example.com/events/80
+Accept: text/html, application/xhtml+xml
+X-Requested-With: XMLHttpRequest
+X-Inertia: true
+X-Inertia-Version: 6b16b94d7c51cbe5b1fa42aac98241d5
+
+RESPONSE
+HTTP/1.1 200 OK
+Content-Type: application/json
+Vary: X-Inertia
+X-Inertia: true
+
 {
     "component": "Event",
     "props": {
+        "errors": {},
         "event": {
             "id": 80,
             "title": "Birthday party",
@@ -126,7 +148,7 @@ Inertia shares data between the server and client via a page object. This object
 </ParamField>
 
 <ParamField body="props" type="object">
-  The page props (data).
+  The page props. Contains all of the page data along with an `errors` object (defaults to `{}` if there are no errors).
 </ParamField>
 
 <ParamField body="url" type="string">
@@ -179,6 +201,7 @@ A minimal page object contains the core properties.
 {
     "component": "User/Edit",
     "props": {
+        "errors": {},
         "user": {
             "name": "Jonathan"
         }
@@ -198,6 +221,7 @@ When using deferred props, the page object includes a `deferredProps` configurat
 {
     "component": "Posts/Index",
     "props": {
+        "errors": {},
         "user": {
             "name": "Jonathan"
         }
@@ -226,6 +250,7 @@ When using merge props, additional configuration is included.
 {
     "component": "Feed/Index",
     "props": {
+        "errors": {},
         "user": {
             "name": "Jonathan"
         },
@@ -277,12 +302,13 @@ When using merge props, additional configuration is included.
 
 ### Page Object with Scroll Props
 
-When using [Infinite scroll](/v2/data-props/infinite-scroll), the page object includes a `scrollProps`configuration.
+When using [Infinite scroll](/v2/data-props/infinite-scroll), the page object includes a `scrollProps` configuration.
 
 ```json
 {
     "component": "Posts/Index",
     "props": {
+        "errors": {},
         "posts": {
             "data": [
                 {
@@ -325,12 +351,25 @@ Whenever an Inertia request is made, Inertia will include the current asset vers
 If the asset versions are the same, the request simply continues as expected. However, if the asset versions are different, the server immediately returns a `409 Conflict` response, and includes the URL in a `X-Inertia-Location` header. This header is necessary, since server-side redirects may have occurred. This tells Inertia what the final intended destination URL is.
 
 <Tip>
-Note, `409 Conflict` responses are only sent for `GET` requests, and not for `POST/PUT/PATCH/DELETE` requests. That said, they will be sent in the event that a `GET`redirect occurs after one of these requests.
+Note, `409 Conflict` responses are only sent for `GET` requests, and not for `POST/PUT/PATCH/DELETE` requests. That said, they will be sent in the event that a `GET` redirect occurs after one of these requests.
 </Tip>
 
 When the Inertia client receives a `409 Conflict` response, it checks for the presence of the `X-Inertia-Location` header. If this header exists, Inertia performs a full-page visit to the URL specified in the header. This ensures that the user always has the latest assets loaded.
 
 If "flash" session data exists when a `409 Conflict` response occurs, Inertia's server-side framework adapters will automatically reflash this data.
+
+```http
+REQUEST
+GET: http://example.com/events/80
+Accept: text/html, application/xhtml+xml
+X-Requested-With: XMLHttpRequest
+X-Inertia: true
+X-Inertia-Version: 6b16b94d7c51cbe5b1fa42aac98241d5
+
+RESPONSE
+409: Conflict
+X-Inertia-Location: http://example.com/events/80
+```
 
 You can read more about this on the [asset versioning](/v2/advanced/asset-versioning) page.
 
@@ -338,20 +377,35 @@ You can read more about this on the [asset versioning](/v2/advanced/asset-versio
 
 When making Inertia requests, the partial reload option allows you to request a subset of the props (data) from the server on subsequent visits to the *same* page component. This can be a helpful performance optimization if it's acceptable that some page data becomes stale. See the [partial reloads](/v2/data-props/partial-reloads) documentation for details.
 
-When a partial reload request is made, Inertia includes two additional headers with the request: `X-Inertia-Partial-Data` and `X-Inertia-Partial-Component`.
+When a partial reload request is made, Inertia includes the `X-Inertia-Partial-Component` header and may include `X-Inertia-Partial-Data` and/or `X-Inertia-Partial-Except` headers with the request.
 
 The `X-Inertia-Partial-Data` header is a comma separated list of the desired props (data) keys that should be returned.
 
+The `X-Inertia-Partial-Except` header is a comma separated list of the props (data) keys that should not be returned. When only the `X-Inertia-Partial-Except` header is included, all props (data) except those listed will be sent. If both `X-Inertia-Partial-Data` and `X-Inertia-Partial-Except` headers are included, the `X-Inertia-Partial-Except` header will take precedence.
+
 The `X-Inertia-Partial-Component` header includes the name of the component that is being partially reloaded. This is necessary, since partial reloads only work for requests made to the same page component. If the final destination is different for some reason (eg. the user was logged out and is now on the login page), then no partial reloading will occur.
 
-```json
+```http
+REQUEST
+GET: http://example.com/events
+Accept: text/html, application/xhtml+xml
+X-Requested-With: XMLHttpRequest
+X-Inertia: true
+X-Inertia-Version: 6b16b94d7c51cbe5b1fa42aac98241d5
+X-Inertia-Partial-Data: events
+X-Inertia-Partial-Component: Events
+
+RESPONSE
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
     "component": "Events",
     "props": {
-        "auth": {...},
-        // NOT included
+        "auth": {...},       // NOT included
         "categories": [...], // NOT included
-        "events": [...]      // included
+        "events": [...],     // included
+        "errors": {}         // always included
     },
     "url": "/events/80",
     "version": "6b16b94d7c51cbe5b1fa42aac98241d5"
