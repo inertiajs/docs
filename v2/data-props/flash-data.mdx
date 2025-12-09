@@ -1,0 +1,231 @@
+---
+title: Flash Data
+---
+
+Flash data lets you send one-time data to the frontend. Unlike regular props, flash data isn't persisted in browser history state, so it won't reappear when navigating through history.
+
+## Flashing Data
+
+You may flash data using the `Inertia::flash()` method.
+
+```php
+public function store(Request $request)
+{
+    $user = User::create($request->validated());
+
+    Inertia::flash('toast', [
+        'type' => 'success',
+        'message' => 'User created successfully!',
+    ]);
+
+    return back();
+}
+```
+
+You may chain `back()` directly onto the `flash()` call.
+
+```php
+return Inertia::flash('newUserId', $user->id)->back();
+```
+
+You may also chain `flash()` onto `render()`, or vice versa.
+
+```php
+return Inertia::render('Projects/Index', [
+    'projects' => $projects,
+])->flash('highlight', $project->id);
+
+// Or...
+
+return Inertia::flash('highlight', $project->id)
+    ->render('Projects/Index', ['projects' => $projects]);
+```
+
+Flash data is scoped to the current request. When redirecting, the middleware automatically persists it to the session.
+
+## Accessing Flash Data
+
+Flash data is available on `page.flash`. You may also listen for the global `flash` event or use the `onFlash` callback.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+<script setup>
+import { usePage } from "@inertiajs/vue3";
+
+const page = usePage();
+</script>
+
+<template>
+  <div v-if="page.flash?.toast" class="toast">
+    {{ page.flash.toast.message }}
+  </div>
+</template>
+```
+
+```jsx React icon="react"
+import { usePage } from "@inertiajs/react";
+
+export default function Layout({ children }) {
+  const { flash } = usePage();
+
+  return (
+    <>
+      {flash?.toast && <div className="toast">{flash.toast.message}</div>}
+      {children}
+    </>
+  );
+}
+```
+
+```svelte Svelte icon="s"
+<script>
+    import { page } from '@inertiajs/svelte'
+</script>
+
+{#if $page.flash?.toast}
+    <div class="toast">{$page.flash.toast.message}</div>
+{/if}
+```
+
+</CodeGroup>
+
+## The onFlash Callback
+
+You may use the `onFlash` callback to handle flash data when making visits.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+router.post("/users", data, {
+  onFlash: ({ newUserId }) => {
+    form.userId = newUserId;
+  },
+});
+```
+
+```js React icon="react"
+import { router } from "@inertiajs/react";
+
+router.post("/users", data, {
+  onFlash: ({ newUserId }) => {
+    form.userId = newUserId;
+  },
+});
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+router.post("/users", data, {
+  onFlash: ({ newUserId }) => {
+    form.userId = newUserId;
+  },
+});
+```
+
+</CodeGroup>
+
+## Global Flash Event
+
+You may use the global `flash` event to handle flash data in a central location, such as a layout component. For more information on events, see the [events documentation](/v2/advanced/events).
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+router.on("flash", (event) => {
+  if (event.detail.flash.toast) {
+    showToast(event.detail.flash.toast);
+  }
+});
+```
+
+```js React icon="react"
+import { router } from "@inertiajs/react";
+
+router.on("flash", (event) => {
+  if (event.detail.flash.toast) {
+    showToast(event.detail.flash.toast);
+  }
+});
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+router.on("flash", (event) => {
+  if (event.detail.flash.toast) {
+    showToast(event.detail.flash.toast);
+  }
+});
+```
+
+</CodeGroup>
+
+You may also use native browser events.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+document.addEventListener("inertia:flash", (event) => {
+  console.log(event.detail.flash);
+});
+```
+
+```js React icon="react"
+document.addEventListener("inertia:flash", (event) => {
+  console.log(event.detail.flash);
+});
+```
+
+```js Svelte icon="s"
+document.addEventListener("inertia:flash", (event) => {
+  console.log(event.detail.flash);
+});
+```
+
+</CodeGroup>
+
+The `flash` event is not cancelable.
+
+## Client-Side Flash
+
+You may set flash data on the client without a server request using the `router.flash()` method.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+router.flash("foo", "bar");
+router.flash({ foo: "bar" });
+
+// Use existing flash data...
+router.flash((current) => ({ ...current, bar: "baz" }));
+```
+
+```js React icon="react"
+import { router } from "@inertiajs/react";
+
+router.flash("foo", "bar");
+router.flash({ foo: "bar" });
+
+// Use existing flash data...
+router.flash((current) => ({ ...current, bar: "baz" }));
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+router.flash("foo", "bar");
+router.flash({ foo: "bar" });
+
+// Use existing flash data...
+router.flash((current) => ({ ...current, bar: "baz" }));
+```
+
+</CodeGroup>
