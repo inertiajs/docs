@@ -118,6 +118,7 @@
                         "group": "Data & Props",
                         "pages": [
                             "v2/data-props/shared-data",
+                            "v2/data-props/flash-data",
                             "v2/data-props/partial-reloads",
                             "v2/data-props/deferred-props",
                             "v2/data-props/merging-props",
