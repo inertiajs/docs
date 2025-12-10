@@ -352,5 +352,10 @@
             "format": "woff2",
             "weight": 500
         }
+    },
+    "seo": {
+        "metatags": {
+            "canonical": "https://inertiajs.com/docs"
+        }
     }
 }
