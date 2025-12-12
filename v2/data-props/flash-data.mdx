@@ -25,7 +25,7 @@ public function store(Request $request)
 }
 ```
 
-You may chain `back()` directly onto the `flash()` call.
+Chaining with `back()` is also supported.
 
 ```php
 return Inertia::flash('newUserId', $user->id)->back();
@@ -169,7 +169,7 @@ router.on("flash", (event) => {
 
 </CodeGroup>
 
-You may also use native browser events.
+Native browser events are also supported.
 
 <CodeGroup>
 
@@ -224,7 +224,7 @@ router.flash({ foo: "bar" });
 
 </CodeGroup>
 
-You may also pass a callback to access the current flash data or replace it entirely.
+A callback may also be passed to access the current flash data or replace it entirely.
 
 <CodeGroup>
 
