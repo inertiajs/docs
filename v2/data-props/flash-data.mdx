@@ -51,30 +51,30 @@ Flash data is available on `page.flash`. You may also listen for the global `fla
 
 ```vue Vue icon="vuejs"
 <script setup>
-import { usePage } from "@inertiajs/vue3";
+import { usePage } from '@inertiajs/vue3'
 
-const page = usePage();
+const page = usePage()
 </script>
 
 <template>
-  <div v-if="page.flash?.toast" class="toast">
-    {{ page.flash.toast.message }}
-  </div>
+    <div v-if="page.flash.toast" class="toast">
+        {{ page.flash.toast.message }}
+    </div>
 </template>
 ```
 
 ```jsx React icon="react"
-import { usePage } from "@inertiajs/react";
+import { usePage } from '@inertiajs/react'
 
 export default function Layout({ children }) {
-  const { flash } = usePage();
+    const { flash } = usePage()
 
-  return (
-    <>
-      {flash?.toast && <div className="toast">{flash.toast.message}</div>}
-      {children}
-    </>
-  );
+    return (
+        <>
+            {flash.toast && <div className="toast">{flash.toast.message}</div>}
+            {children}
+        </>
+    )
 }
 ```
 
@@ -83,7 +83,7 @@ export default function Layout({ children }) {
     import { page } from '@inertiajs/svelte'
 </script>
 
-{#if $page.flash?.toast}
+{#if $page.flash.toast}
     <div class="toast">{$page.flash.toast.message}</div>
 {/if}
 ```
@@ -229,3 +229,23 @@ router.flash((current) => ({ ...current, bar: "baz" }));
 ```
 
 </CodeGroup>
+
+## TypeScript
+
+You may configure the flash data type globally using TypeScript's declaration merging. This provides type safety when accessing flash data throughout your application.
+
+```ts
+// global.d.ts
+declare module "@inertiajs/core" {
+  export interface InertiaConfig {
+    flashDataType: {
+      toast?: {
+        type: "success" | "error" | "info";
+        message: string;
+      };
+    };
+  }
+}
+```
+
+With this configuration, `page.flash.toast` will be properly typed as `{ type: "success" | "error" | "info"; message: string } | undefined`.
