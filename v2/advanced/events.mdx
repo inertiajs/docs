@@ -435,6 +435,48 @@ router.on('success', (event) => {
 
 The `success` event is not cancelable.
 
+## Flash
+
+<Badge>v2.3.3+</Badge>
+
+The `flash` event fires when [flash data](/v2/data-props/flash-data) is received from the server. This is useful for displaying toast notifications or handling temporary data in a central location.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from '@inertiajs/vue3'
+
+router.on('flash', (event) => {
+    if (event.detail.flash.toast) {
+        showToast(event.detail.flash.toast)
+    }
+})
+```
+
+```jsx React icon="react"
+import { router } from '@inertiajs/react'
+
+router.on('flash', (event) => {
+    if (event.detail.flash.toast) {
+        showToast(event.detail.flash.toast)
+    }
+})
+```
+
+```js Svelte icon="s"
+import { router } from '@inertiajs/svelte'
+
+router.on('flash', (event) => {
+    if (event.detail.flash.toast) {
+        showToast(event.detail.flash.toast)
+    }
+})
+```
+
+</CodeGroup>
+
+The `flash` event is not cancelable. [Partial reloads](/v2/data-props/partial-reloads) will only trigger the event if the flash data has changed.
+
 ## Error
 
 The `error` event fires when validation errors are present on "successful" page visits.
