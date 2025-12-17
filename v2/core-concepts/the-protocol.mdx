@@ -147,6 +147,16 @@ The following headers are automatically sent by Inertia when making requests. Yo
   Comma-separated list of non-expired [once prop](/v2/data-props/once-props) keys already loaded on the client. The server will skip resolving these props unless explicitly requested via a partial reload or force refreshed server-side.
 </ParamField>
 
+The following headers are used for [Precognition](/v2/the-basics/forms#precognition) validation requests.
+
+<ParamField header="Precognition" type="boolean">
+  Set to `true` to indicate this is a Precognition validation request.
+</ParamField>
+
+<ParamField header="Precognition-Validate-Only" type="string">
+  Comma-separated list of field names to validate.
+</ParamField>
+
 ## Response Headers
 
 The following headers should be sent by your server-side adapter in Inertia responses. If you're using an official server-side adapter, these are handled automatically.
@@ -161,6 +171,20 @@ The following headers should be sent by your server-side adapter in Inertia resp
 
 <ParamField header="Vary" type="string">
   Set to `X-Inertia` to help browsers correctly differentiate between HTML and JSON responses.
+</ParamField>
+
+The following headers are used for [Precognition](/v2/the-basics/forms#precognition) validation responses.
+
+<ParamField header="Precognition" type="string">
+  Set to `true` to indicate this is a Precognition validation response.
+</ParamField>
+
+<ParamField header="Precognition-Success" type="string">
+  Set to `true` when validation passes with no errors, combined with a `204 No Content` status code.
+</ParamField>
+
+<ParamField header="Vary" type="string">
+  Set to `Precognition` on all responses when the Precognition middleware is applied.
 </ParamField>
 
 ## The Page Object
@@ -522,3 +546,10 @@ Inertia uses specific HTTP status codes to handle different scenarios.
 | **302 Found**       | Standard redirect response. Inertia's server-side adapters automatically convert this to `303 See Other` when returned after `PUT`, `PATCH`, or `DELETE` requests.                                        |
 | **303 See Other**   | Used for redirects after non-GET requests. This status code tells the browser to make a `GET` request to the redirect URL, preventing duplicate form submissions that could occur if the browser repeated the original request method. |
 | **409 Conflict**    | Returned when there's an asset version mismatch or for external redirects. For asset mismatches, this prompts a full page reload. For external redirects, the response includes an `X-Inertia-Location` header and triggers a `window.location` redirect client-side. |
+
+The following status codes are used for [Precognition](/v2/the-basics/forms#precognition) validation requests.
+
+| Status Code                   | Description                                                                                     |
+|:------------------------------|:------------------------------------------------------------------------------------------------|
+| **204 No Content**            | Successful Precognition validation request with no validation errors.                           |
+| **422 Unprocessable Entity**  | Precognition validation request with validation errors. The response body contains the errors.  |

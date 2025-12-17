@@ -323,6 +323,86 @@ export default () => (
 
 </CodeGroup>
 
+### Fetching State
+
+The `WhenVisible` component exposes a `fetching` slot prop that you may use to display a loading indicator during subsequent requests. This is useful because the `fallback` is only shown on the initial load, while `fetching` allows you to indicate that data is being refreshed on subsequent loads.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+<script setup>
+import { WhenVisible } from '@inertiajs/vue3'
+</script>
+
+<template>
+    <WhenVisible data="permissions" always>
+        <template #default="{ fetching }">
+            <PermissionsChildComponent />
+            <div v-if="fetching">Refreshing...</div>
+        </template>
+
+        <template #fallback>
+            <div>Loading...</div>
+        </template>
+    </WhenVisible>
+</template>
+```
+
+```jsx React icon="react"
+import { WhenVisible } from '@inertiajs/react'
+
+export default () => (
+    <WhenVisible data="permissions" always fallback={() => <div>Loading...</div>}>
+        {({ fetching }) => (
+            <>
+                <PermissionsChildComponent />
+                {fetching && <div>Refreshing...</div>}
+            </>
+        )}
+    </WhenVisible>
+)
+```
+
+```svelte Svelte 4 icon="s"
+<script>
+    import { WhenVisible } from '@inertiajs/svelte'
+
+    export let permissions
+</script>
+
+<WhenVisible data="permissions" always let:fetching>
+    <PermissionsChildComponent />
+    {#if fetching}
+        <div>Refreshing...</div>
+    {/if}
+
+    <svelte:fragment slot="fallback">
+        <div>Loading...</div>
+    </svelte:fragment>
+</WhenVisible>
+```
+
+```svelte Svelte 5 icon="s"
+<script>
+    import { WhenVisible } from '@inertiajs/svelte'
+
+    let { permissions } = $props()
+</script>
+
+<WhenVisible data="permissions" always let:fetching>
+    <PermissionsChildComponent />
+    {#if fetching}
+        <div>Refreshing...</div>
+    {/if}
+
+    {#snippet fallback()}
+        <div>Loading...</div>
+    {/snippet}
+</WhenVisible>
+```
+
+</CodeGroup>
+
 ## Form Submissions
 
 When submitting forms, you may want to use the `except` option to exclude the props that are being used by the `WhenVisible` component. This prevents the props from being reloaded when you get redirected back to the current page because of validation errors.
