@@ -171,6 +171,10 @@ router.on('flash', (event) => {
 
 </CodeGroup>
 
+<Warning>
+Event listeners registered inside components should be cleaned up when the component unmounts to prevent them from accumulating and firing multiple times. This is especially important in non-persistent layouts. See [removing event listeners](/v2/advanced/events#removing-listeners) for more information.
+</Warning>
+
 Native browser events are also supported.
 
 <CodeGroup>
