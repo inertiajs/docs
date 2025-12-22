@@ -254,13 +254,13 @@ With the server running, you should be able to access your app within the browse
 Since your website is now being server-side rendered, you can instruct <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to "hydrate" the static markup and make it interactive instead of re-rendering all the HTML that we just generated.
 </ClientSpecific>
 
-<VueSpecific>To enable client-side hydration in a Vue app, update your `ssr.js` file to use `createSSRApp` instead of `createApp`.</VueSpecific>
+<VueSpecific>To enable client-side hydration in a Vue app, update your `app.js` file to use `createSSRApp` instead of `createApp`.</VueSpecific>
 
-<ReactSpecific>To enable client-side hydration in a React app, update your `ssr.js` file to use `hydrateRoot` instead of `createRoot`.</ReactSpecific>
+<ReactSpecific>To enable client-side hydration in a React app, update your `app.js` file to use `hydrateRoot` instead of `createRoot`.</ReactSpecific>
 
-<Svelte4Specific>To enable client-side hydration in a Svelte 4 app, set the `hydrate` option to `true` in your `ssr.js` file.</Svelte4Specific>
+<Svelte4Specific>To enable client-side hydration in a Svelte 4 app, set the `hydrate` option to `true` in your `app.js` file.</Svelte4Specific>
 
-<Svelte5Specific>To enable client-side hydration in a Svelte 5 app, update your `ssr.js` file to use `hydrate` instead of `mount` when server rendering.</Svelte5Specific>
+<Svelte5Specific>To enable client-side hydration in a Svelte 5 app, update your `app.js` file to use `hydrate` instead of `mount` when server rendering.</Svelte5Specific>
 
 <CodeGroup>
 
