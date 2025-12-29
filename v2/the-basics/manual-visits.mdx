@@ -650,7 +650,7 @@ import { router } from '@inertiajs/vue3'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`
 ```
 
 ```js React icon="react"
@@ -659,7 +659,7 @@ import { router } from '@inertiajs/react'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`
 ```
 
 ```js Svelte icon="s"
@@ -668,7 +668,7 @@ import { router } from '@inertiajs/svelte'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`
 ```
 
 </CodeGroup>
