@@ -593,6 +593,10 @@ router.replace({
 
 Make sure that any route you push on the client side is also defined on the server side. If the user refreshes the page, the server will need to know how to render the page.
 
+<Warning>
+Some browsers limit the number of `history.pushState()` and `history.replaceState()` calls allowed within a short time period. Inertia catches this error and logs it to the console, but the state update will be lost. Avoid calling `router.push()` or `router.replace()` too frequently, and consider debouncing or batching updates in high-frequency scenarios.
+</Warning>
+
 ### Prop Helpers
 
 Inertia provides three helper methods for updating page props without making server requests. These methods are shortcuts to `router.replace()` and automatically set `preserveScroll` and `preserveState` to `true`.
