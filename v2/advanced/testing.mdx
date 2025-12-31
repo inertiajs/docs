@@ -224,3 +224,23 @@ $response->assertInertia(fn (Assert $page) => $page
     )
 );
 ```
+
+### Testing Flash Data
+
+You may use the `hasFlash` and `missingFlash` methods to test [flash data](/v2/data-props/flash-data) in your Inertia responses.
+
+```php
+$response->assertInertia(fn (Assert $page) => $page
+    // Assert flash data exists...
+    ->hasFlash('message')
+
+    // Assert flash data has a specific value...
+    ->hasFlash('message', 'Item saved!')
+
+    // Nested values are supported using "dot" notation...
+    ->hasFlash('notification.type', 'success')
+
+    // Assert flash data does not exist...
+    ->missingFlash('error')
+);
+```
