@@ -147,6 +147,24 @@ export default function Layout({ children }) {
 
 </CodeGroup>
 
+## TypeScript
+
+You may configure the shared props type globally using TypeScript's declaration merging.
+
+```ts
+// global.d.ts
+declare module '@inertiajs/core' {
+    export interface InertiaConfig {
+        sharedPageProps: {
+            auth: { user: { id: number; name: string } | null }
+            appName: string
+        }
+    }
+}
+```
+
+With this configuration, `page.props.auth` and `page.props.appName` will be properly typed across your application.
+
 ## Flash Data
 
 For one-time notifications like toast messages or success alerts, you may use [flash data](/v2/data-props/flash-data). Unlike shared data, flash data is not persisted in the browser's history state, so it won't reappear when navigating through history.
