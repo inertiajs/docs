@@ -8,13 +8,13 @@ Inertia provides first-class TypeScript support. You may configure global types 
 
 Due to pnpm's strict dependency isolation, `@inertiajs/core` is not accessible at `node_modules/@inertiajs/core`. Instead, it's nested inside `.pnpm/`, which prevents TypeScript module augmentation from resolving the module.
 
-You may fix this by configuring pnpm to [hoist the package](https://pnpm.io/settings#publichoistpattern). Add the following to your `.npmrc` file and run `pnpm install`:
+You may fix this by configuring pnpm to [hoist the package](https://pnpm.io/settings#publichoistpattern). Add the following to your `.npmrc` file and run `pnpm install`.
 
 ```ini
 public-hoist-pattern[]=@inertiajs/core
 ```
 
-Alternatively, you may add `@inertiajs/core` as a direct dependency in your project:
+Alternatively, you may add `@inertiajs/core` as a direct dependency in your project.
 
 ```bash
 pnpm add @inertiajs/core
