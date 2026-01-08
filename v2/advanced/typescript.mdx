@@ -40,6 +40,10 @@ declare module "@inertiajs/core" {
 }
 ```
 
+<Note>
+For module augmentation to work, your `tsconfig.json` needs to include `.d.ts` files. Make sure a pattern like `"resources/js/**/*.d.ts"` is present in the `include` array, adjusted to match your project's directory structure.
+</Note>
+
 ### Shared Page Props
 
 The `sharedPageProps` option defines the type of data that is [shared](/v2/data-props/shared-data) with every page in your application. With this configuration, `page.props.auth` and `page.props.appName` will be properly typed everywhere.
