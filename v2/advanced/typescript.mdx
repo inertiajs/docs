@@ -296,6 +296,26 @@ export default function Users() {
 
 </CodeGroup>
 
+## Restoring State
+
+The `router.restore()` method accepts a generic for typing state restored from [history](/v2/data-props/remembering-state#manually-saving-state).
+
+```ts
+import { router } from "@inertiajs/react";
+
+interface TableState {
+  sortBy: string;
+  sortDesc: boolean;
+  page: number;
+}
+
+const restored = router.restore<TableState>("table-state");
+
+if (restored) {
+  console.log(restored.sortBy);
+}
+```
+
 ## Router Requests
 
 Router methods accept a generic for typing request data, providing type checking for the data being sent.
@@ -347,24 +367,4 @@ router.replace<UserPageProps>({
     user: { ...current.user, name: "Updated" },
   }),
 });
-```
-
-## Restoring State
-
-The `router.restore()` method accepts a generic for typing state restored from [history](/v2/data-props/remembering-state#manually-saving-state).
-
-```ts
-import { router } from "@inertiajs/react";
-
-interface TableState {
-  sortBy: string;
-  sortDesc: boolean;
-  page: number;
-}
-
-const restored = router.restore<TableState>("table-state");
-
-if (restored) {
-  console.log(restored.sortBy);
-}
 ```
