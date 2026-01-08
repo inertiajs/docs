@@ -149,7 +149,8 @@
                             "v2/advanced/progress-indicators",
                             "v2/advanced/scroll-management",
                             "v2/advanced/server-side-rendering",
-                            "v2/advanced/testing"
+                            "v2/advanced/testing",
+                            "v2/advanced/typescript"
                         ]
                     }
                 ]
@@ -339,6 +340,10 @@
         {
             "source": "/testing",
             "destination": "/v2/advanced/testing"
+        },
+        {
+            "source": "/typescript",
+            "destination": "/v2/advanced/typescript"
         }
     ]
 }
