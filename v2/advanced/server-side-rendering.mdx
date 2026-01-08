@@ -365,6 +365,16 @@ export default defineConfig({
 ```
 </Svelte4Specific>
 
+## Disabling SSR
+
+Sometimes you may wish to disable server-side rendering for certain pages or routes in your application. You may do so by setting the `inertia.ssr.enabled` configuration value to `false` for the current request, typically in a service provider or middleware.
+
+```php
+if (request()->is('admin/*')) {
+    config(['inertia.ssr.enabled' => false]);
+}
+```
+
 ## Deployment
 
 When deploying your SSR enabled app to production, you'll need to build both the client-side (`app.js`) and server-side bundles (`ssr.js`), and then run the SSR server as a background process, typically using a process monitoring tool such as Supervisor.
