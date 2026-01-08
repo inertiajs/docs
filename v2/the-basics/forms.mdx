@@ -1938,6 +1938,51 @@ const form = useForm(`EditUser:${user.id}\
 
 </CodeGroup>
 
+#### Excluding Fields
+
+Sometimes you may wish to prevent certain fields from being stored in history state. For example, you may want to exclude password fields for security reasons.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { useForm } from '@inertiajs/vue3'
+
+const form = useForm('LoginForm', {
+    email: '',
+    password: '',
+}).dontRemember('password')
+```
+
+```js React icon="react"
+import { useForm } from '@inertiajs/react'
+
+const form = useForm('LoginForm', {
+    email: '',
+    password: '',
+}).dontRemember('password')
+```
+
+```js Svelte icon="s"
+import { useForm } from '@inertiajs/svelte'
+
+const form = useForm('LoginForm', {
+    email: '',
+    password: '',
+}).dontRemember('password')
+```
+
+</CodeGroup>
+
+Multiple fields may be excluded by passing additional arguments.
+
+```js
+form.dontRemember('password', 'password_confirmation')
+```
+
+<Note>
+Some browsers trigger a "save password" prompt whenever password field values are written to history state, even without form submission. Excluding password fields avoids this issue.
+</Note>
+
 ### Wayfinder
 
 <Badge>v2.0.6+</Badge>

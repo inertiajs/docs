@@ -91,42 +91,36 @@ Once you have shared the data server-side, you will be able to access it within 
 
 ```vue Vue icon="vuejs"
 <script setup>
-import { computed } from 'vue'
-import { usePage } from '@inertiajs/vue3'
+import { computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
-const page = usePage()
+const page = usePage();
 
-const user = computed(() => page.props.auth.user)
+const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
-    <main>
-        <header>
-            You are logged in as: {{ user.name }}
-        </header>
-        <article>
-            <slot />
-        </article>
-    </main>
+  <main>
+    <header>You are logged in as: {{ user.name }}</header>
+    <article>
+      <slot />
+    </article>
+  </main>
 </template>
 ```
 
 ```jsx React icon="react"
-import { usePage } from '@inertiajs/react'
+import { usePage } from "@inertiajs/react";
 
 export default function Layout({ children }) {
-    const { auth } = usePage().props
+  const { auth } = usePage().props;
 
-    return (
-        <main>
-            <header>
-                You are logged in as: {auth.user.name}
-            </header>
-            <article>
-                {children}
-            </article>
-        </main>
-    )
+  return (
+    <main>
+      <header>You are logged in as: {auth.user.name}</header>
+      <article>{children}</article>
+    </main>
+  );
 }
 ```
 

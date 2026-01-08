@@ -155,6 +155,8 @@ const form = useForm(`EditUser:${user.id}`, data)
 
 </CodeGroup>
 
+You may [exclude specific fields](/v2/the-basics/forms#excluding-fields) from being remembered using the `dontRemember()` method. This is useful for sensitive fields like passwords that should not be stored in history state.
+
 ## Manually Saving State
 
 The `useRemember` hook watches for data changes and automatically saves those changes to the history state. Then, Inertia will restore the data on page load.
