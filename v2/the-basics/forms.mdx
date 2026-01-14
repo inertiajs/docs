@@ -954,6 +954,71 @@ function handleSubmit() {
 
 In React and Vue, refs provide access to all form methods and reactive state. In Svelte, refs expose only methods, so reactive state like `isDirty` and `errors` should be accessed via [slot props](#slot-props) instead.
 
+### Form Context
+
+<Badge>v2.3.9+</Badge>
+
+Sometimes you may wish to access form state or methods from deeply nested child components without passing props through multiple levels. The `useFormContext` hook provides access to the parent `<Form>` component's state and methods from any child component.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+<script setup>
+import { useFormContext } from '@inertiajs/vue3'
+
+const form = useFormContext()
+</script>
+
+<template>
+    <div v-if="form">
+        <span v-if="form.isDirty">Unsaved changes</span>
+        <span v-if="form.errors.name">{{ form.errors.name }}</span>
+        <button type="button" @click="form.submit()">Submit</button>
+        <button type="button" @click="form.reset()">Reset</button>
+    </div>
+</template>
+```
+
+```jsx React icon="react"
+import { useFormContext } from '@inertiajs/react'
+
+export default function FormActions() {
+    const form = useFormContext()
+
+    if (!form) {
+        return null
+    }
+
+    return (
+        <div>
+            {form.isDirty && <span>Unsaved changes</span>}
+            {form.errors.name && <span>{form.errors.name}</span>}
+            <button type="button" onClick={() => form.submit()}>Submit</button>
+            <button type="button" onClick={() => form.reset()}>Reset</button>
+        </div>
+    )
+}
+```
+
+```svelte Svelte icon="s"
+<script>
+import { useFormContext } from '@inertiajs/svelte'
+
+const form = useFormContext()
+</script>
+
+{#if $form}
+    {#if $form.isDirty}<span>Unsaved changes</span>{/if}
+    {#if $form.errors.name}<span>{$form.errors.name}</span>{/if}
+    <button type="button" on:click={() => $form.submit()}>Submit</button>
+    <button type="button" on:click={() => $form.reset()}>Reset</button>
+{/if}
+```
+
+</CodeGroup>
+
+The context provides access to all the same properties and methods available through [slot props](#slot-props), including `errors`, `hasErrors`, `processing`, `isDirty`, `submit()`, `reset()`, `setError()`, `clearErrors()`, and Precognition methods when enabled. The hook returns `undefined` when called outside of a `<Form>` component.
+
 ### Precognition
 
 <Badge>v2.3+</Badge>
