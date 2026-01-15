@@ -553,9 +553,7 @@ router.push({
 
 All of the parameters are optional. By default, all passed paramaters (except `errorBag`) will be merged with the current page. This means you are responsible for overriding the current page's URL, component, and props.
 
-If you need access to the current page's props, you can pass a function to the props option. This function will receive the current page's props as an argument and should return the new props.
-
-The `errorBag` option allows you to specify which error bag to use when handling validation errors in the `onError` callback.
+If you need access to the current page's props, you may pass a function to the `props` option. This function receives the current props (including any [once props](/v2/data-props/once-props)) and should return the new props.
 
 <CodeGroup>
 
@@ -590,6 +588,38 @@ router.replace({
 ```
 
 </CodeGroup>
+
+The function also receives [once props](/v2/data-props/once-props) as a second argument. This is useful when you want to replace all regular props while still preserving once props.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from '@inertiajs/vue3'
+
+router.replace({
+    props: (currentProps, onceProps) => ({ ...onceProps, search: 'John' })
+})
+```
+
+```js React icon="react"
+import { router } from '@inertiajs/react'
+
+router.replace({
+    props: (currentProps, onceProps) => ({ ...onceProps, search: 'John' })
+})
+```
+
+```js Svelte icon="s"
+import { router } from '@inertiajs/svelte'
+
+router.replace({
+    props: (currentProps, onceProps) => ({ ...onceProps, search: 'John' })
+})
+```
+
+</CodeGroup>
+
+The `errorBag` option allows you to specify which error bag to use when handling validation errors in the `onError` callback.
 
 Make sure that any route you push on the client side is also defined on the server side. If the user refreshes the page, the server will need to know how to render the page.
 
