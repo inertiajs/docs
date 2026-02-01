@@ -62,8 +62,8 @@ const page = usePage()
 </script>
 
 <template>
-    <div v-if="page.flash.toast" class="toast">
-        {{ page.flash.toast.message }}
+    <div v-if="page.flash" class="toast">
+        {{ page.flash.message }}
     </div>
 </template>
 ```
@@ -76,7 +76,7 @@ export default function Layout({ children }) {
 
     return (
         <>
-            {flash.toast && <div className="toast">{flash.toast.message}</div>}
+            {flash && <div className="toast">{flash.message}</div>}
             {children}
         </>
     )
@@ -89,7 +89,7 @@ export default function Layout({ children }) {
 </script>
 
 {#if $page.flash.toast}
-    <div class="toast">{$page.flash.toast.message}</div>
+    <div class="toast">{$page.flash.message}</div>
 {/if}
 ```
 
