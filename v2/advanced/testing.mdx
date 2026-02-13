@@ -244,3 +244,17 @@ $response->assertInertia(fn (Assert $page) => $page
     ->missingFlash('error')
 );
 ```
+
+#### Redirect Responses
+
+The `hasFlash` and `missingFlash` methods above only work on rendered Inertia page responses. For redirect responses, you may use the `assertInertiaFlash` and `assertInertiaFlashMissing` methods directly on the test response to assert against the session's flash data.
+
+```php
+$response = $this->post('/users');
+
+$response->assertRedirect('/dashboard')
+    ->assertInertiaFlash('message')
+    ->assertInertiaFlash('message', 'User created!')
+    ->assertInertiaFlash('notification.type', 'success')
+    ->assertInertiaFlashMissing('error');
+```
