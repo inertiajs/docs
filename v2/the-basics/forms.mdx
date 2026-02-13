@@ -1179,7 +1179,7 @@ You may also use the `valid()` helper to check if a field has passed validation.
 </CodeGroup>
 
 <Warning>
-A form input will only appear as valid or invalid once it has changed and a validation response has been received. Calling `validate('field')` will not send a validation request until the field's value differs from the initial data.
+A form input will only appear as valid or invalid once it has changed and a validation response has been received.
 </Warning>
 
 #### Validating Multiple Fields
@@ -2283,6 +2283,10 @@ const form = useForm('post', '/users', {
 </CodeGroup>
 
 You may also use the `valid()` helper to check if a field has passed validation.
+
+<Warning>
+A form input will only appear as valid or invalid once it has changed and a validation response has been received. Calling `validate('field')` will not send a validation request until the field's value differs from the initial data.
+</Warning>
 
 #### Touch and Validate
 
