@@ -30,9 +30,9 @@ These starter kits are the absolute fastest way to start building a new Inertia 
     </Step>
 
     <Step title="Setup root template">
-        Next, setup the root template that will be loaded on the first page visit to your application. This template should include your site's CSS and JavaScript assets, along with the `@inertia` and `@inertiaHead` directives.
+        Next, create a `resources/views/app.blade.php` file. This root template will be loaded on the first page visit to your application, and should include your assets along with the `@inertia` and `@inertiaHead` directives.
 
-        ```blade
+        ```blade resources/views/app.blade.php
         <html>
             <head>
                 <meta charset="utf-8" />

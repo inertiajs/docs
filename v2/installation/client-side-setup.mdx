@@ -16,11 +16,83 @@ Laravel's starter kits provide out-of-the-box scaffolding for new Inertia applic
 These starter kits are the absolute fastest way to start building a new Inertia project using Laravel and Vue or React. However, if you would like to manually install Inertia into your application, please consult the documentation below.
 </Card>
 
+## Prerequisites
+
+Before installing Inertia, you need your client-side framework and its corresponding [Vite plugin](https://laravel.com/docs/vite#vue) installed and configured. You may skip this section if your application already has these set up.
+
+<CodeGroup>
+```bash Vue icon="vuejs"
+npm install vue @vitejs/plugin-vue
+```
+
+```bash React icon="react"
+npm install react react-dom @vitejs/plugin-react
+```
+
+```bash Svelte icon="s"
+npm install svelte @sveltejs/vite-plugin-svelte
+```
+</CodeGroup>
+
+Then, add the framework plugin to your `vite.config.js` file.
+
+<CodeGroup>
+```js Vue icon="vuejs"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
+        vue(),
+    ],
+})
+```
+
+```js React icon="react"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.jsx'],
+            refresh: true,
+        }),
+        react(),
+    ],
+})
+```
+
+```js Svelte icon="s"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
+        svelte(),
+    ],
+})
+```
+</CodeGroup>
+
+For more information on configuring these plugins, consult Laravel's [Vite documentation](https://laravel.com/docs/vite#vue).
+
 ## Installation
 
 <Steps>
     <Step title="Install dependencies">
-        First, install the Inertia client-side adapter corresponding to your framework of choice.
+        Install the Inertia client-side adapter corresponding to your framework of choice.
 
         <CodeGroup>
         ```bash Vue icon="vuejs"
