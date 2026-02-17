@@ -5,8 +5,6 @@ title: Server-Side Rendering (SSR)
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
-import { Svelte4Specific } from "/snippets/svelte4-specific.jsx"
-import { Svelte5Specific } from "/snippets/svelte5-specific.jsx"
 import { VueSpecific } from "/snippets/vue-specific.jsx"
 
 Server-side rendering pre-renders your JavaScript pages on the server, allowing your visitors to receive fully rendered HTML when they visit your application. Since fully rendered HTML is served by your application, it's also easier for search engines to index your site.
@@ -21,42 +19,34 @@ If you are using [Laravel Starter Kits](https://laravel.com/docs/starter-kits), 
 npm run build:ssr
 ```
 
-## Install Dependencies
+## Add Server Entry-Point
 
-If you are not using a Laravel starter kit and would like to manually configure SSR, we'll first install the additional dependencies required for server-side rendering. This is only necessary for the Vue adapters, so you can skip this step if you're using React or Svelte.
+If you are not using a Laravel starter kit and would like to manually configure SSR, we'll first create an SSR entry point file within our Laravel project.
 
 <CodeGroup>
 
 ```bash Vue icon="vuejs"
-npm install @vue/server-renderer
+touch resources/js/ssr.js
 ```
 
-```js React icon="react"
-// No additional dependencies required
+```bash React icon="react"
+touch resources/js/ssr.jsx
 ```
 
-```js Svelte icon="s"
-// No additional dependencies required
+```bash Svelte icon="s"
+touch resources/js/ssr.js
 ```
 
 </CodeGroup>
 
-## Add Server Entry-Point
-
-Next, we'll create a `resources/js/ssr.js` file within our Laravel project that will serve as our SSR entry point.
-
-```bash
-touch resources/js/ssr.js
-```
-
-This file is going to look very similar to your `resources/js/app.js` file, except it's not going to run in the browser, but rather in Node.js. Here's a complete example.
+This file is going to look very similar to your app entry point, except it's not going to run in the browser, but rather in Node.js. Here's a complete example.
 
 <CodeGroup>
 
 ```js Vue icon="vuejs"
 import { createInertiaApp } from '@inertiajs/vue3'
 import createServer from '@inertiajs/vue3/server'
-import { renderToString } from '@vue/server-renderer'
+import { renderToString } from 'vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 
 createServer(page =>
@@ -94,25 +84,7 @@ createServer(page =>
 )
 ```
 
-```js Svelte 4 icon="s"
-import { createInertiaApp } from '@inertiajs/svelte'
-import createServer from '@inertiajs/svelte/server'
-
-createServer(page =>
-    createInertiaApp({
-        page,
-        resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-            return pages[`./Pages/${name}.svelte`]
-        },
-        setup({ App, props }) {
-            return App.render(props)
-        },
-    }),
-)
-```
-
-```js Svelte 5 icon="s"
+```js Svelte icon="s"
 import { createInertiaApp } from '@inertiajs/svelte'
 import createServer from '@inertiajs/svelte/server'
 import { render } from 'svelte/server'
@@ -139,14 +111,14 @@ When creating this file, be sure to add anything that's missing from your `app.j
 
 By default, the SSR server will run on a single thread. Clustering starts multiple Node servers on the same port, requests are then handled by each thread in a round-robin way.
 
-You can enable clustering by passing a second argument of options to `createServer`.
+You may enable clustering by passing a second argument of options to `createServer`.
 
 <CodeGroup>
 
 ```js Vue icon="vuejs"
 import { createInertiaApp } from '@inertiajs/vue3'
 import createServer from '@inertiajs/vue3/server'
-import { renderToString } from '@vue/server-renderer'
+import { renderToString } from 'vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 
 createServer(page =>
@@ -170,19 +142,7 @@ createServer(page =>
 )
 ```
 
-```js Svelte 4 icon="s"
-import { createInertiaApp } from '@inertiajs/svelte'
-import createServer from '@inertiajs/svelte/server'
-
-createServer(page =>
-    createInertiaApp({
-        // ...
-    }),
-    { cluster: true },
-)
-```
-
-```js Svelte 5 icon="s"
+```js Svelte icon="s"
 import { createInertiaApp } from '@inertiajs/svelte'
 import createServer from '@inertiajs/svelte/server'
 import { render } from 'svelte/server'
@@ -197,70 +157,11 @@ createServer(page =>
 
 </CodeGroup>
 
-## Setup Vite
-
-Next, we need to update our Vite configuration to build our new `ssr.js` file. We can do this by adding a `ssr` property to Laravel's Vite plugin configuration in our `vite.config.js`file.
-
-```js vite.config.js
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            ssr: 'resources/js/ssr.js', // [!code ++]
-            refresh: true,
-        }),
-        // ...
-    ],
-})
-```
-
-## Update NPM Script
-
-Next, let's update the `build` script in our `package.json` file to also build our new `ssr.js` file.
-
-```json package.json
-"scripts": {
-    "dev": "vite",
-   "build": "vite build" // [!code --]
-   "build": "vite build && vite build --ssr" // [!code ++]
-},
-```
-
-Now you can build both your client-side and server-side bundles.
-
-```bash
-npm run build
-```
-
-## Running the SSR Server
-
-Now that you have built both your client-side and server-side bundles, you should be able run the Node-based Inertia SSR server using the following command.
-
-```bash
-php artisan inertia:start-ssr
-```
-
-You may use the `--runtime` option to specify which runtime you want to use. This allows you to switch from the default Node.js runtime to Bun.
-
-```bash
-php artisan inertia:start-ssr --runtime=bun
-```
-
-With the server running, you should be able to access your app within the browser with server-side rendering enabled. In fact, you should be able to disable JavaScript entirely and still navigate around your application.
-
 ## Client-Side Hydration
 
 <ClientSpecific>
-Since your website is now being server-side rendered, you can instruct <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to "hydrate" the static markup and make it interactive instead of re-rendering all the HTML that we just generated.
+Since your website will be server-side rendered, you should also update your `app.js` file to use hydration instead of normal rendering. This allows <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to pick up the server-rendered HTML and make it interactive without re-rendering it.
 </ClientSpecific>
-
-<VueSpecific>To enable client-side hydration in a Vue app, update your `app.js` file to use `createSSRApp` instead of `createApp`.</VueSpecific>
-
-<ReactSpecific>To enable client-side hydration in a React app, update your `app.js` file to use `hydrateRoot` instead of `createRoot`.</ReactSpecific>
-
-<Svelte4Specific>To enable client-side hydration in a Svelte 4 app, set the `hydrate` option to `true` in your `app.js` file.</Svelte4Specific>
-
-<Svelte5Specific>To enable client-side hydration in a Svelte 5 app, update your `app.js` file to use `hydrate` instead of `mount` when server rendering.</Svelte5Specific>
 
 <CodeGroup>
 
@@ -300,22 +201,7 @@ createInertiaApp({
 })
 ```
 
-```js Svelte 4 icon="s"
-import { createInertiaApp } from '@inertiajs/svelte'
-
-createInertiaApp({
-    resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-        return pages[`./Pages/${name}.svelte`]
-    },
-    setup({ el, App, props }) {
-        new App({ target: el, props }) // [!code --]
-        new App({ target: el, props, hydrate: true }) // [!code ++]
-    },
-})
-```
-
-```js Svelte 5 icon="s"
+```js Svelte icon="s"
 import { createInertiaApp } from '@inertiajs/svelte'
 import { mount } from 'svelte' // [!code --]
 import { hydrate, mount } from 'svelte' // [!code ++]
@@ -338,32 +224,86 @@ createInertiaApp({
 
 </CodeGroup>
 
-<Svelte4Specific>
+## Setup Vite
 
-You will also need to set the `hydratable` compiler option to `true` in your `vite.config.js` file:
+Next, we need to update our Vite configuration to build our new SSR entry point. We can do this by adding a `ssr` property to Laravel's Vite plugin configuration in our `vite.config.js` file.
 
-```js vite.config.js
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import laravel from 'laravel-vite-plugin'
-import { defineConfig } from 'vite'
+<CodeGroup>
 
+```js Vue icon="vuejs" vite.config.js
 export default defineConfig({
     plugins: [
-        laravel.default({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            ssr: 'resources/js/ssr.js',
+        laravel({
+            input: ['resources/js/app.js'],
+            ssr: 'resources/js/ssr.js', // [!code ++]
             refresh: true,
         }),
-        svelte(), // [!code --]
-        svelte({ // [!code ++:5]
-            compilerOptions: {
-                hydratable: true,
-            },
-        }),
+        // ...
     ],
 })
 ```
-</Svelte4Specific>
+
+```js React icon="react" vite.config.js
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.jsx'],
+            ssr: 'resources/js/ssr.jsx', // [!code ++]
+            refresh: true,
+        }),
+        // ...
+    ],
+})
+```
+
+```js Svelte icon="s" vite.config.js
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            ssr: 'resources/js/ssr.js', // [!code ++]
+            refresh: true,
+        }),
+        // ...
+    ],
+})
+```
+
+</CodeGroup>
+
+## Update NPM Script
+
+Next, let's update the `build` script in our `package.json` file to also build our SSR entry point.
+
+```json package.json
+"scripts": {
+    "dev": "vite",
+    "build": "vite build" // [!code --]
+    "build": "vite build && vite build --ssr" // [!code ++]
+},
+```
+
+Now you can build both your client-side and server-side bundles.
+
+```bash
+npm run build
+```
+
+## Running the SSR Server
+
+Now that you have built both your client-side and server-side bundles, you should be able run the Node-based Inertia SSR server using the following command.
+
+```bash
+php artisan inertia:start-ssr
+```
+
+You may use the `--runtime` option to specify which runtime you want to use. This allows you to switch from the default Node.js runtime to Bun.
+
+```bash
+php artisan inertia:start-ssr --runtime=bun
+```
+
+With the server running, you should be able to access your app within the browser with server-side rendering enabled. In fact, you should be able to disable JavaScript entirely and still navigate around your application.
 
 ## Disabling SSR
 
@@ -403,16 +343,5 @@ To run the SSR server on Laravel Cloud, you may use Cloud's [native support for 
 
 ### Laravel Forge
 
-To run the SSR server on Forge, you should create a new daemon that runs `php artisan inertia:start-ssr` from the root of your app. Or, you may utilize the built-in Inertia integration from your Forge application's management dashboard.
+To run the SSR server on Forge, you may enable it via the [Inertia SSR toggle](https://forge.laravel.com/docs/sites/laravel#inertia-server-side-rendering-ssr) in your site's application panel. Forge will create the required daemon and, optionally, update your deploy script to restart the SSR server on each deployment.
 
-Next, whenever you deploy your application, you can automatically restart the SSR server by calling the `php artisan inertia:stop-ssr` command. This will stop the existing SSR server, forcing a new one to be started by your process monitor.
-
-### Heroku
-
-To run the SSR server on Heroku, update the `web` configuration in your `Procfile` to run the SSR server before starting your web server.
-
-```bash
-web: php artisan inertia:start-ssr & vendor/bin/heroku-php-apache2 public/
-```
-
-Note, you must have the `heroku/nodejs` buildpack installed in addition to the `heroku/php` buildback for the SSR server to run.

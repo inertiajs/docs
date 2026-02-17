@@ -145,21 +145,7 @@ For more information on configuring these plugins, consult Laravel's [Vite docum
         })
         ```
 
-        ```js Svelte 4 icon="s"
-        import { createInertiaApp } from '@inertiajs/svelte'
-
-        createInertiaApp({
-            resolve: name => {
-                const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-                return pages[`./Pages/${name}.svelte`]
-            },
-            setup({ el, App, props }) {
-                new App({ target: el, props })
-            },
-        })
-        ```
-
-        ```js Svelte 5 icon="s"
+        ```js Svelte icon="s"
         import { createInertiaApp } from '@inertiajs/svelte'
         import { mount } from 'svelte'
 
