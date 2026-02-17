@@ -21,7 +21,7 @@ npm run build:ssr
 
 ## Add Server Entry-Point
 
-If you are not using a Laravel starter kit and would like to manually configure SSR, we'll first create an SSR entry point file within our Laravel project.
+To manually configure SSR without a Laravel starter kit, first create an SSR entry point file within your Laravel project.
 
 <CodeGroup>
 
@@ -226,7 +226,7 @@ createInertiaApp({
 
 ## Setup Vite
 
-Next, we need to update our Vite configuration to build our new SSR entry point. We can do this by adding a `ssr` property to Laravel's Vite plugin configuration in our `vite.config.js` file.
+Next, update your Vite configuration to build the new SSR entry point by adding a `ssr` property to Laravel's Vite plugin configuration in your `vite.config.js` file.
 
 <CodeGroup>
 
@@ -273,7 +273,7 @@ export default defineConfig({
 
 ## Update NPM Script
 
-Next, let's update the `build` script in our `package.json` file to also build our SSR entry point.
+Next, update the `build` script in your `package.json` file to also build your SSR entry point.
 
 ```json package.json
 "scripts": {
