@@ -291,7 +291,31 @@ resolve: name => require(`./Pages/${name}.svelte`),
 
 </CodeGroup>
 
-By default we recommend eager loading your components, which will result in a single JavaScript bundle. However, if you'd like to lazy-load your components, see our [code splitting](/v2/advanced/code-splitting) documentation.
+By default we recommend eager loading your components, which will result in a single JavaScript bundle. However, if you'd like to lazy-load your components, see the [code splitting](/v2/advanced/code-splitting) documentation.
+
+The `laravel-vite-plugin` package also provides a [`resolvePageComponent`](https://laravel.com/docs/vite#inertia) helper that automatically handles component resolution and lazy-loading for you.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+```
+
+```js React icon="react"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
+```
+
+```js Svelte icon="s"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.svelte`, import.meta.glob('./Pages/**/*.svelte')),
+```
+
+</CodeGroup>
 
 ## Defining a Root Element
 
