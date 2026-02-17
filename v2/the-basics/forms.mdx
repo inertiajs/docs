@@ -2284,6 +2284,10 @@ const form = useForm('post', '/users', {
 
 You may also use the `valid()` helper to check if a field has passed validation.
 
+<Warning>
+A form input will only appear as valid or invalid once it has changed and a validation response has been received. Calling `validate('field')` will not send a validation request until the field's value differs from the initial data.
+</Warning>
+
 #### Touch and Validate
 
 The `touch()` method marks fields as "touched" without triggering validation. You may then validate all touched fields by calling `validate()` without arguments. The `touched()` helper checks if a field has been touched. The `reset()` method clears the touched state for reset fields.
