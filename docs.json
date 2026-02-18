@@ -341,5 +341,18 @@
             "source": "/typescript",
             "destination": "/v2/advanced/typescript"
         }
-    ]
+    ],
+    "fonts": {
+        "body": {
+            "family": "Instrument Sans",
+            "source": "/assets/fonts/InstrumentSans.woff2",
+            "format": "woff2"
+        },
+        "heading": {
+            "family": "Instrument Sans",
+            "source": "/assets/fonts/InstrumentSans.woff2",
+            "format": "woff2",
+            "weight": 500
+        }
+    }
 }
