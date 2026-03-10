@@ -20,12 +20,14 @@ Alternatively, you may add `@inertiajs/core` as a direct dependency in your proj
 pnpm add @inertiajs/core
 ```
 
-## Global Configuration
+## Augmenting Types
 
-You may configure Inertia's types globally by augmenting the `InertiaConfig` interface in the `@inertiajs/core` module. This is typically done in a `global.d.ts` file in your project's root or `types` directory.
+You may configure Inertia's types by augmenting the `InertiaConfig` interface in the `@inertiajs/core` module. This can be done by creating an `inertia.d.ts` file in your project's root or `types` directory.
 
 ```ts
-// global.d.ts
+// inertia.d.ts
+import "@inertiajs/core";
+
 declare module "@inertiajs/core" {
   export interface InertiaConfig {
     sharedPageProps: {
