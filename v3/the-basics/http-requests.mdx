@@ -162,6 +162,29 @@ const response = await http.post('/api/comments', {
 
 </CodeGroup>
 
+## Multiple Requests
+
+Each `useHttp` instance tracks its own `processing`, `errors`, and other reactive state. When making independent requests, you may create a separate instance for each one so their states don't collide.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
+```
+
+```js React icon="react"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
+```
+
+```js Svelte icon="s"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
+```
+
+</CodeGroup>
+
 ## Reactive State
 
 The `useHttp` hook exposes the same reactive properties as `useForm`:
