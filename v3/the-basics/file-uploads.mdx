@@ -138,9 +138,9 @@ This example uses the [Inertia form helper](/v3/the-basics/forms#form-helper) fo
 
 ## Multipart Limitations
 
-Uploading files using a `multipart/form-data` request is not natively supported in some server-side frameworks when using the `PUT`,`PATCH`, or `DELETE` HTTP methods. The simplest workaround for this limitation is to simply upload files using a `POST` request instead.
+Uploading files using a `multipart/form-data` request is not natively supported in some server-side frameworks when using the `PUT`, `PATCH`, or `DELETE` HTTP methods. The simplest workaround for this limitation is to simply upload files using a `POST` request instead.
 
-However, some frameworks, such as [Laravel](https://laravel.com/docs/routing#form-method-spoofing) and [Rails ](https://guides.rubyonrails.org/form_helpers.html#how-do-forms-with-patch-put-or-delete-methods-work-questionmark), support form method spoofing, which allows you to upload the files using `POST`, but have the framework handle the request as a `PUT` or `PATCH` request. This is done by including a `_method` attribute in the data of your request.
+However, some frameworks, such as [Laravel](https://laravel.com/docs/routing#form-method-spoofing) and [Rails](https://guides.rubyonrails.org/form_helpers.html#forms-with-patch-put-or-delete-methods), support form method spoofing, which allows you to upload the files using `POST`, but have the framework handle the request as a `PUT` or `PATCH` request. This is done by including a `_method` attribute in the data of your request.
 
 <CodeGroup>
 
