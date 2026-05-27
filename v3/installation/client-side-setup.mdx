@@ -290,7 +290,7 @@ The callback receives the React element and must return a new element. This is w
 The callback receives a `Map` that serves as Svelte's component context. Values set here are accessible in your components via `getContext()`.
 </SvelteSpecific>
 
-A second `{ ssr }` argument is also available, allowing you to conditionally apply logic based on the rendering environment.
+A second argument provides the current rendering environment via `ssr`, allowing you to conditionally apply logic based on where the app is running.
 
 <CodeGroup>
 
@@ -326,6 +326,40 @@ createInertiaApp({
         if (!ssr) {
             context.set('analytics', createAnalytics())
         }
+    },
+})
+```
+
+</CodeGroup>
+
+The second argument also includes the current `page` object, giving you access to the component name, URL, version, and shared props before the app renders. Useful for configuring plugins or providers with server-driven state like the user's locale.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+createInertiaApp({
+    withApp(app, { page }) {
+        const i18n = createI18n({ locale: page.props.locale })
+
+        app.use(i18n)
+    },
+})
+```
+
+```jsx React icon="react"
+createInertiaApp({
+    withApp(app, { page }) {
+        const i18n = createI18n({ locale: page.props.locale })
+
+        return <I18nProvider i18n={i18n}>{app}</I18nProvider>
+    },
+})
+```
+
+```js Svelte icon="s"
+createInertiaApp({
+    withApp(context, { page }) {
+        context.set('locale', page.props.locale)
     },
 })
 ```
