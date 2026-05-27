@@ -2,6 +2,10 @@
 title: Asset Versioning
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 One common challenge when building single-page apps is refreshing site assets when they've been changed. Thankfully, Inertia makes this easy by optionally tracking the current version of your site assets. When an asset changes, Inertia will automatically make a full page visit instead of a XHR visit on the next request.
 
 ## Configuration

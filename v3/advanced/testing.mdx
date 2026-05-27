@@ -2,10 +2,6 @@
 title: Testing
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 There are many different ways to test an Inertia application. This page provides a quick overview of the tools available.
 
 ## End-to-end Tests
@@ -261,4 +257,38 @@ $response->assertRedirect('/dashboard')
     ->assertInertiaFlash('message', 'User created!')
     ->assertInertiaFlash('notification.type', 'success')
     ->assertInertiaFlashMissing('error');
+```
+
+## Disabling SSR During Tests
+
+Your application may have [SSR enabled](/v3/advanced/server-side-rendering) for development and production, but you might not need it during testing. You may set `INERTIA_SSR_ENABLED` to `false` in your `phpunit.xml` to prevent the Laravel adapter from dispatching SSR requests.
+
+```xml
+<env name="INERTIA_SSR_ENABLED" value="false" />
+```
+
+Alternatively, you may use the `Inertia::disableSsr()` method in your test base class.
+
+```php
+use Inertia\Inertia;
+
+abstract class TestCase extends BaseTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Inertia::disableSsr();
+    }
+}
+```
+
+A boolean or closure may be passed to disable SSR conditionally. This is typically called from a service provider.
+
+```php
+// Evaluated immediately...
+Inertia::disableSsr(app()->runningUnitTests());
+
+// Evaluated lazily...
+Inertia::disableSsr(fn () => app()->runningUnitTests());
 ```

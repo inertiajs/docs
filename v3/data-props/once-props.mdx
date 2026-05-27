@@ -2,10 +2,6 @@
 title: Once Props
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Some data rarely changes, is expensive to compute, or is simply large. Rather than including this data in every response, you may use _once props_. These props are remembered by the client and reused on subsequent pages that include the same prop. This makes them ideal for [shared data](/v3/data-props/shared-data).
 
 ## Creating Once Props
@@ -124,6 +120,27 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::shareOnce($request), [
             'countries' => fn () => Country::all(),
         ]);
+    }
+}
+```
+
+## Conditional Once Props
+
+Some shared data is mostly stable but changes at specific moments, like the authenticated user. You may return a once prop while a user is authenticated, and `null` otherwise. Sign in and sign out usually end with a redirect to a page that does not explicitly request the `auth` prop, so a remembered once value would go stale.
+
+Returning `null` on signed-out requests overwrites the remembered user on every response, while returning a once prop when authenticated lets the client remember the user across visits.
+
+```php
+class HandleInertiaRequests extends Middleware
+{
+    public function share(Request $request): array
+    {
+        return [
+            ...parent::share($request),
+            'auth' => $request->user()
+                ? Inertia::once(fn () => $request->user())
+                : null,
+        ];
     }
 }
 ```

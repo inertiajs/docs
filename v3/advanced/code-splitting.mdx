@@ -2,10 +2,6 @@
 title: Code Splitting
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 By default, Inertia lazy-loads page components, splitting each page into its own bundle that is loaded on demand. This reduces the initial JavaScript bundle size but requires additional requests when visiting new pages.
 
 You may disable lazy loading to eagerly bundle all pages into a single file. Eager loading eliminates per-page requests but increases the initial bundle size.

@@ -2,6 +2,10 @@
 title: Manual Visits
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 In addition to [creating links](/v2/the-basics/links), it's also possible to manually make Inertia visits / requests programmatically via JavaScript. This is accomplished via the `router.visit()` method.
 
 <CodeGroup>
@@ -684,7 +688,9 @@ import { router } from '@inertiajs/vue3'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`,
+    }
+})
 ```
 
 ```js React icon="react"
@@ -693,7 +699,9 @@ import { router } from '@inertiajs/react'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`,
+    }
+})
 ```
 
 ```js Svelte icon="s"
@@ -702,7 +710,9 @@ import { router } from '@inertiajs/svelte'
 router.prependToProp('notifications', (current, props) => {
     return {
         id: Date.now(),
-        message: `Hello ${props.user.name}\
+        message: `Hello ${props.user.name}`,
+    }
+})
 ```
 
 </CodeGroup>
@@ -1037,19 +1047,25 @@ Returning `false` from the `onBefore()` callback will cause the visit to be canc
 ```js Vue icon="vuejs"
 import { router } from '@inertiajs/vue3'
 
-router.delete(`/users/${user.id}\
+router.delete(`/users/${user.id}`, {
+    onBefore: () => confirm('Are you sure you want to delete this user?'),
+})
 ```
 
 ```js React icon="react"
 import { router } from '@inertiajs/react'
 
-router.delete(`/users/${user.id}\
+router.delete(`/users/${user.id}`, {
+    onBefore: () => confirm('Are you sure you want to delete this user?'),
+})
 ```
 
 ```js Svelte icon="s"
 import { router } from '@inertiajs/svelte'
 
-router.delete(`/users/${user.id}\
+router.delete(`/users/${user.id}`, {
+    onBefore: () => confirm('Are you sure you want to delete this user?'),
+})
 ```
 
 </CodeGroup>

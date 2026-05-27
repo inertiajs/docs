@@ -2,6 +2,10 @@
 title: Title & Meta
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 Since Inertia powered JavaScript apps are rendered within the document `<body>`, they are unable to render markup to the document `<head>`, as it's outside of their scope. To help with this, Inertia ships with a `<Head>` component which can be used to set the page `<title>`, `<meta>` tags, and other `<head>` elements.
 
 The `<Head>` component will only replace `<head>` elements that are not in your server-side root template.

@@ -2,6 +2,10 @@
 title: Forms
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
@@ -310,15 +314,17 @@ The `<Form>` component exposes reactive state and helper methods through its def
         reset,
         submit,
     }) => (
-        <input type="text" name="name" />
+        <>
+            <input type="text" name="name" />
 
-        {errors.name && <div>{errors.name}</div>}
+            {errors.name && <div>{errors.name}</div>}
 
-        <button type="submit" disabled={processing}>
-            {processing ? 'Creating...' : 'Create User'}
-        </button>
+            <button type="submit" disabled={processing}>
+                {processing ? 'Creating...' : 'Create User'}
+            </button>
 
-        {wasSuccessful && <div>User created successfully!</div>}
+            {wasSuccessful && <div>User created successfully!</div>}
+        </>
     )}
 </Form>
 ```
@@ -409,8 +415,10 @@ The `errors` object uses dotted notation for nested fields, allowing you to disp
 ```jsx React icon="react"
 <Form action="/users" method="post">
     {({ errors }) => (
-        <input type="text" name="user.name" />
-        {errors['user.name'] && <div>{errors['user.name']}</div>}
+        <>
+            <input type="text" name="user.name" />
+            {errors['user.name'] && <div>{errors['user.name']}</div>}
+        </>
     )}
 </Form>
 ```

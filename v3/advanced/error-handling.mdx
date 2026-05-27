@@ -2,10 +2,6 @@
 title: Error Handling
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 ## Development
 
 One of the advantages to working with a robust server-side framework is the built-in exception handling you get for free. For example, Laravel ships with a beautiful error reporting tool which displays a nicely formatted stack trace in local development.
@@ -13,6 +9,8 @@ One of the advantages to working with a robust server-side framework is the buil
 The challenge is, if you're making an XHR request (which Inertia does) and you hit a server-side error, you're typically left digging through the network tab in your browser's devtools to diagnose the problem.
 
 Inertia solves this issue by showing all non-Inertia responses in a modal. This means you get the same beautiful error-reporting you're accustomed to, even though you've made that request over XHR.
+
+For applications using a [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) that restricts inline styles, you may pass a `nonce` to `createInertiaApp()` to permit the inline styles the error modal injects. See [Content Security Policy](/v3/installation/client-side-setup#content-security-policy) for details.
 
 ## Production
 

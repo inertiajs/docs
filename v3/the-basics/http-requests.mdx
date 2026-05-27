@@ -2,10 +2,6 @@
 title: HTTP Requests
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
@@ -132,7 +128,7 @@ http.submit(method, url, options)
 
 </CodeGroup>
 
-Each method returns a `Promise` that resolves with the parsed JSON response data. TypeScript users may [type the request data and response](/v3/advanced/typescript#http-helper) at the hook level or on a per-request basis.
+Each method returns a `Promise` that resolves with the parsed JSON response data. TypeScript users may [type the request data and response](/v3/advanced/typescript#http-helper).
 
 <CodeGroup>
 
@@ -452,14 +448,53 @@ http.post('/api/users', {
     onBefore: () => { ... },
     onStart: () => { ... },
     onProgress: (progress) => { ... },
-    onSuccess: (response) => { ... },
+    onSuccess: (data, response) => { ... },
     onError: (errors) => { ... },
+    onHttpException: (response) => { ... },
+    onNetworkError: (error) => { ... },
     onCancel: () => { ... },
     onFinish: () => { ... },
 })
 ```
 
 You may return `false` from `onBefore` to cancel the request.
+
+### Accessing the HTTP response
+
+The `onSuccess` callback receives the parsed response data as its first argument and the HTTP response object as its second argument. The response object contains `status`, `data`, and `headers` properties, which is useful when you need to inspect the status code or response headers.
+
+```js
+http.post('/api/users', {
+    onSuccess: (data, response) => {
+        console.log(response.status) // 200, 201, etc.
+    },
+})
+```
+
+### HTTP exceptions
+
+The `onHttpException` callback fires when the server returns a non-422 HTTP error, such as a `500` or `403`. The callback receives the HTTP response object, giving you access to the status code, response body, and headers.
+
+```js
+http.post('/api/users', {
+    onHttpException: (response) => {
+        console.log(response.status) // 500, 403, etc.
+        console.log(response.data)   // Response body
+    },
+})
+```
+
+### Network errors
+
+The `onNetworkError` callback fires when the request fails due to a network issue, such as when the user loses their internet connection. The callback receives the `Error` object.
+
+```js
+http.post('/api/users', {
+    onNetworkError: (error) => {
+        console.log(error.message)
+    },
+})
+```
 
 ## Precognition
 

@@ -2,10 +2,6 @@
 title: Title & Meta
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Since Inertia powered JavaScript apps are rendered within the document `<body>`, they are unable to render markup to the document `<head>`, as it's outside of their scope. To help with this, Inertia ships with a `<Head>` component which can be used to set the page `<title>`, `<meta>` tags, and other `<head>` elements.
 
 The `<Head>` component will only replace `<head>` elements that are not in your server-side root template.
@@ -271,19 +267,36 @@ import AppHead from './AppHead'
 
 </CodeGroup>
 
-## Inertia Attribute on Elements
+## Server-Side Head Elements
 
-Inertia has historically used the `inertia` attribute to track and manage elements in the document `<head>`. However, you can now opt-in to using the more standards-compliant `data-inertia` attribute instead. According to the HTML specification, custom attributes should be prefixed with `data-` to avoid conflicts with future HTML standards.
+You may wish to include default head elements like `<title>` or `<meta>` tags in your root Blade template. This creates two challenges: preventing duplicates when [SSR](/v3/advanced/server-side-rendering) is active, and ensuring the client-side `<Head>` component may replace them during navigation.
 
-To enable this, configure the `future.useDataInertiaHeadAttribute` option in your [application defaults](/v3/installation/client-side-setup#configuring-defaults).
+### SSR Fallback
 
-```js
-createInertiaApp({
-  // resolve, setup, etc.
-  defaults: {
-    future: {
-      useDataInertiaHeadAttribute: true,
-    },
-  },
-});
+The `<x-inertia::head>` Blade component accepts fallback content via its slot. This content is only rendered in the initial HTML when [SSR](/v3/advanced/server-side-rendering) is not active. When SSR is active, the `<Head>` component already provides these elements as part of the server-rendered response, so the fallback is skipped.
+
+```blade resources/views/app.blade.php
+<head>
+    @vite('resources/js/app.js')
+    <x-inertia::head>
+        <title>{{ config('app.name') }}</title>
+        <meta name="description" content="My application description">
+    </x-inertia::head>
+</head>
 ```
+
+### The `data-inertia` Attribute
+
+The client-side `<Head>` component tracks the elements it manages by marking them with a `data-inertia` attribute. By default, it leaves any other tags in your Blade template untouched. Since there may only be one `<title>` tag, the `<Head>` component will always replace it. Other elements like `<meta>` and `<link>` may have multiple instances, so the component needs a way to identify which ones it should manage.
+
+You may add the `data-inertia` attribute to elements in your Blade template to have the `<Head>` component adopt them. On the first client-side navigation, it will match these elements by key and replace or remove them as needed.
+
+```blade resources/views/app.blade.php
+<head>
+    @vite('resources/js/app.js')
+    <title>{{ config('app.name') }}</title>
+    <meta data-inertia="description" name="description" content="My application description">
+</head>
+```
+
+The `data-inertia` value corresponds to the `head-key` property on your client-side `<Head>` elements.

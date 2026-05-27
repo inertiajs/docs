@@ -2,6 +2,10 @@
 title: Merging Props
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 Inertia overwrites props with the same name when reloading a page. However, you may need to merge new data with existing data instead. For example, when implementing a "load more" button for paginated results. The [Infinite scroll](/v2/data-props/infinite-scroll) component uses prop merging under the hood.
 
 Prop merging only works during [partial reloads](/v2/data-props/partial-reloads). Full page visits will always replace props entirely, even if you've marked them for merging.

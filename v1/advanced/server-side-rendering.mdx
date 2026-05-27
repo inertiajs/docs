@@ -9,7 +9,9 @@ import { VueSpecific } from "/snippets/vue-specific.jsx"
 import { Vue2Specific } from "/snippets/vue2-specific.jsx"
 import { Vue3Specific } from "/snippets/vue3-specific.jsx"
 
-<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the [v2 docs](/v2) for the latest information.</Warning>
+import V1EOLWarning from "/snippets/v1-eol-warning.mdx";
+
+<V1EOLWarning />
 
 Server-side rendering pre-renders your JavaScript pages on the server, allowing your visitors to receive fully rendered HTML when they visit your application. Since fully rendered HTML is served by your application, it's also easier for search engines to index your site.
 

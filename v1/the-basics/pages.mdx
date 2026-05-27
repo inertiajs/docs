@@ -6,7 +6,9 @@ import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
 import { VueSpecific } from "/snippets/vue-specific.jsx"
 
-<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the [v2 docs](/v2) for the latest information.</Warning>
+import V1EOLWarning from "/snippets/v1-eol-warning.mdx";
+
+<V1EOLWarning />
 
 When building applications using Inertia, each page in your application typically has its own controller / route and a corresponding JavaScript component. This allows you to retrieve just the data necessary for that page - no API required.
 

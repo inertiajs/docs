@@ -2,10 +2,6 @@
 title: Events
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Inertia provides an event system that allows you to "hook into" the various lifecycle events of the library.
 
 ## Registering Listeners
@@ -192,6 +188,77 @@ document.addEventListener("inertia:start", startEventListener);
 
 // Remove the listener...
 document.removeEventListener("inertia:start", startEventListener);
+```
+
+</CodeGroup>
+
+## One-time Listeners
+
+You may register a listener that fires only once using the `router.once()` method. The listener is automatically removed after the first invocation.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+```
+
+```jsx React icon="react"
+import { router } from "@inertiajs/react";
+
+router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+```
+
+</CodeGroup>
+
+Like `router.on()`, this method returns a callback you may invoke to remove the listener before it fires.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+let removeStartEventListener = router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+
+// Remove the listener before it fires...
+removeStartEventListener();
+```
+
+```jsx React icon="react"
+import { router } from "@inertiajs/react";
+
+let removeStartEventListener = router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+
+// Remove the listener before it fires...
+removeStartEventListener();
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+let removeStartEventListener = router.once("start", (event) => {
+  console.log(`Starting a visit to ${event.detail.visit.url}`);
+});
+
+// Remove the listener before it fires...
+removeStartEventListener();
 ```
 
 </CodeGroup>
@@ -588,7 +655,7 @@ import { router } from "@inertiajs/vue3";
 
 router.on("networkError", (event) => {
   console.log(`An unexpected error occurred during an Inertia visit.`);
-  console.log(event.detail.exception);
+  console.log(event.detail.error);
 });
 ```
 
@@ -597,7 +664,7 @@ import { router } from "@inertiajs/react";
 
 router.on("networkError", (event) => {
   console.log(`An unexpected error occurred during an Inertia visit.`);
-  console.log(event.detail.exception);
+  console.log(event.detail.error);
 });
 ```
 
@@ -606,7 +673,7 @@ import { router } from "@inertiajs/svelte";
 
 router.on("networkError", (event) => {
   console.log(`An unexpected error occurred during an Inertia visit.`);
-  console.log(event.detail.exception);
+  console.log(event.detail.error);
 });
 ```
 

@@ -2,6 +2,10 @@
 title: CSRF Protection
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 ## Making Requests
 
 Laravel automatically includes the proper CSRF token when making requests via Inertia or Axios. However, if you're using Laravel, be sure to omit the `csrf-token` meta tag from your project, as this will prevent the CSRF token from refreshing properly.

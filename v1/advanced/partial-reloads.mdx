@@ -2,7 +2,9 @@
 title: Partial Reloads
 ---
 
-<Warning>This is documentation for Inertia.js v1, which is no longer actively maintained. Please refer to the [v2 docs](/v2) for the latest information.</Warning>
+import V1EOLWarning from "/snippets/v1-eol-warning.mdx";
+
+<V1EOLWarning />
 
 When making visits to the same page you are already on, it's not always necessary to re-fetch all of the page's data from the server. In fact, selecting only a subset of the data can be a helpful performance optimization if it's acceptable that some page data becomes stale. Inertia makes this possible via its "partial reload" feature.
 

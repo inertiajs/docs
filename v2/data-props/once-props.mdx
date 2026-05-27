@@ -2,6 +2,10 @@
 title: Once Props
 ---
 
+import V2UpgradeWarning from "/snippets/v2-upgrade-warning.mdx";
+
+<V2UpgradeWarning />
+
 Some data rarely changes, is expensive to compute, or is simply large. Rather than including this data in every response, you may use _once props_. These props are remembered by the client and reused on subsequent pages that include the same prop. This makes them ideal for [shared data](/v2/data-props/shared-data).
 
 ## Creating Once Props

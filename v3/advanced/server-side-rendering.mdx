@@ -2,10 +2,6 @@
 title: Server-Side Rendering (SSR)
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
@@ -25,7 +21,7 @@ npm run build:ssr
 
 ## Vite Plugin Setup
 
-The recommended way to configure SSR is with the `@inertiajs/vite` plugin. This approach handles SSR configuration automatically, including development mode SSR without a separate Node.js server.
+The recommended way to configure SSR is with the [`@inertiajs/vite` plugin](/v3/installation/client-side-setup#installation). This approach handles SSR configuration automatically, including development mode SSR without a separate Node.js server.
 
 <Steps>
     <Step title="Install the Vite plugin">
@@ -45,7 +41,7 @@ The recommended way to configure SSR is with the `@inertiajs/vite` plugin. This 
         export default defineConfig({
             plugins: [
                 laravel({
-                    input: ['resources/css/app.css', 'resources/js/app.js'],
+                    input: ['resources/js/app.js'],
                     refresh: true,
                 }),
                 inertia(),
@@ -60,12 +56,13 @@ The recommended way to configure SSR is with the `@inertiajs/vite` plugin. This 
             ssr: {
                 entry: 'resources/js/ssr.js',
                 port: 13714,
+                host: '127.0.0.1',
                 cluster: true,
             },
         })
         ```
 
-        You may pass `false` to opt out of the plugin's automatic SSR handling, for example if you prefer to [configure SSR manually](#manual-setup) but still want to use the other features of the Vite plugin.
+        You may pass `false` to opt out of the plugin's automatic SSR handling, for example if you prefer to [configure SSR manually](#manual-setup) or [disable SSR entirely](#disabling-ssr).
 
         ```js vite.config.js
         inertia({
@@ -97,8 +94,6 @@ npm run dev
 
 The Vite plugin exposes a server endpoint that Laravel uses for rendering, complete with HMR support.
 
-<Note>The `vite build --ssr` and `php artisan inertia:start-ssr` commands are for [production](#production) only. You should not run them during development.</Note>
-
 ### Production
 
 For production, build both bundles and start the SSR server.
@@ -108,13 +103,37 @@ npm run build
 php artisan inertia:start-ssr
 ```
 
-### Custom SSR Entry Point
+### Clustering
 
-The Vite plugin reuses your `app.js` entry point for both browser and SSR rendering by default, so no separate file is needed. The plugin detects the `data-server-rendered` attribute to decide whether to hydrate or mount, and the `setup` and `resolve` callbacks are optional.
+By default, the SSR server runs on a single thread. You may enable clustering to start multiple Node servers on the same port, with requests handled by each thread in a round-robin fashion.
 
-Most app customizations, such as registering plugins or wrapping with providers, may be handled using the [`withApp` callback](/v3/installation/client-side-setup#customizing-the-app) in your main entry point. A separate SSR entry point is only needed when you require completely different setup logic for the server.
+```js vite.config.js
+inertia({
+    ssr: {
+        cluster: true,
+    },
+})
+```
 
-You may create a separate `resources/js/ssr.js` file for this purpose.
+### Host
+
+By default, the SSR server binds to `0.0.0.0`, making it accessible on all network interfaces. You may restrict it to a specific interface using the `host` option.
+
+```js vite.config.js
+inertia({
+    ssr: {
+        host: '127.0.0.1',
+    },
+})
+```
+
+## Manual Setup
+
+The Vite plugin reuses your `app.js` entry point for SSR by default, so no separate file is needed. Most customizations may be handled using the [`withApp` callback](/v3/installation/client-side-setup#customizing-the-app).
+
+For more control, such as providing a [manual `setup` callback](/v3/installation/client-side-setup#manual-setup), you may create a separate `resources/js/ssr.js` entry point and update your `app.js` to use [client-side hydration](#client-side-hydration).
+
+### SSR Entry Point
 
 <CodeGroup>
 
@@ -182,222 +201,10 @@ createServer(page =>
 
 Be sure to add anything that's missing from your `app.js` file that makes sense to run in SSR mode, such as plugins or custom mixins.
 
-## Manual Setup
-
-If you prefer not to use the Vite plugin, you may configure SSR manually.
-
-<Steps>
-    <Step title="Create an SSR entry point">
-        Create an SSR entry point file within your Laravel project.
-
-        <CodeGroup>
-        ```bash Vue icon="vuejs"
-        touch resources/js/ssr.js
-        ```
-
-        ```bash React icon="react"
-        touch resources/js/ssr.jsx
-        ```
-
-        ```bash Svelte icon="s"
-        touch resources/js/ssr.js
-        ```
-        </CodeGroup>
-
-        This file will look similar to your app entry point, but it runs in Node.js instead of the browser. Here's a complete example.
-
-        <CodeGroup>
-
-        ```js Vue icon="vuejs"
-        import { createInertiaApp } from '@inertiajs/vue3'
-        import createServer from '@inertiajs/vue3/server'
-        import { renderToString } from 'vue/server-renderer'
-        import { createSSRApp, h } from 'vue'
-
-        createServer(page =>
-            createInertiaApp({
-                page,
-                render: renderToString,
-                resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.vue')
-                    return pages[`./Pages/${name}.vue`]()
-                },
-                setup({ App, props, plugin }) {
-                    return createSSRApp({
-                        render: () => h(App, props),
-                    }).use(plugin)
-                },
-            }),
-        )
-        ```
-
-        ```jsx React icon="react"
-        import { createInertiaApp } from '@inertiajs/react'
-        import createServer from '@inertiajs/react/server'
-        import ReactDOMServer from 'react-dom/server'
-
-        createServer(page =>
-            createInertiaApp({
-                page,
-                render: ReactDOMServer.renderToString,
-                resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.jsx')
-                    return pages[`./Pages/${name}.jsx`]()
-                },
-                setup: ({ App, props }) => <App {...props} />,
-            }),
-        )
-        ```
-
-        ```js Svelte icon="s"
-        import { createInertiaApp } from '@inertiajs/svelte'
-        import createServer from '@inertiajs/svelte/server'
-        import { render } from 'svelte/server'
-
-        createServer(page =>
-            createInertiaApp({
-                page,
-                resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.svelte')
-                    return pages[`./Pages/${name}.svelte`]()
-                },
-                setup({ App, props }) {
-                    return render(App, { props })
-                },
-            }),
-        )
-        ```
-
-        </CodeGroup>
-    </Step>
-
-    <Step title="Configure Vite">
-        Add the `ssr` property to the Laravel Vite plugin configuration.
-
-        <CodeGroup>
-
-        ```js Vue icon="vuejs" vite.config.js
-        export default defineConfig({
-            plugins: [
-                laravel({
-                    input: ['resources/js/app.js'],
-                    ssr: 'resources/js/ssr.js', // [!code ++]
-                    refresh: true,
-                }),
-                // ...
-            ],
-        })
-        ```
-
-        ```js React icon="react" vite.config.js
-        export default defineConfig({
-            plugins: [
-                laravel({
-                    input: ['resources/js/app.jsx'],
-                    ssr: 'resources/js/ssr.jsx', // [!code ++]
-                    refresh: true,
-                }),
-                // ...
-            ],
-        })
-        ```
-
-        ```js Svelte icon="s" vite.config.js
-        export default defineConfig({
-            plugins: [
-                laravel({
-                    input: ['resources/js/app.js'],
-                    ssr: 'resources/js/ssr.js', // [!code ++]
-                    refresh: true,
-                }),
-                // ...
-            ],
-        })
-        ```
-
-        </CodeGroup>
-    </Step>
-
-    <Step title="Update your build script">
-        Update the `build` script in your `package.json` to build both bundles.
-
-        ```json package.json
-        "scripts": {
-            "dev": "vite",
-           "build": "vite build" // [!code --]
-           "build": "vite build && vite build --ssr" // [!code ++]
-        },
-        ```
-    </Step>
-</Steps>
-
-### Clustering
-
-By default, the SSR server runs on a single thread. You may enable clustering to start multiple Node servers on the same port, with requests handled by each thread in a round-robin fashion.
-
-```js vite.config.js
-inertia({
-    ssr: {
-        cluster: true,
-    },
-})
-```
-
-When using a [custom SSR entry point](#custom-ssr-entry-point) or [manual setup](#manual-setup), you may pass the `cluster` option to `createServer` instead.
-
-<CodeGroup>
-
-```js Vue icon="vuejs"
-createServer(page =>
-    createInertiaApp({
-        // ...
-    }),
-    { cluster: true },
-)
-```
-
-```jsx React icon="react"
-createServer(page =>
-    createInertiaApp({
-        // ...
-    }),
-    { cluster: true },
-)
-```
-
-```js Svelte icon="s"
-createServer(page =>
-    createInertiaApp({
-        // ...
-    }),
-    { cluster: true },
-)
-```
-
-</CodeGroup>
-
-## Running the SSR Server
-
-<Note>The SSR server is only required in production. During development, the [Vite plugin](#development-mode) handles SSR automatically.</Note>
-
-Once you have built both your client-side and server-side bundles, you may start the SSR server using the following Artisan command.
-
-```bash
-php artisan inertia:start-ssr
-```
-
-You may use the `--runtime` option to specify which runtime you want to use. This allows you to switch from the default Node.js runtime to Bun.
-
-```bash
-php artisan inertia:start-ssr --runtime=bun
-```
-
-With the server running, you should be able to access your app within the browser with server-side rendering enabled. In fact, you should be able to disable JavaScript entirely and still navigate around your application.
-
-## Client-Side Hydration
+### Client-Side Hydration
 
 <ClientSpecific>
-You should also update your `app.js` file to use hydration instead of normal rendering. This allows <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to pick up the server-rendered HTML and make it interactive without re-rendering it.
+You should also update your `app.js` to use hydration instead of normal rendering. This allows <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to pick up the server-rendered HTML and make it interactive without re-rendering it.
 </ClientSpecific>
 
 <CodeGroup>
@@ -461,6 +268,163 @@ createInertiaApp({
 
 </CodeGroup>
 
+### Opting Out of the Vite Plugin
+
+You may pass `ssr: false` to the Inertia plugin to disable its automatic SSR handling and manage the SSR build yourself. You should also add the `ssr` property to the Laravel Vite plugin configuration so it knows about your entry point.
+
+<CodeGroup>
+
+```js Vue icon="vuejs" vite.config.js
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            ssr: 'resources/js/ssr.js', // [!code ++]
+            refresh: true,
+        }),
+        inertia({
+            ssr: false, // [!code ++]
+        }),
+    ],
+})
+```
+
+```js React icon="react" vite.config.js
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.jsx'],
+            ssr: 'resources/js/ssr.jsx', // [!code ++]
+            refresh: true,
+        }),
+        inertia({
+            ssr: false, // [!code ++]
+        }),
+    ],
+})
+```
+
+```js Svelte icon="s" vite.config.js
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            ssr: 'resources/js/ssr.js', // [!code ++]
+            refresh: true,
+        }),
+        inertia({
+            ssr: false, // [!code ++]
+        }),
+    ],
+})
+```
+
+</CodeGroup>
+
+### Clustering
+
+You may pass the `cluster` option to `createServer` to start multiple Node servers on the same port, with requests handled by each thread in a round-robin fashion.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
+)
+```
+
+```jsx React icon="react"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
+)
+```
+
+```js Svelte icon="s"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { cluster: true },
+)
+```
+
+</CodeGroup>
+
+### Host
+
+By default, the SSR server binds to `0.0.0.0`, making it accessible on all network interfaces. You may pass the `host` option to `createServer` to restrict it to a specific interface.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { host: '127.0.0.1' },
+)
+```
+
+```jsx React icon="react"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { host: '127.0.0.1' },
+)
+```
+
+```js Svelte icon="s"
+createServer(page =>
+    createInertiaApp({
+        // ...
+    }),
+    { host: '127.0.0.1' },
+)
+```
+
+</CodeGroup>
+
+## Running the SSR Server
+
+<Note>The SSR server is only required in production. During development, the [Vite plugin](#development-mode) handles SSR automatically.</Note>
+
+Once you have built both your client-side and server-side bundles, you may start the SSR server using the following Artisan command.
+
+```bash
+php artisan inertia:start-ssr
+```
+
+By default, the SSR server uses `node` as its runtime. You may change this by setting the `runtime` option in your `config/inertia.php` file. An absolute path to the runtime binary is also supported.
+
+```php
+'ssr' => [
+    'runtime' => env('INERTIA_SSR_RUNTIME', 'node'),
+],
+```
+
+The `--runtime` flag on the Artisan command overrides the configured value for a single invocation.
+
+```bash
+php artisan inertia:start-ssr --runtime=bun
+```
+
+You may also enable the `ensure_runtime_exists` option to verify the runtime binary exists before attempting to start the SSR server. The command will exit with an error if the binary cannot be found.
+
+```php
+'ssr' => [
+    'ensure_runtime_exists' => (bool) env('INERTIA_SSR_ENSURE_RUNTIME_EXISTS', false),
+],
+```
+
+With the server running, you should be able to access your app within the browser with server-side rendering enabled. In fact, you should be able to disable JavaScript entirely and still navigate around your application.
+
 ## Error Handling
 
 When SSR rendering fails, Inertia gracefully falls back to client-side rendering. The Vite plugin logs detailed error information to the console, including the component name, request URL, source location, and a tailored hint to help you resolve the issue.
@@ -480,7 +444,9 @@ Event::listen(SsrRenderFailed::class, function (SsrRenderFailed $event) {
 
 ### Throwing on Error
 
-For CI or E2E testing, you may prefer SSR failures to throw an exception instead of falling back silently. Set the `throw_on_error` option in your `config/inertia.php` file.
+Since Inertia gracefully falls back to client-side rendering, SSR failures may go unnoticed. Your tests pass because the client-side render succeeds, but your users never receive server-rendered HTML. This is especially common in E2E tests with tools like Laravel Dusk or Pest Browser Testing.
+
+You may set the `throw_on_error` option in your `config/inertia.php` file to throw an exception instead of falling back silently, allowing you to catch SSR issues early.
 
 ```php
 'ssr' => [
@@ -488,7 +454,9 @@ For CI or E2E testing, you may prefer SSR failures to throw an exception instead
 ],
 ```
 
-You may set the environment variable in your `phpunit.xml` to catch SSR errors during testing.
+<Warning>This option is not recommended for production, as it will cause SSR failures to return an error response instead of falling back to client-side rendering.</Warning>
+
+You may set the environment variable in your `phpunit.xml` to enable this only during testing.
 
 ```xml
 <env name="INERTIA_SSR_THROW_ON_ERROR" value="true"/>
@@ -496,9 +464,41 @@ You may set the environment variable in your `phpunit.xml` to catch SSR errors d
 
 ## Disabling SSR
 
-Sometimes you may wish to disable server-side rendering for certain pages or routes in your application.
+SSR has two layers: the **Vite plugin** serves SSR during development and builds the SSR bundle for production, while the **Laravel adapter** dispatches rendering requests to the SSR server. To fully disable SSR, you should disable both.
 
-### Per-Route via Middleware
+```js vite.config.js
+inertia({
+    ssr: false,
+})
+```
+
+```php config/inertia.php
+'ssr' => [
+    'enabled' => false,
+],
+```
+
+You may also prevent the Laravel adapter from dispatching SSR requests programmatically using the `Inertia::disableSsr()` method. This is useful when you want to keep SSR in your build but [disable it during tests](/v3/advanced/testing#disabling-ssr-during-tests) or in specific environments.
+
+```php
+use Inertia\Inertia;
+
+Inertia::disableSsr();
+```
+
+A boolean or closure may be provided to disable SSR conditionally.
+
+```php
+Inertia::disableSsr(app()->runningUnitTests());
+
+Inertia::disableSsr(fn () => app()->runningUnitTests());
+```
+
+## Excluding Routes from SSR
+
+Sometimes you may wish to skip server-side rendering for certain routes while keeping SSR enabled for the rest of your application.
+
+### Via Middleware
 
 You may use the `$withoutSsr` property on your Inertia middleware to disable SSR for specific route patterns.
 
@@ -521,7 +521,7 @@ class HandleInertiaRequests extends Middleware
 
 ### Via Facade
 
-You may also disable SSR for specific routes using the `Inertia::withoutSsr()` method, typically called from a service provider.
+You may also exclude specific routes using the `Inertia::withoutSsr()` method, typically called from a service provider.
 
 ```php
 use Inertia\Inertia;

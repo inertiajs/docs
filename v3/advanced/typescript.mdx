@@ -2,10 +2,6 @@
 title: TypeScript
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Inertia provides first-class TypeScript support. You may configure global types using declaration merging, and pass generics to hooks and router methods for type-safe props, forms, and state management.
 
 ## Using pnpm
@@ -89,7 +85,7 @@ errorValueType: string[]
 
 ### Layout Props
 
-The `layoutProps` option types the data accepted by `setLayoutProps()`. The `namedLayoutProps` option types the data accepted by `setLayoutPropsFor()`, keyed by layout name.
+The `layoutProps` option types the data accepted by `setLayoutProps()`. The `namedLayoutProps` option types the data accepted by `setLayoutProps('name', props)`, keyed by layout name.
 
 ```ts
 layoutProps: {
@@ -102,7 +98,14 @@ namedLayoutProps: {
 }
 ```
 
-With this configuration, `setLayoutProps({ title: 'Dashboard' })` is type-checked, and `setLayoutPropsFor('app', { theme: 'dark' })` validates both the layout name and its props.
+With this configuration, `setLayoutProps({ title: 'Dashboard' })` is type-checked, and `setLayoutProps('app', { theme: 'dark' })` validates both the layout name and its props.
+
+You may also pass a generic type parameter directly to `setLayoutProps` for ad-hoc typing without configuring the global `InertiaConfig` interface.
+
+```ts
+setLayoutProps<{ custom: string }>({ custom: 'value' })
+setLayoutProps<{ collapsed: boolean }>('sidebar', { collapsed: true })
+```
 
 <Note>
   The next version of [Laravel
@@ -400,29 +403,6 @@ interface UserResponse {
 }
 
 const http = useHttp<UserForm, UserResponse>({ name: "", email: "" });
-```
-
-### Per-Request Response Types
-
-Each HTTP method accepts its own generic type parameter, allowing you to override the response type on a per-request basis. This is useful when different endpoints return different response shapes.
-
-```ts
-interface OrderResponse {
-  orderId: string;
-  total: number;
-}
-
-// Override the response type per request...
-const user: UserResponse = await http.post<UserResponse>("/api/users");
-const order: OrderResponse = await http.get<OrderResponse>("/api/orders/123");
-const submitted: UserResponse = await http.submit<UserResponse>("post", "/api/users");
-
-// The onSuccess callback is also typed...
-await http.post<UserResponse>("/api/users", {
-  onSuccess: (response) => {
-    console.log(response.id, response.name);
-  },
-});
 ```
 
 ## Layout Callbacks

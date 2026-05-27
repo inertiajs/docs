@@ -1,23 +1,21 @@
 export const VueSpecific = ({ children }) => {
-    const [code, setCode] = useState(
-        localStorage.getItem("code")?.replace(/"/g, "") || "Vue",
-    );
-
-    const callback = useCallback((event) => {
-        if (event.detail.key === "code") {
-            setCode(event.detail.value.replace(/"/g, ""));
+    const [code, setCode] = useState(() => {
+        if (typeof window === "undefined") {
+            return "Vue";
         }
-    }, []);
+        return localStorage.getItem("code")?.replace(/"/g, "") || "Vue";
+    });
 
     useEffect(() => {
-        window.addEventListener("storage", callback);
-        window.addEventListener("localStorageUpdate", callback);
-
-        return () => {
-            window.removeEventListener("storage", callback);
-            window.removeEventListener("localStorageUpdate", callback);
+        const handler = (event) => {
+            if (event.detail?.key === "code") {
+                setCode(event.detail.value?.replace(/"/g, ""));
+            }
         };
-    });
+
+        window.addEventListener("localStorageUpdate", handler);
+        return () => window.removeEventListener("localStorageUpdate", handler);
+    }, []);
 
     if (code !== "Vue") {
         return null;

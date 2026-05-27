@@ -12,89 +12,6 @@
         "global": {},
         "versions": [
             {
-                "version": "2.x",
-                "groups": [
-                    {
-                        "group": "Getting Started",
-                        "pages": [
-                            "v2/getting-started/index",
-                            "v2/getting-started/demo-application",
-                            "v2/getting-started/upgrade-guide"
-                        ]
-                    },
-                    {
-                        "group": "Installation",
-                        "pages": [
-                            "v2/installation/server-side-setup",
-                            "v2/installation/client-side-setup"
-                        ]
-                    },
-                    {
-                        "group": "Core Concepts",
-                        "pages": [
-                            "v2/core-concepts/who-is-it-for",
-                            "v2/core-concepts/how-it-works",
-                            "v2/core-concepts/the-protocol"
-                        ]
-                    },
-                    {
-                        "group": "The Basics",
-                        "pages": [
-                            "v2/the-basics/pages",
-                            "v2/the-basics/responses",
-                            "v2/the-basics/redirects",
-                            "v2/the-basics/routing",
-                            "v2/the-basics/title-and-meta",
-                            "v2/the-basics/links",
-                            "v2/the-basics/manual-visits",
-                            "v2/the-basics/forms",
-                            "v2/the-basics/file-uploads",
-                            "v2/the-basics/validation",
-                            "v2/the-basics/view-transitions"
-                        ]
-                    },
-                    {
-                        "group": "Data & Props",
-                        "pages": [
-                            "v2/data-props/shared-data",
-                            "v2/data-props/flash-data",
-                            "v2/data-props/partial-reloads",
-                            "v2/data-props/deferred-props",
-                            "v2/data-props/merging-props",
-                            "v2/data-props/once-props",
-                            "v2/data-props/polling",
-                            "v2/data-props/prefetching",
-                            "v2/data-props/load-when-visible",
-                            "v2/data-props/infinite-scroll",
-                            "v2/data-props/remembering-state"
-                        ]
-                    },
-                    {
-                        "group": "Security",
-                        "pages": [
-                            "v2/security/authentication",
-                            "v2/security/authorization",
-                            "v2/security/csrf-protection",
-                            "v2/security/history-encryption"
-                        ]
-                    },
-                    {
-                        "group": "Advanced",
-                        "pages": [
-                            "v2/advanced/asset-versioning",
-                            "v2/advanced/code-splitting",
-                            "v2/advanced/error-handling",
-                            "v2/advanced/events",
-                            "v2/advanced/progress-indicators",
-                            "v2/advanced/scroll-management",
-                            "v2/advanced/server-side-rendering",
-                            "v2/advanced/testing",
-                            "v2/advanced/typescript"
-                        ]
-                    }
-                ]
-            },
-            {
                 "version": "3.x",
                 "groups": [
                     {
@@ -177,6 +94,89 @@
                             "v3/advanced/server-side-rendering",
                             "v3/advanced/testing",
                             "v3/advanced/typescript"
+                        ]
+                    }
+                ]
+            },
+            {
+                "version": "2.x",
+                "groups": [
+                    {
+                        "group": "Getting Started",
+                        "pages": [
+                            "v2/getting-started/index",
+                            "v2/getting-started/demo-application",
+                            "v2/getting-started/upgrade-guide"
+                        ]
+                    },
+                    {
+                        "group": "Installation",
+                        "pages": [
+                            "v2/installation/server-side-setup",
+                            "v2/installation/client-side-setup"
+                        ]
+                    },
+                    {
+                        "group": "Core Concepts",
+                        "pages": [
+                            "v2/core-concepts/who-is-it-for",
+                            "v2/core-concepts/how-it-works",
+                            "v2/core-concepts/the-protocol"
+                        ]
+                    },
+                    {
+                        "group": "The Basics",
+                        "pages": [
+                            "v2/the-basics/pages",
+                            "v2/the-basics/responses",
+                            "v2/the-basics/redirects",
+                            "v2/the-basics/routing",
+                            "v2/the-basics/title-and-meta",
+                            "v2/the-basics/links",
+                            "v2/the-basics/manual-visits",
+                            "v2/the-basics/forms",
+                            "v2/the-basics/file-uploads",
+                            "v2/the-basics/validation",
+                            "v2/the-basics/view-transitions"
+                        ]
+                    },
+                    {
+                        "group": "Data & Props",
+                        "pages": [
+                            "v2/data-props/shared-data",
+                            "v2/data-props/flash-data",
+                            "v2/data-props/partial-reloads",
+                            "v2/data-props/deferred-props",
+                            "v2/data-props/merging-props",
+                            "v2/data-props/once-props",
+                            "v2/data-props/polling",
+                            "v2/data-props/prefetching",
+                            "v2/data-props/load-when-visible",
+                            "v2/data-props/infinite-scroll",
+                            "v2/data-props/remembering-state"
+                        ]
+                    },
+                    {
+                        "group": "Security",
+                        "pages": [
+                            "v2/security/authentication",
+                            "v2/security/authorization",
+                            "v2/security/csrf-protection",
+                            "v2/security/history-encryption"
+                        ]
+                    },
+                    {
+                        "group": "Advanced",
+                        "pages": [
+                            "v2/advanced/asset-versioning",
+                            "v2/advanced/code-splitting",
+                            "v2/advanced/error-handling",
+                            "v2/advanced/events",
+                            "v2/advanced/progress-indicators",
+                            "v2/advanced/scroll-management",
+                            "v2/advanced/server-side-rendering",
+                            "v2/advanced/testing",
+                            "v2/advanced/typescript"
                         ]
                     }
                 ]
@@ -270,79 +270,79 @@
     "redirects": [
         {
             "source": "/index",
-            "destination": "/v2/getting-started/index"
+            "destination": "/v3/getting-started/index"
         },
         {
             "source": "/demo-application",
-            "destination": "/v2/getting-started/demo-application"
+            "destination": "/v3/getting-started/demo-application"
         },
         {
             "source": "/upgrade-guide",
-            "destination": "/v2/getting-started/upgrade-guide"
+            "destination": "/v3/getting-started/upgrade-guide"
         },
         {
             "source": "/server-side-setup",
-            "destination": "/v2/installation/server-side-setup"
+            "destination": "/v3/installation/server-side-setup"
         },
         {
             "source": "/client-side-setup",
-            "destination": "/v2/installation/client-side-setup"
+            "destination": "/v3/installation/client-side-setup"
         },
         {
             "source": "/who-is-it-for",
-            "destination": "/v2/core-concepts/who-is-it-for"
+            "destination": "/v3/core-concepts/who-is-it-for"
         },
         {
             "source": "/how-it-works",
-            "destination": "/v2/core-concepts/how-it-works"
+            "destination": "/v3/core-concepts/how-it-works"
         },
         {
             "source": "/the-protocol",
-            "destination": "/v2/core-concepts/the-protocol"
+            "destination": "/v3/core-concepts/the-protocol"
         },
         {
             "source": "/pages",
-            "destination": "/v2/the-basics/pages"
+            "destination": "/v3/the-basics/pages"
         },
         {
             "source": "/responses",
-            "destination": "/v2/the-basics/responses"
+            "destination": "/v3/the-basics/responses"
         },
         {
             "source": "/redirects",
-            "destination": "/v2/the-basics/redirects"
+            "destination": "/v3/the-basics/redirects"
         },
         {
             "source": "/routing",
-            "destination": "/v2/the-basics/routing"
+            "destination": "/v3/the-basics/routing"
         },
         {
             "source": "/title-and-meta",
-            "destination": "/v2/the-basics/title-and-meta"
+            "destination": "/v3/the-basics/title-and-meta"
         },
         {
             "source": "/links",
-            "destination": "/v2/the-basics/links"
+            "destination": "/v3/the-basics/links"
         },
         {
             "source": "/manual-visits",
-            "destination": "/v2/the-basics/manual-visits"
+            "destination": "/v3/the-basics/manual-visits"
         },
         {
             "source": "/forms",
-            "destination": "/v2/the-basics/forms"
+            "destination": "/v3/the-basics/forms"
         },
         {
             "source": "/file-uploads",
-            "destination": "/v2/the-basics/file-uploads"
+            "destination": "/v3/the-basics/file-uploads"
         },
         {
             "source": "/validation",
-            "destination": "/v2/the-basics/validation"
+            "destination": "/v3/the-basics/validation"
         },
         {
             "source": "/view-transitions",
-            "destination": "/v2/the-basics/view-transitions"
+            "destination": "/v3/the-basics/view-transitions"
         },
         {
             "source": "/instant-visits",
@@ -366,91 +366,91 @@
         },
         {
             "source": "/shared-data",
-            "destination": "/v2/data-props/shared-data"
+            "destination": "/v3/data-props/shared-data"
         },
         {
             "source": "/partial-reloads",
-            "destination": "/v2/data-props/partial-reloads"
+            "destination": "/v3/data-props/partial-reloads"
         },
         {
             "source": "/deferred-props",
-            "destination": "/v2/data-props/deferred-props"
+            "destination": "/v3/data-props/deferred-props"
         },
         {
             "source": "/merging-props",
-            "destination": "/v2/data-props/merging-props"
+            "destination": "/v3/data-props/merging-props"
         },
         {
             "source": "/polling",
-            "destination": "/v2/data-props/polling"
+            "destination": "/v3/data-props/polling"
         },
         {
             "source": "/prefetching",
-            "destination": "/v2/data-props/prefetching"
+            "destination": "/v3/data-props/prefetching"
         },
         {
             "source": "/load-when-visible",
-            "destination": "/v2/data-props/load-when-visible"
+            "destination": "/v3/data-props/load-when-visible"
         },
         {
             "source": "/infinite-scroll",
-            "destination": "/v2/data-props/infinite-scroll"
+            "destination": "/v3/data-props/infinite-scroll"
         },
         {
             "source": "/remembering-state",
-            "destination": "/v2/data-props/remembering-state"
+            "destination": "/v3/data-props/remembering-state"
         },
         {
             "source": "/authentication",
-            "destination": "/v2/security/authentication"
+            "destination": "/v3/security/authentication"
         },
         {
             "source": "/authorization",
-            "destination": "/v2/security/authorization"
+            "destination": "/v3/security/authorization"
         },
         {
             "source": "/csrf-protection",
-            "destination": "/v2/security/csrf-protection"
+            "destination": "/v3/security/csrf-protection"
         },
         {
             "source": "/history-encryption",
-            "destination": "/v2/security/history-encryption"
+            "destination": "/v3/security/history-encryption"
         },
         {
             "source": "/asset-versioning",
-            "destination": "/v2/advanced/asset-versioning"
+            "destination": "/v3/advanced/asset-versioning"
         },
         {
             "source": "/code-splitting",
-            "destination": "/v2/advanced/code-splitting"
+            "destination": "/v3/advanced/code-splitting"
         },
         {
             "source": "/error-handling",
-            "destination": "/v2/advanced/error-handling"
+            "destination": "/v3/advanced/error-handling"
         },
         {
             "source": "/events",
-            "destination": "/v2/advanced/events"
+            "destination": "/v3/advanced/events"
         },
         {
             "source": "/progress-indicators",
-            "destination": "/v2/advanced/progress-indicators"
+            "destination": "/v3/advanced/progress-indicators"
         },
         {
             "source": "/scroll-management",
-            "destination": "/v2/advanced/scroll-management"
+            "destination": "/v3/advanced/scroll-management"
         },
         {
             "source": "/server-side-rendering",
-            "destination": "/v2/advanced/server-side-rendering"
+            "destination": "/v3/advanced/server-side-rendering"
         },
         {
             "source": "/testing",
-            "destination": "/v2/advanced/testing"
+            "destination": "/v3/advanced/testing"
         },
         {
             "source": "/typescript",
-            "destination": "/v2/advanced/typescript"
+            "destination": "/v3/advanced/typescript"
         }
     ]
 }

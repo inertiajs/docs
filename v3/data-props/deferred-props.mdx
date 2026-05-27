@@ -2,10 +2,6 @@
 title: Deferred Props
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Inertia's deferred props feature allows you to defer the loading of certain page data until after the initial page render. This can be useful for improving the perceived performance of your app by allowing the initial page render to happen as quickly as possible.
 
 ## Server Side
@@ -210,6 +206,97 @@ export default () => (
 </CodeGroup>
 
 The `reloading` prop is `false` on the initial load and becomes `true` whenever a partial reload is in progress for the deferred keys. It returns to `false` once the reload completes.
+
+## Error Handling
+
+By default, exceptions thrown while resolving a deferred prop result in an error response. You may instruct Inertia to rescue these exceptions by passing `rescue: true` to `Inertia::defer()`.
+
+```php
+Route::get('/users', function () {
+    return Inertia::render('Users/Index', [
+        'permissions' => Inertia::defer(fn () => Permission::all(), rescue: true),
+    ]);
+});
+```
+
+When a deferred prop is rescued, it is omitted from the response and the exception is reported via Laravel's exception handler.
+
+On the client side, you may provide a `rescue` slot to the `Deferred` component to render a fallback UI when a prop fails to load.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+<script setup>
+import { Deferred, router } from "@inertiajs/vue3";
+</script>
+
+<template>
+  <Deferred data="permissions">
+    <template #fallback>
+      <div>Loading...</div>
+    </template>
+
+    <template #rescue="{ reloading }">
+      <div>
+        <p>Failed to load permissions.</p>
+        <button :disabled="reloading" @click="router.reload({ only: ['permissions'] })">Retry</button>
+      </div>
+    </template>
+
+    <div v-for="permission in permissions">
+      <!-- ... -->
+    </div>
+  </Deferred>
+</template>
+```
+
+```jsx React icon="react"
+import { Deferred, router } from "@inertiajs/react";
+
+export default () => (
+  <Deferred
+    data="permissions"
+    fallback={<div>Loading...</div>}
+    rescue={({ reloading }) => (
+      <div>
+        <p>Failed to load permissions.</p>
+        <button disabled={reloading} onClick={() => router.reload({ only: ["permissions"] })}>Retry</button>
+      </div>
+    )}
+  >
+    <PermissionsChildComponent />
+  </Deferred>
+);
+```
+
+```svelte Svelte icon="s"
+<script>
+    import { Deferred, router } from '@inertiajs/svelte'
+
+    let { permissions } = $props()
+</script>
+
+<Deferred data="permissions">
+    {#snippet fallback()}
+        <div>Loading...</div>
+    {/snippet}
+
+    {#snippet rescue({ reloading })}
+        <div>
+            <p>Failed to load permissions.</p>
+            <button disabled={reloading} onclick={() => router.reload({ only: ['permissions'] })}>Retry</button>
+        </div>
+    {/snippet}
+
+    {#each permissions as permission}
+        <!-- ... -->
+    {/each}
+</Deferred>
+```
+
+</CodeGroup>
+
+The rescue state is preserved until you explicitly reload the rescued prop. The `rescue` slot receives a `reloading` boolean, allowing you to disable the retry button or show a loading indicator while the reload is in progress.
 
 ## Combining with Once Props
 

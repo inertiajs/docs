@@ -2,10 +2,6 @@
 title: Upgrade Guide for v3.0
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 You can find the legacy docs for Inertia.js v2.0 at [inertiajs.com/docs/v2](/v2).
 
 ## What's New
@@ -44,6 +40,7 @@ This release also includes several additional improvements:
 - [Built-in HTTP interceptors](/v3/installation/client-side-setup#interceptors) without Axios
 - [Default layout](/v3/the-basics/layouts#default-layouts) option in `createInertiaApp`
 - [`preserveErrors`](/v3/data-props/partial-reloads#preserving-errors) option to preserve validation errors during partial reloads
+- [Blade components](/v3/installation/server-side-setup#setup-root-template) as an alternative to the `@inertia` and `@inertiaHead` directives, with SSR head fallback support
 
 ## Upgrade Dependencies
 
@@ -52,15 +49,15 @@ To upgrade to Inertia.js v3.0, first use npm to install the client-side adapter 
 <CodeGroup>
 
 ```bash Vue icon="vuejs"
-npm install @inertiajs/vue3@^3.0.0-beta
+npm install @inertiajs/vue3@^3.0
 ```
 
 ```bash React icon="react"
-npm install @inertiajs/react@^3.0.0-beta
+npm install @inertiajs/react@^3.0
 ```
 
 ```bash Svelte icon="s"
-npm install @inertiajs/svelte@^3.0.0-beta
+npm install @inertiajs/svelte@^3.0
 ```
 
 </CodeGroup>
@@ -68,13 +65,13 @@ npm install @inertiajs/svelte@^3.0.0-beta
 You may also install the new optional Vite plugin, which provides a simplified SSR setup and a `pages` shorthand for component resolution:
 
 ```bash
-npm install @inertiajs/vite@^3.0.0-beta
+npm install @inertiajs/vite@^3.0
 ```
 
 Next, upgrade the `inertiajs/inertia-laravel` package:
 
 ```bash
-composer require inertiajs/inertia-laravel:^3.0.0-beta
+composer require inertiajs/inertia-laravel:^3.0
 ```
 
 After upgrading, republish the Inertia configuration file since it has been restructured in v3. You should review the updated config file and re-apply any customizations:
@@ -88,6 +85,7 @@ You should also clear your cached views since the `@inertia` Blade directive out
 ```bash
 php artisan view:clear
 ```
+
 
 ## Breaking Changes
 
@@ -170,15 +168,17 @@ router.post('/users', data, {
 
 ### `router.cancel()` Replaced
 
-The `router.cancel()` method has been replaced by `router.cancelAll()`, which provides granular control over which request types to cancel:
+The `router.cancel()` method has been replaced by `router.cancelAll()`. In v2, `cancel()` only cancelled synchronous requests. The new `cancelAll()` method cancels all synchronous, asynchronous, and prefetch requests by default. You may pass options to limit which request types are cancelled.
 
 ```js
-// Before (v2)
+// Before (v2) — only cancelled sync requests
 router.cancel()
 
-// After (v3)
+// After (v3) — cancels all request types
 router.cancelAll()
-router.cancelAll({ async: false, prefetch: false }) // Cancel only sync requests
+
+// To match v2 behavior (sync only)...
+router.cancelAll({ async: false, prefetch: false })
 ```
 
 See the [visit cancellation](/v3/the-basics/manual-visits#visit-cancellation) documentation for more details.
@@ -212,6 +212,18 @@ createInertiaApp({
 ```
 
 Initial page data is now always passed via a `<script type="application/json">` element. The legacy `data-page` attribute approach is no longer supported.
+
+### Head Element Attributes
+
+The `inertia` attribute used on elements in your root Blade template's `<head>` section has been renamed to `data-inertia`. You should update any head elements that use this attribute:
+
+```html
+<!-- Before (v2) -->
+<title inertia>My Website</title>
+
+<!-- After (v3) -->
+<title data-inertia>My Website</title>
+```
 
 ### Progress Indicator Exports Removed
 
@@ -280,9 +292,45 @@ The updated config file should have already been republished as part of the [upg
 
 The deprecated `Inertia\Testing\Concerns\Has`, `Inertia\Testing\Concerns\Matching`, and `Inertia\Testing\Concerns\Debugging` traits have been removed. These traits were deprecated in v1 and replaced by the `AssertableInertia` class. No action is required unless your application references these traits directly.
 
+### React Arrow Function Layout Components
+
+The new layout implementation in v3 no longer supports arrow function components assigned directly to `.layout`. Inertia cannot reliably distinguish them from render functions at runtime. Wrapping the component in an array resolves this:
+
+```jsx
+const Layout = ({ children }) => <main>{children}</main>
+
+// ❌ does not work — arrow function component assigned directly
+Dashboard.layout = Layout
+
+// ✅ wrap in an array instead
+Dashboard.layout = [Layout]
+```
+
+Function declaration components continue to work without any changes.
+
 ## Other Changes
 
 ---
+
+### Blade Components
+
+Inertia now provides `<x-inertia::head>` and `<x-inertia::app>` Blade components as an alternative to the `@inertiaHead` and `@inertia` directives. The head component accepts fallback content via its slot that only renders when SSR is not active, solving the long-standing issue of duplicate `<title>` tags in SSR applications.
+
+```blade resources/views/app.blade.php
+<html>
+    <head>
+        @vite('resources/js/app.js')
+        <x-inertia::head>
+            <title>{{ config('app.name') }}</title>
+        </x-inertia::head>
+    </head>
+    <body>
+        <x-inertia::app />
+    </body>
+</html>
+```
+
+The existing directives continue to work and require no changes.
 
 ### SSR in Development
 

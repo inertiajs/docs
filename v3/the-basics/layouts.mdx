@@ -2,10 +2,6 @@
 title: Layouts
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
@@ -162,7 +158,7 @@ const Welcome = ({ user }) => {
     )
 }
 
-Welcome.layout = Layout
+Welcome.layout = (page) => <Layout>{page}</Layout>
 
 export default Welcome
 ```
@@ -194,6 +190,18 @@ defineOptions({ layout: Layout })
 ```
 
 </VueSpecific>
+
+<ReactSpecific>
+
+Arrow function components should be wrapped in an array. Without the array, Inertia cannot distinguish them from render functions at runtime:
+
+```jsx
+const ArrowLayout = ({ children }) => <main>{children}</main>
+
+Welcome.layout = [ArrowLayout]
+```
+
+</ReactSpecific>
 
 ### Nested Layouts
 
@@ -311,14 +319,14 @@ createInertiaApp({
 })
 ```
 
-```js React icon="react"
+```jsx React icon="react"
 import Layout from './Layout'
 
 createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
         let page = pages[`./Pages/${name}.jsx`]
-        page.default.layout = page.default.layout || Layout
+        page.default.layout = page.default.layout || ((page) => <Layout>{page}</Layout>)
         return page
     },
     // ...
@@ -405,16 +413,13 @@ You may pass static props directly in your persistent layout definition using a 
 <CodeGroup>
 
 ```vue Vue icon="vuejs"
-<script>
+<script setup>
 import Layout from './Layout'
 
-export default {
-    layout: [Layout, { title: 'Dashboard' }],
-}
-</script>
-
-<script setup>
 defineProps({ user: Object })
+defineOptions({
+    layout: [Layout, { title: 'Dashboard' }],
+})
 </script>
 
 <template>
@@ -457,12 +462,12 @@ Sometimes layout props need to be derived from the current page's props. A callb
 <CodeGroup>
 
 ```vue Vue icon="vuejs"
-<script>
+<script setup>
 import Layout from './Layout'
 
-export default {
+defineOptions({
     layout: (props) => [Layout, { title: 'Profile: ' + props.auth.user.name }],
-}
+})
 </script>
 
 <template>
@@ -495,6 +500,53 @@ export default Profile
 </CodeGroup>
 
 The callback receives the page's props and may return any valid layout format: a single component, a tuple with static props, an array for nested layouts, or a named layout object. TypeScript users may use the [`LayoutCallback`](/v3/advanced/typescript#layout-callbacks) type for type safety.
+
+#### Returning Props Only
+
+When a [default layout](#default-layouts) is configured in `createInertiaApp`, callbacks may return a plain props object instead of a full layout definition. Inertia will automatically use the default layout and merge the returned props onto it.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+<script setup>
+defineOptions({
+    layout: (props) => ({ title: 'Profile: ' + props.auth.user.name, showSidebar: false }),
+})
+</script>
+
+<template>
+    <h1>Profile</h1>
+</template>
+```
+
+```jsx React icon="react"
+const Profile = () => {
+    return <h1>Profile</h1>
+}
+
+Profile.layout = (props) => ({ title: 'Profile: ' + props.auth.user.name, showSidebar: false })
+
+export default Profile
+```
+
+```svelte Svelte icon="s"
+<script module>
+    export const layout = (props) => ({
+        title: 'Profile: ' + props.auth.user.name,
+        showSidebar: false,
+    })
+</script>
+
+<h1>Profile</h1>
+```
+
+</CodeGroup>
+
+A static object may also be used when the props don't depend on page data.
+
+```js
+Dashboard.layout = { title: 'Dashboard', showSidebar: true }
+```
 
 ### Dynamic Props
 
@@ -589,30 +641,30 @@ Dashboard.layout = {
 
 </CodeGroup>
 
-Use `setLayoutPropsFor` to set props for a specific named layout.
+You may target a specific named layout by passing the layout name as the first argument to `setLayoutProps`.
 
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { setLayoutPropsFor } from '@inertiajs/vue3'
+import { setLayoutProps } from '@inertiajs/vue3'
 
-setLayoutPropsFor('sidebar', {
+setLayoutProps('sidebar', {
     collapsed: true,
 })
 ```
 
 ```js React icon="react"
-import { setLayoutPropsFor } from '@inertiajs/react'
+import { setLayoutProps } from '@inertiajs/react'
 
-setLayoutPropsFor('sidebar', {
+setLayoutProps('sidebar', {
     collapsed: true,
 })
 ```
 
 ```js Svelte icon="s"
-import { setLayoutPropsFor } from '@inertiajs/svelte'
+import { setLayoutProps } from '@inertiajs/svelte'
 
-setLayoutPropsFor('sidebar', {
+setLayoutProps('sidebar', {
     collapsed: true,
 })
 ```
@@ -639,7 +691,7 @@ Dashboard.layout = {
 
 Layout props are resolved from multiple sources with the following priority (highest to lowest):
 
-1. **Dynamic props** - set via `setLayoutProps()` or `setLayoutPropsFor()`
+1. **Dynamic props** - set via `setLayoutProps()`
 2. **Static props** - defined in the persistent layout definition (including [callback props](#callback-props))
 3. **Defaults** - declared as default values on the layout component's props
 

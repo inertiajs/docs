@@ -2,10 +2,6 @@
 title: The Protocol
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 This page contains a detailed specification of the Inertia protocol. Be sure to read the [how it works](/v3/core-concepts/how-it-works) page first for a high-level overview.
 
 ## HTML Responses
@@ -270,6 +266,12 @@ Inertia shares data between the server and client via a page object. This object
   props](/v3/data-props/deferred-props).
 </ParamField>
 
+<ParamField body="rescuedProps" type="array">
+  Array of [deferred prop](/v3/data-props/deferred-props#error-handling) keys
+  that failed to resolve and were rescued server-side. Used by the client to
+  render the `rescue` slot on the `<Deferred>` component.
+</ParamField>
+
 <ParamField body="sharedProps" type="array">
   Array of top-level prop keys registered via `Inertia::share()`. Used by the
   client to carry shared props over during [instant
@@ -322,6 +324,22 @@ When using deferred props, the page object includes a `deferredProps` configurat
     "default": ["comments", "analytics"],
     "sidebar": ["relatedPosts"]
   }
+}
+```
+
+### Page Object with Rescued Deferred Props
+
+When a [deferred prop](/v3/data-props/deferred-props#error-handling) is resolved with `rescue: true` and throws an exception, the prop is omitted from `props` and its key is included in `rescuedProps`. The client uses this list to render the `rescue` slot on the `<Deferred>` component.
+
+```json
+{
+  "component": "Users/Index",
+  "props": {
+    "errors": {}
+  },
+  "url": "/users",
+  "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
+  "rescuedProps": ["permissions"]
 }
 ```
 

@@ -1,13 +1,15 @@
 (function () {
-    const originalSetItem = localStorage.setItem;
+    const originalSetItem = Storage.prototype.setItem;
 
-    localStorage.setItem = function (key, value) {
-        const event = new CustomEvent("localStorageUpdate", {
-            detail: { key, value },
-        });
-
-        window.dispatchEvent(event);
-
+    Storage.prototype.setItem = function (key, value) {
         originalSetItem.call(this, key, value);
+
+        if (this === window.localStorage) {
+            window.dispatchEvent(
+                new CustomEvent("localStorageUpdate", {
+                    detail: { key, value },
+                }),
+            );
+        }
     };
 })();

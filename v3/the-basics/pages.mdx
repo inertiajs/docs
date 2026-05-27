@@ -2,10 +2,6 @@
 title: Pages
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 import { ClientSpecific } from "/snippets/client-specific.jsx";
 import { ReactSpecific } from "/snippets/react-specific.jsx";
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx";
@@ -97,6 +93,18 @@ class UserController extends Controller
 ```
 
 If you attempt to render a page that does not exist, the response will typically be a blank screen. To prevent this, you may set the `inertia.ensure_pages_exist` configuration option to `true`. The Laravel adapter will then throw an `Inertia\ComponentNotFoundException` when a page cannot be found.
+
+## Transforming Component Names
+
+Sometimes you may wish to transform component names. This may be done on the client side using the [`pages.transform`](/v3/installation/client-side-setup#pages-shorthand) option, or on the server using the `Inertia::transformComponentUsing()` method. The transformed name is sent to the browser and used for `ensure_pages_exist` checks.
+
+```php
+use Inertia\Inertia;
+
+Inertia::transformComponentUsing(function (string $name): string {
+    return "{$name}/Page";
+});
+```
 
 ## Layouts
 

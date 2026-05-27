@@ -2,12 +2,9 @@
 title: Client-Side Setup
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
 import { VueSpecific } from "/snippets/vue-specific.jsx"
-
-<V3BetaWarning />
 
 Once you have your [server-side framework configured](/v3/installation/server-side-setup), you then need to setup your client-side framework. Inertia currently provides support for React, Vue, and Svelte.
 
@@ -130,7 +127,7 @@ The `@inertiajs/vite` plugin supports Vite 7 and Vite 8.
         export default defineConfig({
             plugins: [
                 laravel({
-                    input: ['resources/css/app.css', 'resources/js/app.js'],
+                    input: ['resources/js/app.js'],
                     refresh: true,
                 }),
                 inertia(),
@@ -207,7 +204,7 @@ createInertiaApp({
 
 </CodeGroup>
 
-An object may also be provided for more control over how pages are resolved.
+An object may also be provided for more control over how pages are resolved. You only need to include the options you wish to customize.
 
 ```js
 createInertiaApp({
@@ -366,9 +363,34 @@ createInertiaApp({
 
 </CodeGroup>
 
+## AI Assistants and IDE Integrations
+
+AI assistants and IDE integrations often write state files into your project root. With `laravel-vite-plugin`'s `refresh: true` enabled, these writes may trigger unexpected full page reloads, since Vite's watcher only ignores `node_modules` and `.git` by default.
+
+You may extend Vite's `server.watch.ignored` option to exclude these paths.
+
+```js vite.config.js
+export default defineConfig({
+    server: {
+        watch: {
+            ignored: [
+                '**/.junie/**',
+                '**/.cursor/**',
+                '**/.claude/**',
+            ],
+        },
+    },
+    // ...
+})
+```
+
+Adjust the list to match your installed tools. See Vite's [server.watch](https://vite.dev/config/server-options.html#server-watch) documentation for additional options.
+
 ## Manual Setup
 
 If you prefer not to use the Vite plugin, you may provide the `resolve` and `setup` callbacks manually. The `resolve` callback tells Inertia how to load a page component and receives the component name and the full [page object](/v3/core-concepts/the-protocol). The `setup` callback initializes the client-side framework.
+
+<Note>A manual `setup` callback prevents the Vite plugin from auto-generating [SSR](/v3/advanced/server-side-rendering) handling. You should create a [separate SSR entry point](/v3/advanced/server-side-rendering#ssr-entry-point) and update your app to use [client-side hydration](/v3/advanced/server-side-rendering#client-side-hydration).</Note>
 
 <CodeGroup>
 
@@ -544,6 +566,17 @@ createInertiaApp({
 ```
 
 If you change the `id` of the root element, be sure to update it [server-side](/v3/installation/server-side-setup#root-template) as well.
+
+## Content Security Policy
+
+For applications using a [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) that restricts inline styles, you may pass a `nonce` to `createInertiaApp()`. The nonce is applied to the inline styles Inertia injects for the [progress bar](/v3/advanced/progress-indicators) and the [error modal](/v3/advanced/error-handling), allowing them through your CSP.
+
+```js
+createInertiaApp({
+  nonce: "your-csp-nonce",
+  // ...
+});
+```
 
 ## HTTP Client
 
