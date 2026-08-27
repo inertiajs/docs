@@ -363,6 +363,132 @@ createInertiaApp({
 
 </CodeGroup>
 
+### The `layer` Option
+
+Every [layer](/v3/the-basics/manual-visits#layers) renders through a shell component that decides how it looks and how it animates out. By default, Inertia uses the built-in `Layer` component, an unstyled native `<dialog>` that provides focus trapping, escape dismissal, scroll locking, and ARIA wiring out of the box. The `layer` option lets you replace it with a shell of your own.
+
+The shell receives the layer's content, along with the following props:
+
+- `open` - Whether the layer is open, and `false` while it is closing
+- `index` - The layer's position in the stack
+- `isTop` - Whether the layer is the topmost in the stack
+- `type` - Either `"routed"` or `"local"`
+- `close` - Marks the layer as closing
+- `done` - Reports that the exit animation has completed, which is what removes the layer
+
+Every dismissal runs the exit animation. That includes the escape key, your own close button, `useLayer().close()`, an [`Inertia::close()`](/v3/the-basics/responses#closing-a-layer) response from the server, and the browser's back button over a single layer. In each case the layer is marked as closing, stays on screen while your transition runs, and is only removed once you call `done()`. A shell that never calls `done()` leaves the layer on screen.
+
+A history move that is a navigation rather than a dismissal does not run the exit animation. Jumping back more than one entry, going forward, reloading, and landing anywhere other than the entry the top layer was opened over all take the stack down with the page swap, and `done()` is never called for those layers. For this reason, anything a layer must do on its way out belongs in `onClose()`, which fires for every removal, rather than in the exit transition.
+
+A shell is part of the layer it renders, so `usePage()` and `useLayer()` resolve to that layer inside it, exactly as they do in the layer's layout and content. This allows a shell to make decisions per layer rather than per app.
+
+A shell of your own may build on the same helpers the built-in one uses, all exported from `@inertiajs/core`:
+
+- `lockScroll()` - Locks the document's scroll and returns a function that releases it again
+- `raiseLayer(dialog, isTop)` - Promotes a rendered `<dialog open>` element to a modal one, keeping the browser's own dialog stack in the right order
+- `observeExit(getDialog, done)` - Returns an object with a `toggle(open)` method, which you call whenever the layer's `open` prop changes, and a `teardown()` method for when the shell unmounts. Once `open` becomes `false`, it waits for the layer's animations to finish, closes the dialog so that focus returns to whatever opened the layer, and then calls `done`
+
+The built-in `Layer` component also renders `data-layer-index`, `data-layer-top`, `data-layer-closing`, and `data-layer-type` attributes on the dialog, which you may use to style the stack from CSS.
+
+It also accepts a `label` prop, which becomes the dialog's accessible name. A `<dialog>` without one is announced simply as "dialog", so it is worth giving every layer a label. Since the shell resolves the layer's own page, its props are a convenient source.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { Layer, usePage } from '@inertiajs/vue3'
+import { h } from 'vue'
+
+const Shell = (props, { slots }) => h(Layer, { ...props, label: usePage().props.title }, slots)
+```
+
+```jsx React icon="react"
+import { Layer, usePage } from "@inertiajs/react";
+
+const Shell = (props) => <Layer {...props} label={usePage().props.title} />;
+```
+
+```svelte Svelte icon="s"
+<script>
+  import { Layer, usePage } from '@inertiajs/svelte'
+
+  let { children, ...props } = $props()
+  const page = usePage()
+</script>
+
+<Layer {...props} label={page.props.title}>{@render children()}</Layer>
+```
+
+</CodeGroup>
+
+Once you have a shell, pass it to the `layer` option.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { Layer } from '@inertiajs/vue3'
+import { h } from 'vue'
+
+createInertiaApp({
+    layer: (props, { slots }) => h(Layer, { ...props, label: 'Panel' }, slots),
+})
+```
+
+```jsx React icon="react"
+import { Layer } from "@inertiajs/react";
+
+createInertiaApp({
+    layer: (props) => <Layer {...props} label="Panel" />,
+})
+```
+
+```js Svelte icon="s"
+import { Layer } from '@inertiajs/svelte'
+
+createInertiaApp({
+    layer: Layer,
+})
+```
+
+</CodeGroup>
+
+TypeScript users may type a shell's props using the exported `LayerComponent` type.
+
+### The `loading` Option
+
+When a layer's URL is opened directly, the layer renders first, while the page it sits on is still being fetched. Until that request comes back there is nothing underneath the dialog. The `loading` option lets you render a placeholder there in the meantime. It accepts a component, or a callback that resolves one from the URL being fetched and the page that is opening.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import Loading from "./Pages/Loading.vue";
+
+createInertiaApp({
+    loading: (url, page) => (url.startsWith("/settings") ? Loading : undefined),
+});
+```
+
+```jsx React icon="react"
+import Loading from "./Pages/Loading";
+
+createInertiaApp({
+    loading: (url, page) => (url.startsWith("/settings") ? Loading : undefined),
+});
+```
+
+```js Svelte icon="s"
+import Loading from "./Pages/Loading.svelte";
+
+createInertiaApp({
+    loading: (url, page) => (url.startsWith("/settings") ? Loading : undefined),
+});
+```
+
+</CodeGroup>
+
+Like `resolve`, the callback may also return a promise or a module, so a dynamic `import()` works. Returning `undefined` renders nothing, which is also what happens when the option is omitted. The `page` argument includes `page.layers`, so the callback may decide based on the layer that is opening as well as on the URL being fetched.
+
+The placeholder renders through the same layout pipeline as any other page, so a `layout` declared on it works, and it receives the URL being fetched as `page.url` along with empty props. It is only a stand-in: it never becomes a history entry, and it is swapped out as soon as the page beneath it arrives. If the layer is dismissed while that page is still loading, the placeholder stays on screen until it lands.
+
 ## AI Assistants and IDE Integrations
 
 AI assistants and IDE integrations often write state files into your project root. With `laravel-vite-plugin`'s `refresh: true` enabled, these writes may trigger unexpected full page reloads, since Vite's watcher only ignores `node_modules` and `.git` by default.
@@ -565,7 +691,7 @@ createInertiaApp({
 });
 ```
 
-If you change the `id` of the root element, be sure to update it [server-side](/v3/installation/server-side-setup#root-template) as well.
+If you change the `id` of the root element, be sure to update it [server-side](/v3/installation/server-side-setup#installation) as well.
 
 ## Content Security Policy
 
