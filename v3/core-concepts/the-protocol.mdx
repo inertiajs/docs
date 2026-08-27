@@ -172,6 +172,12 @@ The following headers are automatically sent by Inertia when making requests. Yo
   using [Infinite scroll](/v3/data-props/infinite-scroll).
 </ParamField>
 
+<ParamField header="X-Socket-Id" type="string">
+  The broadcaster's connection id, sent when a [live
+  prop](/v3/data-props/live-props) transport reports one, so the server may skip
+  broadcasting back to the connection that caused the change.
+</ParamField>
+
 <ParamField header="X-Inertia-Except-Once-Props" type="string">
   Comma-separated list of non-expired [once prop](/v3/data-props/once-props)
   keys already loaded on the client. The server will skip resolving these props
@@ -320,6 +326,12 @@ Inertia shares data between the server and client via a page object. This object
   milliseconds).
 </ParamField>
 
+<ParamField body="liveProps" type="object">
+  Configuration for [live props](/v3/data-props/live-props). Each entry maps a
+  prop path to the channels and events that should refresh it, and an optional
+  `throttle` in milliseconds.
+</ParamField>
+
 <ParamField body="flash" type="object">
   Flash session data for the current request. Only included when flash data
   exists. The client exposes it through the `inertia:flash` event and strips it
@@ -361,6 +373,7 @@ Resolution differs between the two request modes. A full visit resolves the comp
 | Merge / deep merge / prepend | Yes                                      | `mergeProps`, `deepMergeProps`, `prependProps`, `matchPropsOn` |
 | Once                         | Yes, unless already remembered by client | `onceProps`                                                    |
 | Scroll                       | Yes                                      | `scrollProps`, `mergeProps`                                    |
+| Live                         | Yes                                      | `liveProps`                                                    |
 
 **Partial reload**
 
@@ -373,12 +386,14 @@ Resolution differs between the two request modes. A full visit resolves the comp
 | Merge / deep merge / prepend | When resolved                            | `mergeProps`, `deepMergeProps`, `prependProps`, `matchPropsOn` |
 | Once                         | Always when requested (except-once ignored) | `onceProps`                                                 |
 | Scroll                       | When resolved                            | `scrollProps`, `mergeProps`                                    |
+| Live                         | When resolved                            | `liveProps`                                                    |
 
 A few metadata fields are mode-specific:
 
 - `deferredProps` is populated on full visits only. It is empty or absent on partial reloads, since deferred props resolve in the follow-up request.
 - `rescuedProps` is populated on partial reloads only, listing deferred props that failed to resolve.
 - Merge, scroll, and once metadata is emitted per response, alongside whichever props carry those behaviors.
+- `liveProps` is emitted per response as well, so a partial reload keeps the listeners of the props it refreshed up to date.
 
 ### Always Props
 
@@ -587,6 +602,38 @@ Note that `plans` is included in `onceProps` but not in `props` since it was alr
 ### Force-Fresh and Partial Reloads
 
 The server may send a fresh value for a once prop even when its key appears in `X-Inertia-Except-Once-Props`, for example when the underlying data has changed. The returned value and its new `expiresAt` replace the client's copy. On a partial reload the except-once header is ignored, so a requested once prop is always resolved.
+
+## Live Props
+
+Live props stay in sync with the server by refreshing themselves whenever a broadcast event arrives. The page object carries a `liveProps` entry per prop, listing the channels it listens on paired with the events that broadcast on them, plus an optional `throttle` in milliseconds. Channel names are unprefixed and carry their type separately, so the client applies whichever prefix its broadcaster expects. See the [live props](/v3/data-props/live-props) documentation.
+
+```json
+{
+  "component": "Orders/Show",
+  "props": {
+    "errors": {},
+    "order": {
+      "id": 1,
+      "status": "shipped"
+    }
+  },
+  "url": "/orders/1",
+  "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
+  "liveProps": {
+    "order": {
+      "listeners": [
+        {
+          "channel": { "name": "orders.1", "type": "private" },
+          "events": ["App\\Events\\OrderUpdated"]
+        }
+      ],
+      "throttle": 5000
+    }
+  }
+}
+```
+
+An incoming event refreshes the props it feeds with a regular partial reload, so the value the client receives is whatever the server resolves at that moment. The broadcast payload itself is never applied to the prop. The client sends the broadcaster's connection id along in the `X-Socket-Id` header, which lets the server exclude the connection that caused the change.
 
 ## Infinite Scroll
 
