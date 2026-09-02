@@ -54,7 +54,8 @@
                             "v3/the-basics/file-uploads",
                             "v3/the-basics/validation",
                             "v3/the-basics/layouts",
-                            "v3/the-basics/view-transitions"
+                            "v3/the-basics/view-transitions",
+                            "v3/the-basics/localization"
                         ]
                     },
                     {
@@ -138,7 +139,8 @@
                             "v2/the-basics/forms",
                             "v2/the-basics/file-uploads",
                             "v2/the-basics/validation",
-                            "v2/the-basics/view-transitions"
+                            "v2/the-basics/view-transitions",
+                            "v2/the-basics/localization"
                         ]
                     },
                     {
@@ -221,7 +223,8 @@
                             "v1/the-basics/forms",
                             "v1/the-basics/file-uploads",
                             "v1/the-basics/validation",
-                            "v1/the-basics/shared-data"
+                            "v1/the-basics/shared-data",
+                            "v1/the-basics/localization"
                         ]
                     },
                     {
@@ -460,6 +463,22 @@
         {
             "source": "/typescript",
             "destination": "/v3/advanced/typescript"
+        },
+        {
+            "source": "/localization",
+            "destination": "/v3/the-basics/localization"
+        },
+        {
+            "source": "/translations",
+            "destination": "/v3/the-basics/localization"
+        },
+        {
+            "source": "/i18n",
+            "destination": "/v3/the-basics/localization"
+        },
+        {
+            "source": "/lang",
+            "destination": "/v3/the-basics/localization"
         }
     ]
 }

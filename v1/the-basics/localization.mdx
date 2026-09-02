@@ -1,0 +1,218 @@
+---
+title: Localization
+---
+
+import V1EOLWarning from "/snippets/v1-eol-warning.mdx";
+
+<V1EOLWarning />
+
+In classic server-rendered Laravel applications, translating text strings is handled seamlessly using helpers such as `__('auth.failed')` or Blade directives like `@lang('messages.welcome')`. In single-page applications built with Inertia.js, managing translations across client-side components without bundle bloat or manual JSON conversion requires a dedicated solution.
+
+To achieve fast, seamless localization in Inertia applications, you can use **[Laravel Lang Sync Inertia](https://erag.in/laravel-lang-sync-inertia/)** — a lightweight package that synchronizes Laravel PHP and JSON language files directly with Inertia page props, with zero build-step overhead and dedicated frontend helpers for Vue, React, and Svelte.
+
+## Installation
+
+To get started, install both the Laravel backend package via Composer and the frontend companion helper via npm:
+
+<CodeGroup>
+
+```bash Composer icon="php"
+composer require erag/laravel-lang-sync-inertia
+```
+
+```bash NPM icon="npm"
+npm install @erag/lang-sync-inertia
+```
+
+```bash PNPM icon="bolt"
+pnpm add @erag/lang-sync-inertia
+```
+
+```bash Yarn icon="yarn"
+yarn add @erag/lang-sync-inertia
+```
+
+</CodeGroup>
+
+Next, run the interactive installation command to publish the configuration file (`config/inertia-lang.php`) and scaffold helper files for your frontend framework:
+
+```bash
+php artisan erag:install-lang
+```
+
+## How It Works
+
+`laravel-lang-sync-inertia` works by dynamically reading your Laravel translation files (`lang/en/*.php` or `lang/*.json`) and sharing only the required translation keys through Inertia's shared page props (`page.props.lang`).
+
+Because translations are resolved on the server and shared natively with Inertia responses:
+- **No Vite plugins or build-step overhead** are required.
+- **Granular loading** ensures users only download the translation keys needed for the current page.
+- **Automatic locale detection** respects Laravel's active locale (`App::getLocale()`).
+
+## Server-Side Usage
+
+### Syncing in Controllers
+
+You can use the global `syncLangFiles()` helper inside your controllers to share one or more translation files with the rendered Inertia page:
+
+```php
+use Inertia\Inertia;
+use Inertia\Response;
+
+class DashboardController extends Controller
+{
+    public function index(): Response
+    {
+        // Sync a single translation file (lang/en/dashboard.php)
+        syncLangFiles('dashboard');
+
+        // Or sync multiple translation files at once
+        syncLangFiles(['auth', 'validation', 'dashboard']);
+
+        return Inertia::render('Dashboard');
+    }
+}
+```
+
+### Nested Language Files
+
+If your translation files are grouped into subdirectories (for example `lang/en/admin/users.php`), you can reference them using dot notation:
+
+```php
+syncLangFiles('admin.users');
+```
+
+## Client-Side Usage
+
+Once language files are synced from Laravel, you can access and format translations in your frontend components using `@erag/lang-sync-inertia`.
+
+<CodeGroup>
+
+```vue Vue 3 icon="vuejs"
+<script setup>
+import { vueLang } from "@erag/lang-sync-inertia";
+
+const { __, trans, transChoice } = vueLang();
+</script>
+
+<template>
+  <div>
+    <!-- Basic translation lookup -->
+    <h1>{{ __('auth.greeting') }}</h1>
+
+    <!-- Translation with dynamic parameters / placeholders -->
+    <p>{{ trans('messages.welcome', { name: 'Amit' }) }}</p>
+
+    <!-- Pluralization with counter -->
+    <span>{{ transChoice('messages.notifications', 3, { count: 3 }) }}</span>
+  </div>
+</template>
+```
+
+```vue Vue 2 icon="vuejs"
+<template>
+  <div>
+    <h1>{{ __('auth.greeting') }}</h1>
+    <p>{{ trans('messages.welcome', { name: 'Amit' }) }}</p>
+    <span>{{ transChoice('messages.notifications', 3, { count: 3 }) }}</span>
+  </div>
+</template>
+
+<script>
+import { vueLang } from "@erag/lang-sync-inertia";
+
+export default {
+  data() {
+    const { __, trans, transChoice } = vueLang();
+    return { __, trans, transChoice };
+  }
+}
+</script>
+```
+
+```jsx React icon="react"
+import { reactLang } from "@erag/lang-sync-inertia";
+
+export default function Dashboard() {
+  const { __, trans, transChoice } = reactLang();
+
+  return (
+    <div>
+      {/* Basic translation lookup */}
+      <h1>{__('auth.greeting')}</h1>
+
+      {/* Translation with dynamic parameters / placeholders */}
+      <p>{trans('messages.welcome', { name: 'Amit' })}</p>
+
+      {/* Pluralization with counter */}
+      <span>{transChoice('messages.notifications', 3, { count: 3 })}</span>
+    </div>
+  );
+}
+```
+
+```svelte Svelte icon="s"
+<script>
+  import { svelteLang } from "@erag/lang-sync-inertia";
+
+  const { __, trans, transChoice } = svelteLang();
+</script>
+
+<div>
+  <!-- Basic translation lookup -->
+  <h1>{__('auth.greeting')}</h1>
+
+  <!-- Translation with dynamic parameters / placeholders -->
+  <p>{trans('messages.welcome', { name: 'Amit' })}</p>
+
+  <!-- Pluralization with counter -->
+  <span>{transChoice('messages.notifications', 3, { count: 3 })}</span>
+</div>
+```
+
+</CodeGroup>
+
+## Translation Features
+
+### Parameter Replacements
+
+You can pass an object of key-value pairs as the second argument to `trans()` or `__()` to replace placeholders defined in your language files:
+
+```php
+// lang/en/messages.php
+return [
+    'welcome_user' => 'Hello, :name! You have :credits credits remaining.',
+];
+```
+
+```javascript
+trans('messages.welcome_user', { name: 'Amit', credits: 50 });
+// Output: "Hello, Amit! You have 50 credits remaining."
+```
+
+### Pluralization
+
+The `transChoice()` helper supports standard Laravel pluralization rules, including pipe-separated forms and interval ranges:
+
+```php
+// lang/en/cart.php
+return [
+    'items' => '{0} No items in cart|{1} :count item in cart|[2,*] :count items in cart',
+];
+```
+
+```javascript
+transChoice('cart.items', 0); // "No items in cart"
+transChoice('cart.items', 1, { count: 1 }); // "1 item in cart"
+transChoice('cart.items', 5, { count: 5 }); // "5 items in cart"
+```
+
+## Static JSON Generation
+
+If you prefer to pre-compile your PHP language files into static JSON assets for production caching or offline usage, run:
+
+```bash
+php artisan erag:generate-lang
+```
+
+This will parse your language files and output static translation JSON files into your configured public or resource directories.
