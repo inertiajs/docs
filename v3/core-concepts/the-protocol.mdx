@@ -174,9 +174,9 @@ The following headers are automatically sent by Inertia when making requests. Yo
 
 <ParamField header="X-Inertia-Except-Once-Props" type="string">
   Comma-separated list of non-expired [once prop](/v3/data-props/once-props)
-  keys already loaded on the client. The server will skip resolving these props
-  unless explicitly requested via a partial reload or force refreshed
-  server-side.
+  keys already loaded on the client, for the page or [layer](#layers) the
+  request was made from. The server will skip resolving these props unless
+  explicitly requested via a partial reload or force refreshed server-side.
 </ParamField>
 
 The following headers are used for [Precognition](/v3/the-basics/forms#precognition) validation requests.
@@ -326,6 +326,28 @@ Inertia shares data between the server and client via a page object. This object
   from persisted history state.
 </ParamField>
 
+<ParamField body="layer" type="object">
+  Marks the response as a [layer](#layers). The client reads this field for its
+  presence, so its absence marks an ordinary page. Both of its members are
+  optional: `key` is the layer's identity, which the client defaults to the
+  `component` name, and `base` is the url of the page the layer is opened over,
+  which the client loads beneath it.
+</ParamField>
+
+<ParamField body="close" type="boolean">
+  Marks the response as a [close instruction](#close-instructions). The client
+  closes the layer the request was made from and every layer above it, then
+  refreshes what is left beneath them instead of installing this page. Always
+  `true` when present, and absent on every other response.
+</ParamField>
+
+<ParamField body="interstitial" type="boolean">
+  Marks the response as a [detour](#detours), meaning a layer request that was
+  answered with something the user will return from. Only read on responses
+  that are not themselves layers. Always `true` when present, and absent on
+  every other response.
+</ParamField>
+
 Only `component`, `props`, `url`, and `version` are present on every page object, so a minimal one looks like this:
 
 ```json
@@ -343,6 +365,75 @@ Only `component`, `props`, `url`, and `version` are present on every page object
 ```
 
 The remaining metadata fields are conditional, emitted only when the corresponding prop behavior applies. Absent fields default on the client to an empty array, empty object, or `false`, so a server may omit an empty field or emit it explicitly with equivalent results.
+
+The `layer` field is the one exception to this. The client reads it for its presence rather than its contents, so a layer that declares neither a `key` nor a `base` must still be sent as `"layer": {}`. Omitting it renders the response as an ordinary page.
+
+## Layers
+
+A **layer** is a page rendered over the page it was opened from, instead of replacing it. The server marks a response as a layer by adding the `layer` field to the [page object](#the-page-object). Both of its members are optional, and the field never appears on an ordinary page response.
+
+```json
+{
+  "component": "Users/Edit",
+  "props": { "user": { "id": 5 } },
+  "url": "/users/5/edit",
+  "layer": { "key": "Users/Edit", "base": "/users" }
+}
+```
+
+The `key` is the layer's identity. The client defaults it to the `component` name, so a server that is happy with that default omits it rather than repeating it. The `base` is the url of the page the layer is opened over, and is omitted when the layer has no base. A layer that declares neither is sent as `"layer": {}`.
+
+A layer response carries its own props, errors, deferred props, and flash data, exactly as any page would.
+
+On the client, a layer response composes rather than replaces. It renders over the page it was opened from, and when the response declares a `base`, the client loads that base beneath it. If that base is itself a layer with a base of its own, the client keeps walking down the chain until it reaches an ordinary page. The layer response is never walked for its own sake, since the walk only fetches what the layer stands on.
+
+The walk stops when a base names a url that is already on the stack, which would otherwise send it round in circles, and it stops after ten bases in any case. A chain declared deeper than that is treated as a server mistake rather than fetched any further, so the deepest layer that loaded becomes the page, and the rest of the stack composes over it as it would over any other page.
+
+Every layer is a history entry, so the back button closes the top layer and the forward button brings it back. The address follows the topmost layer that has a url of its own. A layer opened by a visit that set `preserveUrl` does not take the address: it still keeps its own url, which is the url it re-requests itself at, but the address stays on whatever was showing beneath it.
+
+A layer response whose `key` matches a layer that is already open is that layer coming back, rather than a second one, so the client rewrites the layer where it stands. If the layer it names is not the top of the stack, the layers above it close first, running their exit animations and firing their handles as any close does, and the response lands at that layer's level. This is what allows a link deep in a stack to name an earlier level and bring the stack back down to it.
+
+A rewrite remakes the layer's component unless the visit set `preserveState`, exactly as a navigation does for the page. A failed form submit inside a layer preserves state by default, so it keeps what the user typed. A link that moves the layer to another record does not, so it starts clean.
+
+A request made from inside a layer describes that layer's own state, never the page's. It echoes the layer's component in `X-Inertia-Partial-Component`, and lists only the layer's own once prop keys in `X-Inertia-Except-Once-Props`. A visit that opens a layer has no layer of its own yet, so it describes none.
+
+### Close Instructions
+
+A **close instruction** is an ordinary Inertia response carrying `close: true`.
+
+```json
+{
+  "component": "",
+  "props": {},
+  "url": "/users/5/edit",
+  "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
+  "close": true
+}
+```
+
+The client never installs a close response, and never navigates to its url. Instead, it closes the layer the request was made from and every layer above it, stepping back over whatever history entries those layers owned, and then refreshes what is left beneath them with its state preserved.
+
+A close requested from the page beneath the layers closes the top layer. One that arrives when no layer is open is treated as a refresh of the current page.
+
+The close page deliberately carries no `flash` key. Flash data stays in the session and is consumed by the refresh that follows. This holds when no layer is open too, so the flash still arrives.
+
+Because a bare close has no component, a server that receives a non-Inertia request for a close instruction answers with a redirect back, rather than rendering a page for a component that does not exist.
+
+### Detours
+
+A request for a layer may be answered with something else, such as a password confirmation prompt the user will return from, or a 403 page they will not. Only the server knows which of the two it is, and it signals the difference with the `interstitial` field on the response that lands once the redirect has been followed.
+
+A redirect carries no body of its own, so the mark has to be preserved across the hop. A server typically flashes it before redirecting and then reads it back onto the landing response. This is what the Laravel adapter's [RedirectResponse macro](/v3/the-basics/redirects#detours) does, shown here only as an illustration. What the protocol specifies is the mark on the landing response, not the macro that put it there.
+
+```php
+return redirect()->route('password.confirm')->interstitial();
+```
+
+An unmarked landing is a destination, so the layer that was being opened is dropped. A marked landing is a detour, so that layer stays open. While a detour is pending, visits carry it forward rather than capturing a base of their own, which is what stops the prompt from becoming the page the layer is later composed over.
+
+Completing the prompt returns the user to their layer over the page they originally clicked from. The client re-composes the layer over that original base, and the return trip's install replaces the prompt's own history entry, so the back button lands on the base rather than on the prompt the user has already finished with.
+
+Being a detour and being a layer are independent of one another. The mark is only read on responses that are not themselves layers: a layer response that carries it composes as a layer with the mark ignored, and a close instruction never carries it at all. The mark is an ergonomics win rather than a correctness requirement, since the client already refuses to compose a layer over anything but the page its request was dispatched from.
 
 ## Prop Evaluation Model
 

@@ -68,6 +68,16 @@ You may preserve the fragment by chaining the `preserveFragment` method on the r
 return redirect('/article/new-slug')->preserveFragment();
 ```
 
+### Detours
+
+A request for a [layer](/v3/the-basics/responses#layer-responses) may be answered with something else entirely, such as a password confirmation prompt the user will return from, or a 403 page they will not. Only your application knows which of the two it is, so you may mark the redirect as a detour using the `interstitial` method.
+
+```php
+return redirect()->route('password.confirm')->interstitial();
+```
+
+An unmarked redirect is treated as a destination, and the layer that was being opened is discarded. A marked redirect is treated as a detour, so once the user completes the prompt, they return to their layer over the page they originally clicked from. See the [protocol](/v3/core-concepts/the-protocol#detours) documentation for the full behavior.
+
 ## External Redirects
 
 Sometimes it's necessary to redirect to an external website, or even another non-Inertia endpoint in your app while handling an Inertia request. This can be accomplished using a server-side initiated `window.location` visit via the `Inertia::location()` method.

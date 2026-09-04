@@ -644,6 +644,171 @@ Make sure that any route you push on the client side is also defined on the serv
   consider debouncing or batching updates in high-frequency scenarios.
 </Warning>
 
+### Layers
+
+A [layer](/v3/the-basics/responses#layer-responses) is a page that renders over the page it was opened from instead of replacing it. Layers may be opened from the client with `router.layer()`, which returns a handle for the layer it opens.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+const handle = router.layer("/users/5/edit");
+```
+
+```jsx React icon="react"
+import { router } from "@inertiajs/react";
+
+const handle = router.layer("/users/5/edit");
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+const handle = router.layer("/users/5/edit");
+```
+
+</CodeGroup>
+
+The handle exposes the layer's `id`, along with the following methods.
+
+- `on()` - Listen for events emitted by the layers this one opens
+- `once()` - The same, but only for the first such event
+- `onClose()` - Run a callback when the layer closes
+- `close()` - Close the layer
+- `emit()` - Emit an event to the layer's own owner
+
+`onClose` also fires when the layer never opens at all, such as when the visit was cancelled, the request failed, or the server answered with something that is not a layer.
+
+#### Local Layers
+
+Passing a component instead of a URL opens a local layer, which the client composes itself without asking the server for anything. A local layer has no URL of its own, so the address never moves. It is still a history entry, so the back button closes it and the forward button brings it back, but a page refresh drops it, since the server knows nothing about it. Local layers are a good fit for a confirmation prompt or a picker that has no address worth sharing.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+const handle = router.layer({ component: "Users/Confirm", props: { user: 5 } });
+```
+
+```jsx React icon="react"
+import { router } from "@inertiajs/react";
+
+const handle = router.layer({ component: "Users/Confirm", props: { user: 5 } });
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+const handle = router.layer({ component: "Users/Confirm", props: { user: 5 } });
+```
+
+</CodeGroup>
+
+Opening the same component twice gives you two separate layers. The [shell component](/v3/installation/client-side-setup#the-layer-option) receives `type: "local"` instead of `"routed"`, so you may style or animate local layers differently.
+
+A form inside a local layer submits from the address of whatever sits beneath it, since the layer has none of its own. When validation fails and the server redirects back to that address, Inertia reads the response as the form coming back rather than as a navigation: the errors and flash data land on the local layer and it stays open.
+
+#### Accessing the Current Layer
+
+Inside a layer's component, `useLayer()` gives you the same layer, without a handle having to be passed down to it.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { useLayer } from "@inertiajs/vue3";
+
+const layer = useLayer();
+
+layer.emit("saved", { id: 5 });
+layer.close();
+```
+
+```jsx React icon="react"
+import { useLayer } from "@inertiajs/react";
+
+const layer = useLayer();
+
+layer.emit("saved", { id: 5 });
+layer.close();
+```
+
+```js Svelte icon="s"
+import { useLayer } from "@inertiajs/svelte";
+
+const layer = useLayer();
+
+layer.emit("saved", { id: 5 });
+layer.close();
+```
+
+</CodeGroup>
+
+Alongside the layer's `id` and the handle methods, it returns the [prop helpers](#prop-helpers) `replaceProp`, `appendToProp`, and `prependToProp`, along with a `flash` method.
+
+It also returns the router's own methods, scoped to the layer instead of the page: `visit`, `get`, `post`, `put`, `patch`, `delete`, `reload`, `poll`, `push`, and `replace`. Finally, there is a `layer` method, which opens a child layer over the stack that this layer owns. This is what makes the child's events arrive here rather than on the page underneath.
+
+`useLayer()` is also safe to call from a component that is not rendered inside a layer. In that case `id` is `undefined`, the request methods behave exactly like the router's own, and `close()` has nothing to dismiss. Its `on()` method still listens for events from the layers the page itself opened.
+
+#### Requests Inside a Layer
+
+A request issued from inside a layer targets that layer, so its response, validation errors, flash data, and partial props all land there instead of on the page underneath. This happens automatically for `<Link>`, `useForm`, `<Form>`, `<WhenVisible>`, `<Deferred>`, `<InfiniteScroll>`, and `usePoll`. A form rendered inside a layer puts its errors on that layer, and a link rendered inside one navigates that layer.
+
+The server still decides the outcome. A layer response whose key names a layer that is already open replaces that layer where it stands, closing anything stacked above it on the way. An ordinary page response replaces the whole stack.
+
+<Note>
+  A `router.post()` call in an event handler has no way of knowing what it was
+  rendered inside, so it targets the page. Use `useLayer().post()` when you want
+  the request to target the layer.
+</Note>
+
+#### Layer Events
+
+A layer is owned by whatever opened it. That is the page, when the layer was opened from there, or the layer whose `useLayer().layer()`, link, or form asked for it.
+
+An event reaches its emitter's immediate owner and goes no further, so a layer never needs to know anything about its grandparent. The `on()`, `once()`, and `onClose()` methods each return a function that stops listening, which you should call when the listening component is destroyed.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { useLayer } from "@inertiajs/vue3";
+import { onUnmounted } from "vue";
+
+const layer = useLayer();
+
+onUnmounted(layer.on("saved", (payload, childId) => console.log(payload, childId)));
+```
+
+```jsx React icon="react"
+import { useLayer } from "@inertiajs/react";
+import { useEffect } from "react";
+
+const layer = useLayer();
+
+useEffect(() => layer.on("saved", (payload, childId) => console.log(payload, childId)), []);
+```
+
+```js Svelte icon="s"
+import { useLayer } from "@inertiajs/svelte";
+import { onDestroy } from "svelte";
+
+const layer = useLayer();
+
+onDestroy(layer.on("saved", (payload, childId) => console.log(payload, childId)));
+```
+
+</CodeGroup>
+
+The callback receives the event's payload, along with the `id` of the layer that emitted it.
+
+<Note>
+  A layer's `on()` and `once()` methods listen for the events its own child
+  layers emit, not for Inertia's [lifecycle
+  events](/v3/advanced/events). Those are still listened for using
+  `router.on()`.
+</Note>
+
 ### Prop Helpers
 
 Inertia provides three helper methods for updating page props without making server requests. These methods are shortcuts to `router.replace()` and automatically set `preserveScroll` and `preserveState` to `true`.
