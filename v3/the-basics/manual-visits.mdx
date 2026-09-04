@@ -678,7 +678,7 @@ The handle exposes the layer's `id`, along with the following methods.
 - `close()` - Close the layer
 - `emit()` - Emit an event to the layer's own owner
 
-`onClose` also fires when the layer never opens at all, such as when the visit was cancelled, the request failed, or the server answered with something that is not a layer. This way, code waiting on a layer is never left holding a handle to nothing.
+`onClose` also fires when the layer never opens at all, such as when the visit was cancelled, the request failed, or the server answered with something that is not a layer.
 
 #### Local Layers
 
@@ -755,7 +755,7 @@ It also returns the router's own methods, scoped to the layer instead of the pag
 
 A request issued from inside a layer targets that layer, so its response, validation errors, flash data, and partial props all land there instead of on the page underneath. This happens automatically for `<Link>`, `useForm`, `<Form>`, `<WhenVisible>`, `<Deferred>`, `<InfiniteScroll>`, and `usePoll`. A form rendered inside a layer puts its errors on that layer, and a link rendered inside one navigates that layer.
 
-The server still decides the outcome. A layer response whose key names a layer that is already open replaces that layer where it stands, closing anything stacked above it on the way. This is how a link several layers deep can name an earlier layer and bring the stack back down to it. An ordinary page response replaces the whole stack, which is how a link navigates away from the layers entirely.
+The server still decides the outcome. A layer response whose key names a layer that is already open replaces that layer where it stands, closing anything stacked above it on the way. An ordinary page response replaces the whole stack.
 
 <Note>
   A `router.post()` call in an event handler has no way of knowing what it was

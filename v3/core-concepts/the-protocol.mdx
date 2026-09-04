@@ -370,7 +370,7 @@ The `layer` field is the one exception to this. The client reads it for its pres
 
 ## Layers
 
-A **layer** is a page rendered over the page it was opened from, instead of replacing it. The server marks a response as a layer by adding the `layer` field to the [page object](#the-page-object). It is the presence of that field that makes the response a layer, never anything inside it. Both of its members are optional, and the field never appears on an ordinary page response.
+A **layer** is a page rendered over the page it was opened from, instead of replacing it. The server marks a response as a layer by adding the `layer` field to the [page object](#the-page-object). Both of its members are optional, and the field never appears on an ordinary page response.
 
 ```json
 {
@@ -381,9 +381,9 @@ A **layer** is a page rendered over the page it was opened from, instead of repl
 }
 ```
 
-The `key` is the layer's identity. The client defaults it to the `component` name, so a server that is happy with that default omits it rather than restating it. The `base` is the url of the page the layer is opened over, and is omitted when the layer has no base. A layer that declares neither is sent as `"layer": {}`.
+The `key` is the layer's identity. The client defaults it to the `component` name, so a server that is happy with that default omits it rather than repeating it. The `base` is the url of the page the layer is opened over, and is omitted when the layer has no base. A layer that declares neither is sent as `"layer": {}`.
 
-A layer response carries its own props, errors, deferred props, and flash data, exactly as any page would. A layer is a page, not a second-class response.
+A layer response carries its own props, errors, deferred props, and flash data, exactly as any page would.
 
 On the client, a layer response composes rather than replaces. It renders over the page it was opened from, and when the response declares a `base`, the client loads that base beneath it. If that base is itself a layer with a base of its own, the client keeps walking down the chain until it reaches an ordinary page. The layer response is never walked for its own sake, since the walk only fetches what the layer stands on.
 
@@ -415,7 +415,7 @@ The client never installs a close response, and never navigates to its url. Inst
 
 A close requested from the page beneath the layers closes the top layer. One that arrives when no layer is open is treated as a refresh of the current page.
 
-The close page deliberately carries no `flash` key. Flash data stays in the session and is consumed by the refresh that follows, which is what delivers it. This holds when no layer is open too, so the flash still arrives.
+The close page deliberately carries no `flash` key. Flash data stays in the session and is consumed by the refresh that follows. This holds when no layer is open too, so the flash still arrives.
 
 Because a bare close has no component, a server that receives a non-Inertia request for a close instruction answers with a redirect back, rather than rendering a page for a component that does not exist.
 
@@ -423,13 +423,13 @@ Because a bare close has no component, a server that receives a non-Inertia requ
 
 A request for a layer may be answered with something else, such as a password confirmation prompt the user will return from, or a 403 page they will not. Only the server knows which of the two it is, and it signals the difference with the `interstitial` field on the response that lands once the redirect has been followed.
 
-A redirect carries no body of its own, so the mark has to survive the hop. A server typically flashes it before redirecting and then reads it back onto the landing response. This is what the Laravel adapter's [RedirectResponse macro](/v3/the-basics/redirects#detours) does, shown here only as an illustration. What the protocol specifies is the mark on the landing response, not the macro that put it there.
+A redirect carries no body of its own, so the mark has to be preserved across the hop. A server typically flashes it before redirecting and then reads it back onto the landing response. This is what the Laravel adapter's [RedirectResponse macro](/v3/the-basics/redirects#detours) does, shown here only as an illustration. What the protocol specifies is the mark on the landing response, not the macro that put it there.
 
 ```php
 return redirect()->route('password.confirm')->interstitial();
 ```
 
-An unmarked landing is a destination, so the layer that was being opened is dropped. A marked landing is a detour, so that layer survives. While a detour is pending, visits carry it forward rather than capturing a base of their own, which is what stops the prompt from becoming the page the layer is later composed over.
+An unmarked landing is a destination, so the layer that was being opened is dropped. A marked landing is a detour, so that layer stays open. While a detour is pending, visits carry it forward rather than capturing a base of their own, which is what stops the prompt from becoming the page the layer is later composed over.
 
 Completing the prompt returns the user to their layer over the page they originally clicked from. The client re-composes the layer over that original base, and the return trip's install replaces the prompt's own history entry, so the back button lands on the base rather than on the prompt the user has already finished with.
 
