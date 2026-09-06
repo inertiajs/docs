@@ -390,7 +390,9 @@ A shell of your own may build on the same helpers the built-in one uses, all exp
 
 The built-in `Layer` component also renders `data-layer-index`, `data-layer-top`, `data-layer-closing`, and `data-layer-type` attributes on the dialog, which you may use to style the stack from CSS.
 
-It also accepts a `label` prop, which becomes the dialog's accessible name. A `<dialog>` without one is announced simply as "dialog", so it is worth giving every layer a label. Since the shell resolves the layer's own page, its props are a convenient source.
+Any other attribute you pass to `Layer` is forwarded to the dialog, which is how you give the layer its accessible name. A `<dialog>` without one is announced simply as "dialog", so it is worth naming every layer.
+
+Prefer `aria-labelledby`, pointing at the heading the layer already renders, so the name a screen reader announces is the title everyone else sees. Key that heading's `id` off the shell's `index`, since layers stack and a fixed id would repeat. Reach for `aria-label` only when the layer has no visible title, since it overrides the heading rather than reusing it.
 
 <CodeGroup>
 
@@ -398,13 +400,29 @@ It also accepts a `label` prop, which becomes the dialog's accessible name. A `<
 import { Layer, usePage } from '@inertiajs/vue3'
 import { h } from 'vue'
 
-const Shell = (props, { slots }) => h(Layer, { ...props, label: usePage().props.title }, slots)
+const Shell = (props, { slots }) => {
+  const titleId = `layer-title-${props.index}`
+
+  return h(Layer, { ...props, 'aria-labelledby': titleId }, () => [
+    h('h2', { id: titleId }, usePage().props.title),
+    slots.default?.(),
+  ])
+}
 ```
 
 ```jsx React icon="react"
 import { Layer, usePage } from "@inertiajs/react";
 
-const Shell = (props) => <Layer {...props} label={usePage().props.title} />;
+const Shell = ({ children, ...props }) => {
+  const titleId = `layer-title-${props.index}`;
+
+  return (
+    <Layer {...props} aria-labelledby={titleId}>
+      <h2 id={titleId}>{usePage().props.title}</h2>
+      {children}
+    </Layer>
+  );
+};
 ```
 
 ```svelte Svelte icon="s"
@@ -415,7 +433,10 @@ const Shell = (props) => <Layer {...props} label={usePage().props.title} />;
   const page = usePage()
 </script>
 
-<Layer {...props} label={page.props.title}>{@render children()}</Layer>
+<Layer {...props} aria-labelledby="layer-title-{props.index}">
+  <h2 id="layer-title-{props.index}">{page.props.title}</h2>
+  {@render children()}
+</Layer>
 ```
 
 </CodeGroup>
@@ -429,7 +450,7 @@ import { Layer } from '@inertiajs/vue3'
 import { h } from 'vue'
 
 createInertiaApp({
-    layer: (props, { slots }) => h(Layer, { ...props, label: 'Panel' }, slots),
+    layer: (props, { slots }) => h(Layer, { ...props, 'aria-label': 'Panel' }, slots),
 })
 ```
 
@@ -437,7 +458,7 @@ createInertiaApp({
 import { Layer } from "@inertiajs/react";
 
 createInertiaApp({
-    layer: (props) => <Layer {...props} label="Panel" />,
+    layer: (props) => <Layer {...props} aria-label="Panel" />,
 })
 ```
 

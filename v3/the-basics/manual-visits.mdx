@@ -747,13 +747,13 @@ layer.close();
 
 Alongside the layer's `id` and the handle methods, it returns the [prop helpers](#prop-helpers) `replaceProp`, `appendToProp`, and `prependToProp`, along with a `flash` method.
 
-It also returns the router's own methods, scoped to the layer instead of the page: `visit`, `get`, `post`, `put`, `patch`, `delete`, `reload`, `poll`, `push`, and `replace`. Finally, there is a `layer` method, which opens a child layer over the stack that this layer owns. This is what makes the child's events arrive here rather than on the page underneath.
+It also returns the router's own methods, scoped to the layer instead of the page: `visit`, `get`, `post`, `put`, `patch`, `delete`, `reload`, `poll`, `prefetch`, `push`, `replace`, `replaceProp`, `appendToProp`, `prependToProp`, and `flash`. The same goes for `remember` and `restore`, so state [remembered](/v3/data-props/remembering-state) from inside a layer belongs to that layer and comes back with it, apart from whatever the page beneath remembers. Finally, there is a `layer` method, which opens a child layer over the stack that this layer owns. This is what makes the child's events arrive here rather than on the page underneath.
 
 `useLayer()` is also safe to call from a component that is not rendered inside a layer. In that case `id` is `undefined`, the request methods behave exactly like the router's own, and `close()` has nothing to dismiss. Its `on()` method still listens for events from the layers the page itself opened.
 
 #### Requests Inside a Layer
 
-A request issued from inside a layer targets that layer, so its response, validation errors, flash data, and partial props all land there instead of on the page underneath. This happens automatically for `<Link>`, `useForm`, `<Form>`, `<WhenVisible>`, `<Deferred>`, `<InfiniteScroll>`, and `usePoll`. A form rendered inside a layer puts its errors on that layer, and a link rendered inside one navigates that layer.
+A request issued from inside a layer targets that layer, so its response, validation errors, flash data, and partial props all land there instead of on the page underneath. Its `onSuccess` and `onError` callbacks are scoped the same way, handing back the layer's own page rather than the page beneath it. This happens automatically for `<Link>`, `useForm`, `<Form>`, `<WhenVisible>`, `<Deferred>`, `<InfiniteScroll>`, and `usePoll`. A form rendered inside a layer puts its errors on that layer, and a link rendered inside one navigates that layer.
 
 The server still decides the outcome. A layer response whose key names a layer that is already open replaces that layer where it stands, closing anything stacked above it on the way. An ordinary page response replaces the whole stack.
 

@@ -381,7 +381,7 @@ A **layer** is a page rendered over the page it was opened from, instead of repl
 }
 ```
 
-The `key` is the layer's identity. The client defaults it to the `component` name, so a server that is happy with that default omits it rather than repeating it. The `base` is the url of the page the layer is opened over, and is omitted when the layer has no base. A layer that declares neither is sent as `"layer": {}`.
+The `key` is the layer's identity. The client defaults it to the `component` name, so a server that is happy with that default omits it rather than repeating it. The `base` is the url of the page the layer is opened over, sent host-relative the way `url` is, and is omitted when the layer has no base. A layer that declares neither is sent as `"layer": {}`.
 
 A layer response carries its own props, errors, deferred props, and flash data, exactly as any page would.
 
