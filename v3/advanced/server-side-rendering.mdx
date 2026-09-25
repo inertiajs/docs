@@ -462,6 +462,31 @@ You may set the environment variable in your `phpunit.xml` to enable this only d
 <env name="INERTIA_SSR_THROW_ON_ERROR" value="true"/>
 ```
 
+## Configuring the SSR Request
+
+The request to the SSR server uses Laravel's HTTP client defaults. You may set the `timeout` option in your `config/inertia.php` file so a slow or unresponsive SSR server doesn't delay your responses, as Inertia falls back to client-side rendering when the request fails.
+
+```php config/inertia.php
+'ssr' => [
+    'timeout' => env('INERTIA_SSR_TIMEOUT'),
+],
+```
+
+For more control, you may use the `Inertia::configureSsrRequestUsing()` method, typically from a service provider. The callback receives the `PendingRequest` before it is sent, so you may add retries, headers, or any other option supported by Laravel's HTTP client.
+
+```php
+use Illuminate\Http\Client\PendingRequest;
+use Inertia\Inertia;
+
+Inertia::configureSsrRequestUsing(function (PendingRequest $request) {
+    $request->timeout(5)->retry(2, throw: false);
+});
+```
+
+<Note>When using `retry()`, pass `throw: false` so failed renders are still reported with the error details from the SSR server.</Note>
+
+Both the timeout and the callback apply to the render request and the health check used by the [`inertia:check-ssr`](#deployment) command.
+
 ## Disabling SSR
 
 SSR has two layers: the **Vite plugin** serves SSR during development and builds the SSR bundle for production, while the **Laravel adapter** dispatches rendering requests to the SSR server. To fully disable SSR, you should disable both.
