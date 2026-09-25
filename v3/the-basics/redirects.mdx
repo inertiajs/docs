@@ -36,6 +36,33 @@ When redirecting after a `PUT`, `PATCH`, or `DELETE` request, you must use a `30
 
 If you're using one of our official server-side adapters, all redirects will automatically be converted to `303` redirects.
 
+## Previous URL
+
+Sometimes you may wish to know which page the user navigated from. Laravel's session middleware doesn't store the previous URL and route for Inertia visits, since they are sent as AJAX requests, so `session()->previousUrl()`, `session()->previousRoute()`, and `back()` all resolve to the last full page load. You may enable the `store_previous_url` option in your `config/inertia.php` configuration file to store the previous location for Inertia visits as well.
+
+```php config/inertia.php
+return [
+    'store_previous_url' => true,
+];
+```
+
+Prefetch requests and [partial reloads](/v3/data-props/partial-reloads) are excluded, since deferred props, polling, and infinite scroll requests aren't navigations the user came from. Overriding the `shouldStoreCurrentUrl()` method in your `HandleInertiaRequests` middleware allows you to customize which visits are stored.
+
+```php
+use Illuminate\Http\Request;
+use Inertia\Middleware;
+use Symfony\Component\HttpFoundation\Response;
+
+class HandleInertiaRequests extends Middleware
+{
+    public function shouldStoreCurrentUrl(Request $request, Response $response): bool
+    {
+        return parent::shouldStoreCurrentUrl($request, $response)
+            && ! $request->routeIs('admin.*');
+    }
+}
+```
+
 ## Preserving Fragments
 
 Sometimes a user may visit a URL with a fragment, such as `/article/old-slug#section`, and the server needs to redirect to a different URL. The fragment from the original request is normally lost during the redirect.
