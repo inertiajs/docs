@@ -75,7 +75,7 @@ Markers are only revived on pages that enable big integer support, so applicatio
 
 ## Objects and Classes
 
-Arrays, plain objects, Eloquent models, collections, API resources, and values implementing `JsonSerializable` are all inspected for large integers, as are the public properties of your own classes. Built-in PHP classes, such as `DateTime`, and classes extending them are passed through untouched, since they serialize through their own handlers.
+Arrays, plain objects, Eloquent models, collections, API resources, and values implementing `JsonSerializable` are all inspected for large integers, as are the public properties of your own classes. Built-in PHP classes such as `DateTime`, along with classes extending them, are passed through untouched, since they serialize through their own handlers.
 
 ## Submitting Big Integers
 

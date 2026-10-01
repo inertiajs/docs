@@ -95,7 +95,7 @@ Inertia::render('Dashboard', [
 
 Arrayable objects like Eloquent models and collections are automatically converted using their `toArray()` method. Responsable objects like API resources and JSON responses are resolved through their `toResponse()` method.
 
-Integers outside JavaScript's safe range lose precision once they reach the browser, so you may enable [big integer support](/v3/advanced/big-integers) to receive them as native `BigInt` values.
+Integers outside JavaScript's safe range lose precision in the browser. You may preserve them as native `BigInt` values using [big integer support](/v3/advanced/big-integers).
 
 ## `ProvidesInertiaProperty` Interface
 
