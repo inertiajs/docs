@@ -98,10 +98,12 @@ The [`useHttp`](/v3/the-basics/http-requests) hook does not handle `BigInt` valu
 
 ## Testing
 
-Large integers appear as their marker in [`assertInertia`](/v3/advanced/testing#endpoint-tests) assertions.
+Inertia's [testing helpers](/v3/advanced/testing#endpoint-tests) turn markers back into integers, so you may assert against the same values you passed to the response.
 
 ```php
 $response->assertInertia(fn (Assert $page) => $page
-    ->where('order.id', ['$bigint' => '900719925474099988'])
+    ->where('order.id', 900719925474099988)
 );
+
+$response->inertiaProps('order.id'); // 900719925474099988
 ```
