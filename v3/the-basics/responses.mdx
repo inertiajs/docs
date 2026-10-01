@@ -61,6 +61,32 @@ return Inertia::render(Page::EventShow, [
   client-side, so be sure to omit sensitive information.
 </Note>
 
+### Layer Responses
+
+A layer is a page that renders over the page it was opened from instead of replacing it. You may declare a response a layer by chaining the `layer` method.
+
+```php
+return Inertia::render('Users/Edit', [
+    'user' => $user,
+])->layer(base: '/users');
+```
+
+The optional `base` argument is the URL of the page that should be loaded beneath the layer. The optional `key` argument is the layer's key, which defaults to the component name.
+
+The response then carries the `layer` protocol field, which the client reads to [compose the layer](/v3/core-concepts/the-protocol#layers) over the page it was opened from. Only the arguments you provide are emitted, so the example above sends `"layer": {"base": "/users"}` and lets the client resolve the key from the component name.
+
+### Closing a Layer
+
+To close an open layer, return an `Inertia::close()` response.
+
+```php
+return Inertia::close();
+```
+
+The client does not install this response. Instead, it closes the layer the request was made from, along with every layer above it, and then refreshes what is left beneath them with its state preserved.
+
+A close response is an ordinary page object carrying `close: true`, and it deliberately omits the `flash` key. Flash data stays in the session, where it is consumed by the client's follow-up refresh of the layer beneath. See the [protocol](/v3/core-concepts/the-protocol#close-instructions) documentation for the full behavior.
+
 ## Properties
 
 To pass data from the server to your page components, you can use properties. You can pass various types of values as props, including primitive types, arrays, objects, and several Laravel-specific types that are automatically resolved:

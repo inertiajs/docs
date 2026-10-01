@@ -44,6 +44,8 @@ Run the Vite development server for full functionality. In dev mode Inertia expo
 
 Every Inertia request is listed in the timeline on the left, with a live indicator while it is in flight. You may filter by method, request type, or status, or search by URL and component. Request types include full visits, [partial reloads](/v3/data-props/partial-reloads), [deferred prop loads](/v3/data-props/deferred-props), [polls](/v3/data-props/polling), [prefetches](/v3/data-props/prefetching), and [Precognition validation](/v3/the-basics/forms#precognition). Related requests are grouped rather than listed separately, so a page visit and its follow-up requests appear together. The grouping is determined on the client because only the browser can distinguish a poll from a full navigation or know whether a prefetch was served from cache.
 
+A request made from inside a [layer](/v3/the-basics/manual-visits#layers) is badged with the layer it targets, and a response that opens a layer, [closes one](/v3/the-basics/responses#closing-a-layer), or takes a [detour](/v3/the-basics/redirects#detours) is badged as such. Once a layer has been seen, the filters gain a layer option, so you may narrow the timeline to the base page or to a single layer, which is useful when a wizard steps through several URLs inside one.
+
 <Frame>
   <img className="block dark:hidden" src="/images/devtools-light-mode.webp" alt="Inertia DevTools panel" />
   <img className="hidden dark:block" src="/images/devtools-dark-mode.webp" alt="Inertia DevTools panel" />
@@ -57,9 +59,11 @@ The **Props** tab lists every prop as a tree, with a badge indicating whether it
 
 The **Page** tab shows the full page state after Inertia has handled the response. A partial reload might send only one prop over the wire, but Inertia merges it into the existing page, so this tab shows the complete result, not only what arrived in the response.
 
+When layers are open, the tab also lists them beneath the page's props, bottom of the stack first, each with its component, URL, key, base, props, and flash data. The layer the selected request landed on is highlighted, and each layer links to the request that last opened or rewrote it, so that layer's own props, route, and HTTP details are one click away.
+
 ## Client-Side Events
 
-Some interactions never reach the server, so the Network tab shows nothing for them. The extension records them as their own timeline entries: [Client Side Visits](/v3/the-basics/manual-visits#client-side-visits) and requests served from the [prefetch](/v3/data-props/prefetching) cache.
+Some interactions never reach the server, so the Network tab shows nothing for them. The extension records them as their own timeline entries: [Client Side Visits](/v3/the-basics/manual-visits#client-side-visits), requests served from the [prefetch](/v3/data-props/prefetching) cache, a [local layer](/v3/the-basics/manual-visits#local-layers) opening, a layer closing, and a [layer event](/v3/the-basics/manual-visits#layer-events) being emitted. An event entry names the layer that emitted it and the one that received it, and shows the payload in its Props tab.
 
 ## Editor Links
 
