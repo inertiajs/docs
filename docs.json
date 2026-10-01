@@ -86,6 +86,7 @@
                         "group": "Advanced",
                         "pages": [
                             "v3/advanced/asset-versioning",
+                            "v3/advanced/big-integers",
                             "v3/advanced/code-splitting",
                             "v3/advanced/devtools",
                             "v3/advanced/error-handling",
