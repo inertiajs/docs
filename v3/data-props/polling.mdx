@@ -241,9 +241,11 @@ usePoll(2000, {}, {
 
 </CodeGroup>
 
-## Throttling
+## Background Tabs
 
-By default, the poll helper will throttle requests by 90% when the browser tab is in the background. If you'd like to disable this behavior, you can pass the `keepAlive` option to the poll helper.
+By default, the poll helper throttles requests by 90% when the browser tab is in the background. You may control this behavior with the `background` option, which accepts one of three values: `throttle`, `pause`, or `continue`.
+
+The `pause` mode stops polling entirely while the tab is hidden. Once the tab becomes visible again, polling resumes, firing a request immediately if the interval has already elapsed since the last one. The `continue` mode keeps polling at the regular interval, even while the tab is hidden.
 
 <CodeGroup>
 
@@ -251,7 +253,7 @@ By default, the poll helper will throttle requests by 90% when the browser tab i
 import { usePoll } from '@inertiajs/vue3'
 
 usePoll(2000, {}, {
-    keepAlive: true,
+    background: 'pause',
 })
 ```
 
@@ -259,7 +261,7 @@ usePoll(2000, {}, {
 import { usePoll } from '@inertiajs/react'
 
 usePoll(2000, {}, {
-    keepAlive: true,
+    background: 'pause',
 })
 ```
 
@@ -267,8 +269,12 @@ usePoll(2000, {}, {
 import { usePoll } from '@inertiajs/svelte'
 
 usePoll(2000, {}, {
-    keepAlive: true,
+    background: 'pause',
 })
 ```
 
 </CodeGroup>
+
+<Note>
+The `keepAlive` option is deprecated in favor of `background: 'continue'`.
+</Note>
