@@ -162,6 +162,8 @@ const { start, stop } = usePoll(2000, {}, {
 
 </CodeGroup>
 
+<Badge>v3.7.0+</Badge>
+
 The poll helper also returns a reactive `polling` value that reflects whether the poll is running, making it ideal for rendering a pause or resume button. The value doesn't indicate whether a request is in flight.
 
 <CodeGroup>
@@ -242,6 +244,8 @@ usePoll(2000, {}, {
 </CodeGroup>
 
 ## Background Tabs
+
+<Badge>v3.9.0+</Badge>
 
 By default, the poll helper throttles requests by 90% when the browser tab is in the background. You may control this behavior with the `background` option, which accepts one of three values: `throttle`, `pause`, or `continue`.
 

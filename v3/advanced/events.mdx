@@ -750,7 +750,11 @@ The `finish` event is not cancelable.
 
 ## Navigate
 
-The `navigate` event fires on successful page visits, as well as when navigating through history. The event detail includes a `type` value describing how the navigation happened: `initial` for the first page load, `visit` for Inertia visits, and `history` for back and forward navigation.
+The `navigate` event fires on successful page visits, as well as when navigating through history.
+
+<Badge>v3.9.0+</Badge>
+
+The event detail includes a `type` value describing how the navigation happened: `initial` for the first page load, `visit` for Inertia visits, and `history` for back and forward navigation.
 
 <CodeGroup>
 

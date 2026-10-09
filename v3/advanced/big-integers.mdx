@@ -2,6 +2,8 @@
 title: Big Integers
 ---
 
+<Badge>v3.8.0+</Badge> <Badge>Laravel Adapter v3.5.0+</Badge>
+
 Sometimes you may wish to pass integers that exceed JavaScript's safe integer range, such as IDs from a 64-bit database column. JavaScript rounds those values while parsing JSON, so `900719925474099988` reaches your components as `900719925474100000`. Big integer support keeps them exact by delivering them as native `BigInt` values, following the JSON convention [documented on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json).
 
 ## Enabling Big Integers

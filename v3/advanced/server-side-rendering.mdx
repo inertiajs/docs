@@ -464,6 +464,8 @@ You may set the environment variable in your `phpunit.xml` to enable this only d
 
 ## Configuring the SSR Request
 
+<Badge>Laravel Adapter v3.4.0+</Badge>
+
 The request to the SSR server uses Laravel's HTTP client defaults. You may set the `timeout` option in your `config/inertia.php` file so a slow or unresponsive SSR server doesn't delay your responses, as Inertia falls back to client-side rendering when the request fails.
 
 ```php config/inertia.php
@@ -566,6 +568,8 @@ if (request()->is('admin/*')) {
 
 ## Client-Only Components
 
+<Badge>v3.8.0+</Badge>
+
 Sometimes, a component relies on browser APIs such as `window` or `document` and cannot be rendered on the server. Instead of disabling SSR for the entire page, you may wrap the component in `WhenMounted`, which renders its children only after mounting in the browser. The `fallback` is rendered on the server and during hydration instead.
 
 <CodeGroup>
@@ -644,6 +648,8 @@ To stop the SSR server, for instance when you deploy a new version of your websi
 ```bash
 php artisan inertia:stop-ssr
 ```
+
+<Badge>Laravel Adapter v3.4.0+</Badge>
 
 By default, the command fails when the SSR server is not running. You may pass the `--graceful` option to return a successful exit code instead, making it ideal for deployment scripts where the SSR server is not yet running.
 
