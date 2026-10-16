@@ -26,7 +26,8 @@
                         "group": "Installation",
                         "pages": [
                             "v3/installation/server-side-setup",
-                            "v3/installation/client-side-setup"
+                            "v3/installation/client-side-setup",
+                            "v3/installation/community-adapters"
                         ]
                     },
                     {
@@ -96,6 +97,13 @@
                             "v3/advanced/server-side-rendering",
                             "v3/advanced/testing",
                             "v3/advanced/typescript"
+                        ]
+                    },
+                    {
+                        "group": "Server Adapters",
+                        "pages": [
+                            "v3/advanced/building-an-adapter",
+                            "v3/advanced/devtools-protocol"
                         ]
                     }
                 ]
@@ -289,6 +297,14 @@
         {
             "source": "/client-side-setup",
             "destination": "/v3/installation/client-side-setup"
+        },
+        {
+            "source": "/community-adapters",
+            "destination": "/v3/installation/community-adapters"
+        },
+        {
+            "source": "/building-an-adapter",
+            "destination": "/v3/advanced/building-an-adapter"
         },
         {
             "source": "/who-is-it-for",
