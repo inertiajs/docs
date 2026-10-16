@@ -1,0 +1,245 @@
+---
+title: Building an Adapter
+---
+
+Inertia speaks plain HTTP and JSON, so you may bring it to any server-side framework by writing an adapter. An adapter implements the [Inertia protocol](/v3/core-concepts/the-protocol) for your framework. It renders page objects, handles partial reloads, and detects asset version mismatches.
+
+This guide assumes you have read the [protocol](/v3/core-concepts/the-protocol), which specifies every header and field this guide mentions. The guide builds an adapter in two phases. First, you build a minimum adapter that runs a basic Inertia application. Then, you add the remaining features one at a time. Before getting started, check the [community adapters](/v3/installation/community-adapters) to see whether your framework already has one.
+
+## The Reference Implementation
+
+The official [Laravel adapter](https://github.com/inertiajs/inertia-laravel) is the reference implementation of the protocol, and every example in this documentation uses it. Where the protocol leaves a choice to the server, follow the Laravel adapter unless your framework has a strong reason to differ.
+
+The following source files are the best places to start.
+
+| Concern | Laravel Source |
+| :--- | :--- |
+| Rendering responses | [`Response.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/Response.php), [`ResponseFactory.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/ResponseFactory.php) |
+| Resolving props | [`PropsResolver.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/PropsResolver.php) |
+| Middleware | [`Middleware.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/Middleware.php) |
+| Root template | [`View/Components/App.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/View/Components/App.php), [`View/Components/Head.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/View/Components/Head.php) |
+| Server-side rendering | [`Ssr/HttpGateway.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/Ssr/HttpGateway.php) |
+| Testing helpers | [`Testing/AssertableInertia.php`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/Testing/AssertableInertia.php) |
+| DevTools | [`DevTools`](https://github.com/inertiajs/inertia-laravel/tree/3.x/src/DevTools) |
+
+The adapter's [test suite](https://github.com/inertiajs/inertia-laravel/tree/3.x/tests) covers edge cases that the protocol describes only briefly. Porting the relevant tests is one of the fastest ways to confirm that your adapter behaves the same way.
+
+## Build the Minimum Adapter
+
+A minimum adapter renders responses, provides a root template helper, handles asset versions and redirects, shares data and validation errors, and supports partial reloads. These features are enough to run a basic Inertia application with the official client.
+
+### Rendering Responses
+
+Every adapter has a render function. The function accepts a component name and props, builds the [page object](/v3/core-concepts/the-protocol#the-page-object), and returns either an [HTML response](/v3/core-concepts/the-protocol#html-responses) or an [Inertia response](/v3/core-concepts/the-protocol#inertia-responses). A simplified version of the Laravel adapter's implementation looks like this.
+
+```php
+public function toResponse($request)
+{
+    $resolver = new PropsResolver($request, $this->component);
+
+    [$props, $metadata] = $resolver->resolve($this->sharedProps, $this->props);
+
+    $page = array_merge([
+        'component' => $this->component,
+        'props' => $props,
+        'url' => $this->getUrl($request),
+        'version' => $this->version,
+    ], $metadata);
+
+    if ($request->header('X-Inertia')) {
+        return new JsonResponse($page, 200, ['X-Inertia' => 'true']);
+    }
+
+    return view($this->rootView, ['page' => $page]);
+}
+```
+
+The real method also adds the conditional page object fields, such as `encryptHistory` and `flash`. It stores the page for the root template, whose Blade components send the page to the SSR gateway while the view renders.
+
+The `url` field holds the request path and query string relative to the host, such as `/events?page=2`. The Laravel adapter keeps a trailing slash when the request had one. Applications may customize the URL with `Inertia::resolveUrlUsing()`, for example behind a proxy that rewrites paths.
+
+### The Root Template
+
+Applications place the page object and the root element in their own layout. The Laravel adapter provides the `<x-inertia::app>` and `<x-inertia::head>` Blade components for this. Provide an equivalent helper for your framework's template engine. The app helper renders the following markup.
+
+```html
+<script data-page="app" type="application/json">{"component":"Event",...}</script>
+<div id="app"></div>
+```
+
+The `data-page` attribute must match the root element's `id`. Make both configurable, so applications may [change the root element](/v3/installation/client-side-setup#defining-a-root-element). Encode the page object as the [HTML responses](/v3/core-concepts/the-protocol#html-responses) section describes.
+
+The two helpers are also the output slots for [server-side rendering](#server-side-rendering). The head helper may also accept [fallback content](/v3/the-basics/title-and-meta#ssr-fallback) for responses rendered without SSR.
+
+### Middleware
+
+Put most cross-cutting protocol behavior in a middleware, or in the request pipeline concept your framework offers. Applications usually extend the adapter's middleware to configure the asset version and shared data, as the Laravel [server-side setup](/v3/installation/server-side-setup) shows.
+
+The Laravel adapter's [`Middleware::handle()`](https://github.com/inertiajs/inertia-laravel/blob/3.x/src/Middleware.php) method does the following.
+
+- Sets the `Vary: X-Inertia` header on every response, including non-Inertia responses.
+- Checks the [asset version](/v3/core-concepts/the-protocol#asset-versioning) on Inertia `GET` requests and returns a version mismatch response.
+- Converts a `302` [redirect](/v3/core-concepts/the-protocol#redirects) after an Inertia `PUT`, `PATCH`, or `DELETE` request into a `303` redirect.
+- Converts a redirect to a URL fragment into an `X-Inertia-Redirect` response, except on prefetch requests.
+- Redirects back when a controller returns an empty `200 OK` response to an Inertia request.
+- Reflashes [flash data](#flash-data) on redirects, and all session flash data on version mismatches, so the data reaches the next request.
+- Registers [shared data](#shared-data), including validation errors.
+
+By default, the Laravel adapter computes the asset version by hashing the configured asset URL. Without an asset URL, it hashes the Vite or Mix manifest file. It casts a missing version to an empty string.
+
+### Shared Data
+
+Applications share some data with every response, such as the authenticated user or flash messages. Provide an API to register [shared data](/v3/data-props/shared-data), usually from the middleware. Merge shared data beneath the page props, so a page prop with the same key wins.
+
+Shared data accepts the same prop types as page props. The Laravel adapter lists the top-level shared keys under `sharedProps` in the page object. The client uses that list to carry shared props over during [instant visits](/v3/the-basics/instant-visits). Applications may turn the list off with the `expose_shared_prop_keys` configuration option.
+
+### Validation Errors
+
+Most frameworks store validation errors in the session after a failed form submission, then redirect back. Read the errors from the session and share them as the `errors` prop, as the protocol's [validation errors](/v3/core-concepts/the-protocol#validation-errors) section describes.
+
+The Laravel adapter registers `errors` as a shared always prop in its middleware's `share()` method. It sends the first message per field unless the application opts into all messages. The adapter handles error bags by these rules:
+
+- A request with the `X-Inertia-Error-Bag` header receives the default bag's errors under the requested name.
+- A request without the header receives the default bag unwrapped.
+- Named bags appear under their own names only when no default bag exists, with or without the header.
+
+The [validation](/v3/the-basics/validation) page covers the user-facing behavior.
+
+### Partial Reloads
+
+A [partial reload](/v3/core-concepts/the-protocol#partial-reloads) applies only when the `X-Inertia-Partial-Component` header matches the component being rendered. Filter the props by the `X-Inertia-Partial-Data` and `X-Inertia-Partial-Except` headers, but always include [always props](/v3/core-concepts/the-protocol#always-props), such as `errors`. Partial reload paths may target nested props, so walk the whole props tree instead of filtering only the top-level keys.
+
+Props may also be closures. Apply the partial reload filters before you invoke any closure, so excluded props never run their queries. A resolver that evaluates every prop and filters afterward still returns a correct response, but it does the expensive work that partial reloads exist to skip.
+
+### Verify the Minimum Adapter
+
+Unit tests confirm that your adapter emits the right headers and page objects. They do not confirm that the official client accepts them. Build a small application with one of the official client-side adapters, and check that it does the following.
+
+1. The first page load renders the page component.
+2. Clicking a [`<Link>`](/v3/the-basics/links) sends an XHR request with the `X-Inertia` header and swaps the component without a full page reload.
+3. Submitting a form with invalid data redirects back and shows the validation errors.
+4. A [partial reload](/v3/data-props/partial-reloads) returns only the requested props and the `errors` prop.
+5. Changing the asset version makes the next `GET` visit reload the full page.
+
+Keep this application. Use it to test each feature you add in the next phase.
+
+## Add the Remaining Features
+
+The following features make the rest of this documentation work for your users. Add them in any order:
+
+- [Prop types](#prop-types), including rescued deferred props
+- [External redirects](#redirects-and-external-visits)
+- [Flash data](#flash-data)
+- [History encryption](#history-encryption)
+- [Server-side rendering](#server-side-rendering)
+- [Error pages](#error-pages)
+- [Testing helpers](#testing-helpers)
+
+[Precognition](/v3/the-basics/forms#precognition), [big integers](/v3/advanced/big-integers), and [DevTools](#devtools) support are optional.
+
+### Prop Types
+
+Users expect the same prop types in every adapter, so the documentation applies across frameworks. The [prop evaluation model](/v3/core-concepts/the-protocol#prop-evaluation-model) defines when the server resolves each type and which metadata the type emits.
+
+| Prop Type | Laravel API | Documentation |
+| :--- | :--- | :--- |
+| Optional | `Inertia::optional()` | [Partial reloads](/v3/data-props/partial-reloads#lazy-data-evaluation) |
+| Always | `Inertia::always()` | [Partial reloads](/v3/data-props/partial-reloads) |
+| Deferred | `Inertia::defer()` | [Deferred props](/v3/data-props/deferred-props) |
+| Merge | `Inertia::merge()`, `Inertia::deepMerge()` | [Merging props](/v3/data-props/merging-props) |
+| Once | `Inertia::once()` | [Once props](/v3/data-props/once-props) |
+| Scroll | `Inertia::scroll()` | [Infinite scroll](/v3/data-props/infinite-scroll) |
+
+Support [rescuing](/v3/core-concepts/the-protocol#rescued-deferred-props) deferred props as well. Catch exceptions per prop, and pass each exception to your framework's error reporting.
+
+Prop types compose, so a single prop may be both deferred and mergeable. Model each behavior as an independent flag or trait, not as a fixed set of classes, to keep these combinations simple.
+
+### Redirects and External Visits
+
+Most navigation uses your framework's regular redirect responses. Also provide a helper for [external redirects](/v3/core-concepts/the-protocol#redirects), such as the Laravel adapter's `Inertia::location()` method. A simplified version that accepts a URL looks like this.
+
+```php
+public function location($url)
+{
+    if (request()->header('X-Inertia')) {
+        return response('', 409, ['X-Inertia-Location' => $url]);
+    }
+
+    return redirect()->away($url);
+}
+```
+
+### Flash Data
+
+The session stores [flash data](/v3/data-props/flash-data), and the page object delivers it once in the `flash` field, separate from the props. The Laravel adapter pulls the data from the session when it renders a page, so the data never appears on a second page. The adapter reflashes the data on redirects, so a value flashed before a redirect reaches the destination page.
+
+### History Encryption
+
+For [history encryption](/v3/security/history-encryption), your adapter only emits the `encryptHistory` and `clearHistory` page object fields. The Laravel adapter enables encryption globally through configuration, per route group through a middleware, or per response.
+
+### Server-Side Rendering
+
+To dispatch [SSR](/v3/advanced/server-side-rendering), send the page object to the Node SSR server in a `POST` request. Then print the returned `head` and `body` through the [root template](#the-root-template) helpers. The [SSR section](/v3/core-concepts/the-protocol#server-side-rendering) of the protocol describes the request, the response, and the error format.
+
+During development, the [Vite plugin](/v3/advanced/server-side-rendering#development-mode) renders pages through a `/__inertia_ssr` endpoint on the Vite dev server, so no separate Node process runs. The plugin registers the endpoint only when it finds an SSR entry point. With SSR enabled, the Laravel adapter sends its render requests to this endpoint while Vite runs in hot mode. Applications get SSR with hot module replacement and without a separate SSR build.
+
+Applications also expect to turn SSR off globally, per request, or for specific paths. During end-to-end tests, they expect to [throw on render failures](/v3/advanced/server-side-rendering#throwing-on-error) instead of falling back silently.
+
+### Error Pages
+
+Exceptions such as `404` and `500` errors are often rendered outside your middleware. These responses never pass through the Inertia rendering pipeline, so they lose shared data. The Laravel adapter solves the problem with `Inertia::handleExceptionsUsing()`, which renders error pages as Inertia responses. Calling `withSharedData()` on the response adds the shared data of the Inertia middleware. The adapter finds that middleware on the route or in the HTTP kernel, or the application names it with `usingMiddleware()`. The [error handling](/v3/advanced/error-handling) page covers the user-facing API.
+
+### Testing Helpers
+
+Applications test their Inertia endpoints without a browser. The Laravel adapter's [testing helpers](/v3/advanced/testing#endpoint-tests) assert against the page object, simulate partial reloads, load deferred props, and inspect flash data.
+
+```php
+use Inertia\Testing\AssertableInertia as Assert;
+
+$response->assertInertia(fn (Assert $page) => $page
+    ->component('Podcasts/Show')
+    ->has('podcast', fn (Assert $page) => $page
+        ->where('id', $podcast->id)
+        ->etc()
+    )
+    ->loadDeferredProps(fn (Assert $reload) => $reload
+        ->has('comments', 5)
+    )
+);
+```
+
+Build your helpers on your framework's testing tools, so the assertions read like the rest of the application's tests.
+
+### DevTools
+
+Support for the [DevTools](/v3/advanced/devtools) browser extension is optional. The extension works with any backend. An adapter integrates with it by implementing the [DevTools protocol](/v3/advanced/devtools-protocol).
+
+## Best Practices
+
+### Follow Your Framework's Conventions
+
+Make your adapter fit its framework. Follow the framework's naming, configuration style, and extension points, so a Rails adapter reads like Rails and a Django adapter reads like Django. Keep the concepts and names close to the Laravel adapter's, such as `render`, `share`, `defer`, `merge`, and `once`, so this documentation stays useful to your users.
+
+### Encode Empty Errors as Objects
+
+Encode the `errors` prop and each error bag as JSON objects, even when they are empty. Languages that use one type for lists and maps, such as PHP, encode an empty one as `[]` by default, which does not match the protocol. The Laravel adapter casts errors and error bags to objects before it encodes them.
+
+### Build Both Responses From One Code Path
+
+Build the page object for the HTML document and the page object for the JSON response in one code path. A difference between the two causes bugs that appear only on the first visit or only after navigation. A metadata field missing on the first load is a typical example.
+
+### Run Post-Response Work for Client Redirects
+
+A `409 Conflict` for an external redirect or a fragment redirect is a successful request for your application, because the client completes the navigation. Some frameworks skip post-response work, such as after-response callbacks, for `4xx` statuses. Run that work for these two responses anyway. Version mismatches are the exception, because the client reloads the page instead of completing the original request, or ignores the mismatch on background requests. The Laravel adapter's `EnsureDeferredCallbacksRun` middleware implements this rule.
+
+### Document Your Coverage
+
+Users who switch frameworks assume that every feature in this documentation works with your adapter. State which Inertia version your adapter targets, and publish a table of the protocol features it implements. Users then know what to expect before they use a feature.
+
+### Track the Reference Implementation
+
+New Inertia features build on request headers, page object fields, and prop types, so they usually need server-side changes. Review the [Laravel adapter's releases](https://github.com/inertiajs/inertia-laravel/releases) and the [protocol page](/v3/core-concepts/the-protocol) to keep your adapter current.
+
+## Listing Your Adapter
+
+Once your adapter is ready, you may add it to the [community adapters](/v3/installation/community-adapters#listing-your-adapter) page.
