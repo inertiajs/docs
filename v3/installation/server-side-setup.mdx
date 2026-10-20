@@ -47,7 +47,7 @@ These starter kits are the absolute fastest way to start building a new Inertia 
         </html>
         ```
 
-        For React applications, it's recommended to include the `@viteReactRefresh` directive before the `@vite` directive to enable Fast Refresh in development.
+        For React applications, it's recommended to include the `@viteReactRefresh` directive before the `@vite` directive to enable Fast Refresh in development. You may also pass the current page component to the `@vite` directive to [preload the initial page](/v3/advanced/code-splitting#preloading-the-initial-page).
 
         The `<x-inertia::app>` component renders a `<div>` element with an `id` of `app`. This element serves as the mounting point for your JavaScript application. You may customize the `id` by passing a different value to the component.
 
