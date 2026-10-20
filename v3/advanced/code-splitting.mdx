@@ -54,6 +54,48 @@ resolve: name => {
 
 </CodeGroup>
 
+## Preloading the Initial Page
+
+On the first visit to your application, the browser must download and execute your main JavaScript bundle before it knows which page component to load. You may avoid this extra round trip by passing the current page component to the `@vite` directive in your root template, which preloads the page component and its dependencies alongside your main bundle.
+
+<CodeGroup>
+
+```blade Vue icon="vuejs"
+@vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+```
+
+```blade React icon="react"
+@vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+```
+
+```blade Svelte icon="s"
+@vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.svelte"])
+```
+
+</CodeGroup>
+
+The `$page` variable is available in your root template and contains the [page object](/v3/core-concepts/the-protocol#the-page-object).
+
+### Link Headers
+
+Laravel's `AddLinkHeadersForPreloadedAssets` middleware, included in the Laravel starter kits, adds every preloaded asset to a `Link` response header, allowing the browser to start downloading them before parsing the HTML. Since the dependencies of the page component are included as well, this header may exceed your web server's response header buffer on larger pages, causing the initial page load to fail. Subsequent Inertia visits are not affected, as they return JSON without rendering the root template.
+
+You may limit the number of assets included in the header using the middleware's `using()` method, which is available as of Laravel 12.12.
+
+```php
+use App\Http\Middleware\HandleInertiaRequests;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->web(append: [
+        HandleInertiaRequests::class,
+        AddLinkHeadersForPreloadedAssets::using(limit: 10),
+    ]);
+})
+```
+
+Assets beyond the limit are still preloaded by the `<link>` tags rendered by the `@vite` directive, so removing the middleware entirely has little impact. Alternatively, you may increase your web server's response header buffer, such as Nginx's `fastcgi_buffer_size` directive, or `proxy_buffer_size` when proxying requests to [Laravel Octane](https://laravel.com/docs/octane).
+
 ## Webpack
 
 To use code splitting with Webpack, enable [dynamic imports](https://github.com/tc39/proposal-dynamic-import) with a Babel plugin:
