@@ -2,7 +2,7 @@
 title: Server-Side Setup
 ---
 
-The first step when installing Inertia is to configure your server-side framework. Inertia maintains an official server-side adapter for [Laravel](https://laravel.com/). For other frameworks, please see the [community adapters](/v3/installation/community-adapters).
+The first step when installing Inertia is to configure your server-side framework. Inertia maintains an official server-side adapter for [Laravel](https://laravel.com/), and the community maintains [adapters](#other-frameworks) for Rails, Django, Phoenix, and many other frameworks.
 
 Inertia is fine-tuned for Laravel, so the documentation examples on this website utilize Laravel. For examples of using Inertia with other server-side frameworks, please refer to the framework-specific documentation maintained by the relevant adapter.
 
@@ -126,3 +126,16 @@ Prior to v3, Inertia used `@inertiaHead` and `@inertia` Blade directives to rend
 ```
 
 You may customize the root element `id` by passing a value to the directive: `@inertia('custom-app-id')`.
+
+## Other Frameworks
+
+Inertia works with any server-side framework that implements the [Inertia protocol](/v3/core-concepts/the-protocol). You may use one of the community adapters or build your own.
+
+<CardGroup cols={2}>
+  <Card title="Community Adapters" icon="users" href="/v3/installation/community-adapters">
+    Adapters for Rails, Django, Phoenix, Go, .NET, Symfony, and more.
+  </Card>
+  <Card title="Building an Adapter" icon="screwdriver-wrench" href="/v3/advanced/building-an-adapter">
+    Bring Inertia to a framework that doesn't have an adapter yet.
+  </Card>
+</CardGroup>

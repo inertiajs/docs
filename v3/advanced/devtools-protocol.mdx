@@ -2,17 +2,17 @@
 title: DevTools Protocol
 ---
 
-This page contains a detailed specification of the Inertia DevTools protocol. Be sure to read the [DevTools](/v3/advanced/devtools) page first for a high-level overview of the feature.
+This page specifies the Inertia DevTools protocol. The [DevTools](/v3/advanced/devtools) page gives a high-level overview of the feature.
 
-The DevTools extension is backend-agnostic. Any server-side Inertia adapter may integrate with it by implementing this protocol. The reference implementation is the Laravel adapter, and nothing in this specification is Laravel-specific.
+The DevTools extension works with any backend. Any server-side Inertia adapter may integrate with it by implementing this protocol. The Laravel adapter is the reference implementation, and nothing in this specification depends on Laravel.
 
 The protocol has three layers:
 
-1. **Discovery**, how the extension learns an entry was recorded.
-2. **Correlation headers**, request and response headers that correlate and group entries.
-3. **Read API**, the endpoints the extension calls to fetch recorded entries, along with the entry format they return.
+1. **Discovery**: how the extension learns that the adapter recorded an entry.
+2. **Correlation headers**: the request and response headers that link entries and group them.
+3. **Read API**: the endpoints that return recorded entries, and the format of those entries.
 
-A conforming adapter records one entry per HTTP request it handles, stores it keyed by a generated id and scoped per browser tab, and exposes it through the read API. The extension fetches each entry out of band rather than reading it from the app's response, so recording never alters the payload your application actually returns.
+While recording is enabled, a conforming adapter records one entry for each request it handles. It stores the entry under a generated id, separately for each browser tab, and returns it through the read API. The extension fetches each entry in a separate request. Recording adds discovery headers to each response and a discovery script to the initial HTML response, but the entry itself never appears in the application's response.
 
 ```mermaid
 sequenceDiagram
@@ -21,7 +21,7 @@ sequenceDiagram
 
     App->>App: Record an entry for the request
     App-->>Ext: Response with X-Inertia-Devtools-Id header
-    Note over Ext: Reads the id from the header or discovery script tag
+    Note over Ext: Reads the id from the header or the discovery script
     Ext->>App: GET /_inertia/devtools/entries/{id}
     App-->>Ext: Entry JSON
     Note over Ext: Renders the entry in the panel
@@ -29,83 +29,96 @@ sequenceDiagram
 
 ## Discovery
 
-For every response, the adapter generates a unique entry id (any collision-resistant string, such as a ULID) and sets it on a response header.
+For every response, the adapter generates a unique entry id and sets it on a response header. The id may be any collision-resistant string of 1 to 256 characters, such as a ULID.
 
 <ParamField header="X-Inertia-Devtools-Id" type="string">
-  The generated id for this entry, set on every response. The extension learns the id from this header, then fetches the entry from the [read API](#the-read-api).
+  The generated id of the entry, set on every response. The extension reads the id from this header, then fetches the entry from the [read API](#the-read-api).
 </ParamField>
 
-The header alone is not enough for the first document load, which the extension observes through the DOM rather than `fetch`. On the initial full-page HTML response, also inject a script tag so the extension may read the id before any XHR occurs.
+The extension reads the id from the response header through a browser request listener. On the initial full-page HTML response, the adapter also adds a script element that holds the id. The extension's content script reads the id from that script after the document loads.
 
 ```html
 <script data-inertia-devtools-id type="application/json">"<id>"</script>
 ```
 
-The tag content is the JSON-encoded id string.
+The script contains the id as a JSON-encoded string.
+
+An application served from a subpath, such as `/admin`, needs one more value. The extension sends read API requests to that subpath, so the adapter reports it.
+
+<ParamField header="X-Inertia-Devtools-Base-Path" type="string">
+  The path the application is served from, such as `/admin`. The adapter sets it only when the application is not served from the root of its origin. The adapter also adds the value to the discovery script as a `data-inertia-devtools-base-path` attribute.
+</ParamField>
 
 ## Correlation Headers
 
-These headers correlate entries with client-side page state and group related requests. The extension stamps the request headers, and the adapter reads them and stores their values on the entry. The adapter emits the response header.
+The correlation headers link entries to client-side page state and group related requests. The extension sets the request headers, and the adapter stores their values on the entry. The adapter sets the response header.
 
-The following request headers are sent by the extension, all optional per request.
+The extension sends the following request headers. Each header is optional.
 
 <ParamField header="X-Inertia-Devtools-Tab" type="string">
-  Per-tab UUID, stored as `__meta.tabUuid`. Used to scope stored entries so one tab's history does not evict another's.
+  A UUID for the browser tab, stored as `__meta.tabUuid`. The adapter stores entries separately for each tab, so one tab's history does not evict another tab's history.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Visit" type="string">
-  Client visit id, stored as `__meta.visitId`. Lets the extension pair the entry with the browser-side page snapshot.
+  The client's visit id, stored as `__meta.visitId`. The extension uses it to pair the entry with the page snapshot it took in the browser.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Parent" type="string">
-  Id of the entry that started this batch, stored as `__meta.batchId`. Stored verbatim, grouping is a client concern.
+  The id of the entry that started the batch, stored as `__meta.batchId`. The adapter stores the value unchanged. The client handles grouping.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Deferred" type="string">
-  Present (`1`) when this is a [deferred-prop](/v3/data-props/deferred-props) follow-up. Wire-indistinguishable from a [partial reload](/v3/data-props/partial-reloads), so the client declares the intent.
+  Set to `1` on the follow-up request for [deferred props](/v3/data-props/deferred-props). On the wire, that request looks like any [partial reload](/v3/data-props/partial-reloads), so the client marks it with this header.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Poll" type="string">
-  Present (`1`) when this is a [polling](/v3/data-props/polling) tick, also wire-indistinguishable from a partial reload.
+  Set to `1` on a [polling](/v3/data-props/polling) request. On the wire, a polling request also looks like a partial reload.
 </ParamField>
 
-The following response header is emitted by the adapter.
+The adapter sets the following response header.
 
 <ParamField header="X-Inertia-Devtools-Parent-Out" type="string">
-  The batch root id (the `batchId` of this request, or this entry's own `id` when it starts a batch). The client forwards this value as `X-Inertia-Devtools-Parent` on the next same-batch request. Pointing every follow-up at the root keeps a batch flat, and hands the true root down across a redirect so the post-redirect request attaches to the batch root rather than the throwaway redirect hop. A [prefetch](/v3/data-props/prefetching) response returns its own `id` instead, since a prefetch is speculative and must not advance the batch cursor for unrelated traffic.
+  The id of the batch root. The batch root is the `batchId` of the request, or the entry's own `id` when the request starts a batch. The client sends this value as `X-Inertia-Devtools-Parent` on its next follow-up request, such as a partial reload, a deferred props request, or a polling request. Every follow-up request then points at the root, which keeps the batch flat. A full navigation sends no parent header and starts a new batch, so a redirect and its target appear as separate roots. A [prefetch](/v3/data-props/prefetching) response returns its own `id` instead. The user may never visit a prefetched page, so a prefetch must not change the batch root for other requests.
 </ParamField>
 
-An adapter should set this header on every response. Omitting it degrades batching, since the client then falls back to the response's own `X-Inertia-Devtools-Id`, so each request chains to the previous response rather than the batch root and redirects may group less precisely.
+The adapter sets this header on every response. Without it, the client uses the response's `X-Inertia-Devtools-Id` as the next parent. Each follow-up request then attaches to the previous response instead of the batch root.
 
 ## The Read API
 
-Two authenticated endpoints, gated so they are reachable only in development or by an authorized developer. The paths are fixed.
+The read API has two endpoints at fixed paths below the application's [base path](#discovery). The adapter allows access to them only in development or for an authorized developer.
 
-**`GET /_inertia/devtools/entries/{id}`** returns a single [entry](#the-entry-format) as JSON, or `404` if the id is unknown. This is the only endpoint the extension currently calls. It learns an id from discovery or the response header, then fetches that one entry.
+**`GET /_inertia/devtools/entries/{id}`** returns one [entry](#the-entry-format) as JSON, or a `404` response for an unknown id. The extension calls only this endpoint. It reads an id from the discovery script or the response header, then fetches that entry.
 
-**`GET /_inertia/devtools/entries`** returns a JSON array of entries, newest first. The extension does not call it yet, so it is optional. It exists for tooling that lists a tab's history. An adapter may implement these optional query filters: `component` (exact component name to keep), `type` and `exclude` (comma-separated `requestType` lists to keep or drop), `offset`, and `limit`. A minimal adapter may ignore them and return the full buffer.
+**`GET /_inertia/devtools/entries`** returns a JSON array of entry summaries, newest first. Each summary is the entry's `__meta` object. The extension does not call this endpoint, so it is optional. It serves tools that list a tab's history. An adapter may support the following optional query parameters:
 
-Requests are made with credentials (same-origin cookies) so the adapter may authorize them.
+- `component`: keep only entries for this exact component name.
+- `type`: keep only entries with these request types, as a comma-separated list.
+- `exclude`: drop entries with these request types, as a comma-separated list.
+- `offset` and `limit`: page through the results.
+
+A minimal adapter may ignore the parameters and return the summary of every stored entry.
+
+The extension sends same-origin cookies with each request, so the adapter may authorize it.
 
 ## The Entry Format
 
-An entry is a JSON object. Fields are split into two tiers.
+An entry is a JSON object with required and optional fields.
 
-Required fields must be emitted for the panel to function. Where a value is genuinely absent, the adapter emits the documented empty or null form rather than omitting the key.
+The panel needs every required field. For a value that does not exist, the adapter emits the documented empty form or `null` instead of leaving the key out.
 
-Optional fields are enhancement data. An adapter may emit `null`, `{}`, or omit them, and the panel degrades gracefully, for example hiding "open in editor" links when source locations are absent.
+Optional fields add detail. An adapter may leave an optional field out, or emit `null` where the field's type allows it. The `propValues` map may also be `{}`. The panel still works with less detail. For example, it hides "open in editor" links when source locations are missing.
 
-Adding fields beyond this specification is safe. The extension ignores unknown fields rather than rejecting the entry.
+An adapter may add fields beyond this specification. The extension ignores unknown fields instead of rejecting the entry.
 
-A fully-populated entry for a standard navigation looks like this.
+A fully populated entry for a standard navigation looks like this.
 
 ```json
 {
     "__meta": {
-        "id": "01JADEVTOOLS0000000000000",
-        "tabUuid": "tab-abc",
+        "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+        "tabUuid": "123e4567-e89b-42d3-a456-426614174000",
         "batchId": null,
-        "timestamp": "2026-07-09T10:00:00.000Z",
+        "timestamp": "2026-07-09T10:00:00.123Z",
         "utime": 1783591200.123,
         "method": "GET",
         "url": "http://localhost/users",
@@ -145,7 +158,7 @@ A fully-populated entry for a standard navigation looks like this.
 }
 ```
 
-The fields are detailed below.
+The following sections describe each field.
 
 ### Meta
 
@@ -156,15 +169,15 @@ The `__meta` object carries the entry's identity and summary.
 </ParamField>
 
 <ParamField body="method" type="string" required>
-  HTTP method.
+  The HTTP method.
 </ParamField>
 
 <ParamField body="url" type="string" required>
-  Absolute request URL.
+  The absolute request URL.
 </ParamField>
 
 <ParamField body="status" type="number" required>
-  HTTP status code.
+  The HTTP status code.
 </ParamField>
 
 <ParamField body="requestType" type="string" required>
@@ -172,44 +185,44 @@ The `__meta` object carries the entry's identity and summary.
 </ParamField>
 
 <ParamField body="component" type="string | null" required>
-  Inertia page component, `null` for non-Inertia (raw HTTP) responses.
+  The Inertia page component, or `null` for a response that rendered no Inertia page.
 </ParamField>
 
 <ParamField body="timestamp" type="string" required>
-  ISO 8601, used for display.
+  The time of the request in ISO 8601 format, used for display.
 </ParamField>
 
 <ParamField body="utime" type="number" required>
-  Float seconds since epoch, used for stable ordering.
+  The time of the request in seconds since the Unix epoch, as a float. The panel uses it for stable ordering.
 </ParamField>
 
 <ParamField body="tabUuid" type="string | null" required>
-  From `X-Inertia-Devtools-Tab`, `null` on the initial full-page load, which carries no tab header yet.
+  The value of `X-Inertia-Devtools-Tab`, or `null` when the request carries no tab header. The extension adds the header only for hosts where it has discovered an entry before, and it remembers those hosts. A request to a host it has not discovered yet has no tab header.
 </ParamField>
 
 <ParamField body="batchId" type="string | null" required>
-  From `X-Inertia-Devtools-Parent`, `null` starts a new batch.
+  The value of `X-Inertia-Devtools-Parent`. A `null` value starts a new batch.
 </ParamField>
 
 <ParamField body="serverTimingMs" type="number | null" required>
-  Server processing time in milliseconds, `null` when unavailable.
+  The server processing time in milliseconds, or `null` when unavailable.
 </ParamField>
 
 <ParamField body="redirectLocation" type="string | null">
-  Redirect target for `3xx` and Inertia location responses.
+  The redirect target of a `3xx` response or an Inertia location response.
 </ParamField>
 
 <ParamField body="visitId" type="string | null">
-  From `X-Inertia-Devtools-Visit`.
+  The value of `X-Inertia-Devtools-Visit`.
 </ParamField>
 
 <Note>
-`timestamp` and `utime` describe the same instant in two forms: `timestamp` keeps a stored entry readable on its own, while `utime` carries sub-millisecond precision and is the key the panel orders and groups by. Adapters emit both, derived from the same instant.
+`timestamp` and `utime` describe the same instant in two forms. `timestamp` keeps a stored entry readable on its own. `utime` has sub-millisecond precision, and the panel orders and groups entries by it. The adapter derives both values from the same instant.
 </Note>
 
 ### HTTP
 
-The `http` object is required, and each sub-key is required (use the empty forms when there is nothing to show).
+The `http` object and each of its keys are required. With nothing to show, the adapter emits the empty form.
 
 ```ts
 http: {
@@ -228,24 +241,24 @@ http: {
 | { status: 'omitted', reason: string }
 ```
 
-`value` is a string for raw textual bodies, otherwise a decoded JSON value. Recognized `omitted` reasons are `non-inertia-response`, `non-inertia-request`, `non-textual`, `streamed`, `too-large`, `unserializable`, and `binary`. The panel maps these to friendly notices, and an unknown reason falls back to a generic message, so new reasons are safe. Adapters redact sensitive keys and summarize file uploads rather than serializing binary content.
+`value` is a string for a raw text body. For structured data, such as parsed JSON or form input, it is a JSON-compatible value. The panel recognizes the following `omitted` reasons: `non-inertia-response`, `non-inertia-request`, `non-textual`, `streamed`, `too-large`, `unserializable`, and `binary`. It shows a readable notice for each one, and a generic message for an unknown reason, so an adapter may add new reasons. Adapters redact sensitive keys and summarize file uploads instead of serializing binary content.
 
 ### Props
 
 <ParamField body="props" type="Record<string, PropMeta>" required>
-  Per-prop metadata, keyed by dotted path. May be `{}` when the adapter cannot classify props; the panel then renders values only.
+  Metadata for each prop, keyed by dotted path. The panel builds its prop tree from this map and adds intermediate nodes for dotted paths. A listed prop without metadata children shows its nested values from `propValues`, so those nested paths need no entries of their own. A prop with metadata children shows the child rows instead. An adapter that cannot classify a top-level prop still lists it, with empty metadata. With `props` set to `{}`, the panel shows no props, even when `propValues` contains values.
 
   <Expandable title="PropMeta">
     Every field is optional. Source locations are `{ file: string, line: number }`.
 
     <ParamField body="inertiaType" type="'always' | 'defer' | 'optional' | 'merge' | 'scroll' | 'once'" />
     <ParamField body="shared" type="boolean">
-      Whether the prop was [shared](/v3/data-props/shared-data) rather than returned from the controller.
+      Whether the prop path matches a top-level [shared](/v3/data-props/shared-data) key. A page prop with the same key overrides the shared value, but the Laravel adapter still marks the path as shared.
     </ParamField>
     <ParamField body="deferGroup" type="string" />
     <ParamField body="reset" type="boolean" />
     <ParamField body="once" type="boolean">
-      Set for a [once prop](/v3/data-props/once-props), loaded a single time and reused on later visits.
+      Set for a [once prop](/v3/data-props/once-props). The client reuses its value on later visits until the value expires or the server refreshes it.
     </ParamField>
     <ParamField body="mergeDirection" type="'append' | 'prepend'">
       How a [merge](/v3/data-props/merging-props) or [scroll](/v3/data-props/infinite-scroll) prop combines with existing client data.
@@ -254,7 +267,7 @@ http: {
       Set alongside `mergeDirection` for a deep merge.
     </ParamField>
     <ParamField body="rescued" type="boolean">
-      A deferred prop whose resolver threw but was rescued, so the prop carries no value on this response.
+      Set for a deferred prop that threw and that the adapter rescued. The prop has no value in this response.
     </ParamField>
     <ParamField body="renderSource" type="{ file, line }" />
     <ParamField body="shareSource" type="{ file, line }" />
@@ -262,56 +275,56 @@ http: {
 </ParamField>
 
 <ParamField body="propValues" type="Record<string, unknown>">
-  Resolved prop values, keyed by dotted path. Sensitive values are replaced with `"[REDACTED]"`. May be omitted or `{}`. The panel guards against absence.
+  The resolved prop values, keyed by dotted path. The adapter replaces sensitive values with `"[REDACTED]"`. It may leave the field out or send `{}`, and the panel handles both.
 </ParamField>
 
 ### Route
 
 <ParamField body="route.uri" type="string" required>
-  Matched route path, `""` if none.
+  The matched route path, or `""` when no route matched.
 </ParamField>
 
 <ParamField body="route.name" type="string | null" required>
-  Route name, `null` when the route is unnamed.
+  The route name, or `null` for an unnamed route.
 </ParamField>
 
 <ParamField body="route.action" type="string | null" required>
-  Controller or handler identifier, `null` when none applies.
+  The controller or handler identifier, or `null` when none applies.
 </ParamField>
 
 <ParamField body="route.actionSource" type="{ file, line }">
-  Handler source location.
+  The source location of the handler.
 </ParamField>
 
 <ParamField body="renderSource" type="{ file, line } | null" required>
-  Where the page render was invoked, `null` when it cannot be resolved.
+  The source location of the render call, or `null` when the adapter cannot resolve it.
 </ParamField>
 
 <ParamField body="componentPath" type="string | null" required>
-  Resolved path of the component file, `null` when it cannot be resolved.
+  The path of the component file, or `null` when the adapter cannot resolve it.
 </ParamField>
 
-Source-location fields power the "open in editor" links. Adapters that cannot cheaply resolve them emit `null` and lose only those links.
+The source location fields provide the "open in editor" links. An adapter that cannot resolve them cheaply emits `null` and loses only those links.
 
 ## Request Type Derivation
 
-The type is derived from headers the adapter already sees, plus the two DevTools hint headers. Evaluate in this order and take the first match.
+The adapter derives the request type from the request headers, including the two DevTools hint headers. It checks the following conditions in order and uses the first match.
 
 | Order | Condition | Request type |
 | --- | --- | --- |
-| 1 | [Precognition](/v3/the-basics/forms#precognition) header present | `precognition` |
-| 2 | Not an Inertia request, and an Inertia page was rendered (component present) | `initial` |
-| 3 | Not an Inertia request, and no Inertia page was rendered | `http` |
-| 4 | `X-Inertia-Devtools-Deferred` present | `deferred` |
-| 5 | `X-Inertia-Devtools-Poll` present | `poll` |
-| 6 | Partial-reload header present (`X-Inertia-Partial-Component`) | `partial` |
-| 7 | Prefetch (`Purpose: prefetch`) | `prefetch` |
-| 8 | Otherwise | `navigate` |
+| 1 | The [Precognition](/v3/the-basics/forms#precognition) header is present | `precognition` |
+| 2 | Not an Inertia request, and the adapter rendered an Inertia page | `initial` |
+| 3 | Not an Inertia request, and the adapter rendered no Inertia page | `http` |
+| 4 | `X-Inertia-Devtools-Deferred` is present | `deferred` |
+| 5 | `X-Inertia-Devtools-Poll` is present | `poll` |
+| 6 | `X-Inertia-Partial-Component` is present | `partial` |
+| 7 | `Purpose: prefetch` is present | `prefetch` |
+| 8 | None of the above | `navigate` |
 
-`initial` and `http` are both non-Inertia requests, and the adapter distinguishes them by whether it rendered an Inertia page. The app's initial full-page load renders a page (so `component` is set) and is `initial`, while a plain JSON or text endpoint the app serves alongside Inertia renders no page (so `component` is `null`) and is `http`. The adapter already knows which it produced, so it classifies once on the wire rather than leaving the panel to re-derive it.
+`initial` and `http` are both non-Inertia requests. The adapter tells them apart by whether it rendered an Inertia page. The application's initial full-page load renders a page, so its `component` is set and its type is `initial`. A plain JSON or text endpoint that the application serves next to Inertia renders no page, so its `component` is `null` and its type is `http`. The adapter knows which kind of response it produced, so it sets the type instead of leaving the panel to work it out.
 
 The `client-visit` and `cache-hit` types are client-only and never come from an adapter.
 
 ## Storage Semantics
 
-An adapter buffers recent entries and evicts old ones, typically capping entries per `tabUuid` so a busy tab cannot evict another tab's history, and pruning entries past a TTL. These are adapter-internal concerns; the protocol only requires that the read API return what is currently stored, newest first.
+An adapter keeps recent entries and evicts old ones. It usually limits the number of entries for each `tabUuid`, so a busy tab cannot evict another tab's history. It also removes entries older than a time limit. The adapter chooses these limits. The protocol requires only that the read API return the stored entries, newest first.
