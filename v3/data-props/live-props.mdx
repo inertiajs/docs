@@ -30,7 +30,7 @@ return Inertia::render('Orders/Show', [
 
 ## Client Setup
 
-Live props are delivered over a transport, which you pass to `createInertiaApp()`. Inertia ships one for [Laravel Echo](https://laravel.com/docs/broadcasting#client-side-installation) and one for `pusher-js`.
+Live props are delivered over a transport, which you pass to `createInertiaApp()`. Inertia ships one for [Laravel Echo](https://laravel.com/docs/broadcasting#client-side-installation), one for `pusher-js`, and one for Action Cable.
 
 ### Echo
 
@@ -97,7 +97,27 @@ createInertiaApp({
 });
 ```
 
-Either way, that is the entire client-side setup. Inertia reads the subscriptions from each page's props, so navigating between pages subscribes and unsubscribes for you.
+### Action Cable
+
+Rails applications may deliver updates over [Action Cable](https://guides.rubyonrails.org/action_cable_overview.html) instead. Pass a function that creates the consumer, so Inertia opens a single connection the first time a page subscribes, and never during server-side rendering.
+
+```js
+import { actionCable } from "@inertiajs/core/actionCable";
+import { createConsumer } from "@rails/actioncable";
+
+createInertiaApp({
+  live: actionCable({ consumer: () => createConsumer() }),
+  // ...
+});
+```
+
+Each live channel is subscribed to `InertiaChannel` with the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. Since Action Cable messages carry no event name, the server sends it along in an `__inertia` envelope, which Inertia reads to decide which props an event feeds.
+
+```json
+{ "__inertia": { "event": "order.updated" } }
+```
+
+Whichever transport you use, that is the entire client-side setup. Inertia reads the subscriptions from each page's props, so navigating between pages subscribes and unsubscribes for you.
 
 ## Listening for Multiple Events
 
@@ -178,7 +198,7 @@ Private, presence, and encrypted private channels are authorized through your `c
 
 ## Throttling
 
-Live props refresh at most once per second. To change the default for every live prop, pass a throttle in milliseconds to `echo()` or `pusher()`.
+Live props refresh at most once per second. To change the default for every live prop, pass a throttle in milliseconds to `echo()`, `pusher()`, or `actionCable()`.
 
 <CodeGroup>
 
@@ -226,7 +246,7 @@ Each prop keeps its own window, so a busy prop never delays the rest of the page
 
 Throttling only applies to refreshes Inertia issues for you. You may always fetch a prop yourself with `router.reload({ only: ['order'] })`.
 
-Refreshes pause while the browser tab is in the background and flush when the user returns. Pass `pauseWhenHidden: false` to `echo()` or `pusher()` to keep refreshing a hidden tab. This only holds back requests, so a prop whose value arrived with the broadcast is applied either way.
+Refreshes pause while the browser tab is in the background and flush when the user returns. Pass `pauseWhenHidden: false` to the transport to keep refreshing a hidden tab. This only holds back requests, so a prop whose value arrived with the broadcast is applied either way.
 
 ## Collecting Bursts
 
@@ -351,6 +371,8 @@ Inertia sends the broadcaster's socket ID with every request it makes, so `toOth
 broadcast(new OrderUpdated($order))->toOthers();
 ```
 
+Some broadcasters, such as Action Cable, issue no socket ID and cannot exclude a connection from a broadcast. For those, Inertia generates an ID per browser tab and sends it instead. The server includes the ID of the connection that caused the event as `__inertia.socketId`, and that tab ignores the event.
+
 ## Custom Transports
 
 Echo is not required. Any object satisfying the `LiveTransport` interface may be passed to the `live` option, which allows you to deliver updates over your own WebSocket client, an SSE stream, or a `BroadcastChannel`.
@@ -377,11 +399,11 @@ const transport: LiveTransport = {
 
 `subscribe()` runs during a page swap, so avoid throwing from it for anything recoverable. An error there takes the page swap with it.
 
-Only `'connected'` is acted on, so `onStatusChange` never has to report the other statuses precisely. Anything that is not `'connected'` means the connection is down.
+The status callback receives a boolean. Inertia only acts on the connection coming back, so reporting the same status twice, or reporting it once per channel, is fine.
 
 ```ts
 onStatusChange(callback) {
-  const handler = (state: string) => callback(state === "connected" ? "connected" : "disconnected");
+  const handler = (state: string) => callback(state === "connected");
 
   connection.on("state_change", handler);
 
@@ -389,38 +411,25 @@ onStatusChange(callback) {
 }
 ```
 
-Channel names arrive unprefixed alongside their type, so applying the prefix your broadcaster expects is up to the transport. For a broadcaster that follows Laravel's convention, `liveChannelName()` gives you the name it files a channel under, rather than restating the rules.
+Channel names arrive unprefixed alongside their type, such as `{ name: "orders.1", type: "private" }`, so applying the prefix your broadcaster expects is up to the transport. Inertia subscribes per channel *and* event, so a transport for a broadcaster that subscribes per channel should join a channel on its first listener and leave it after its last.
+
+### Channel Transports
+
+Some broadcasters cannot route messages by event name. A transport for one of those may implement `subscribeToChannel()` instead, which is called once per channel. Inertia reads the event name from the `__inertia.event` key of each message and routes it to the props that event feeds.
 
 ```ts
-import { liveChannelName } from "@inertiajs/core";
+import type { LiveChannelTransport } from "@inertiajs/core";
 
-liveChannelName({ name: "orders.1", type: "private" }); // private-orders.1
-liveChannelName({ name: "room.1", type: "presence" }); // presence-room.1
-liveChannelName({ name: "news", type: "public" }); // news
+const transport: LiveChannelTransport = {
+  subscribeToChannel(channel, handler) {
+    const stream = socket.subscribe(channel.name, handler);
+
+    return () => stream.close();
+  },
+
+  // Optional. Reads the event name from somewhere other than `__inertia.event`.
+  eventName: (payload) => payload.type,
+};
 ```
 
-Inertia subscribes per channel *and* event, while broadcasters subscribe per channel, so a transport has to know when a channel gained its first listener and lost its last. `createLiveChannelTracker()` counts that for you, by type and name, so a public channel called `private-orders.1` stays distinct from a private `orders.1`.
-
-```ts
-import { liveChannelName, createLiveChannelTracker } from "@inertiajs/core";
-
-const channels = createLiveChannelTracker();
-
-subscribe(channel, event, handler) {
-  const name = liveChannelName(channel);
-
-  if (channels.acquire(channel)) {
-    broadcaster.subscribe(name);
-  }
-
-  broadcaster.channel(name).bind(event, handler);
-
-  return () => {
-    broadcaster.channel(name)?.unbind(event, handler);
-
-    if (channels.release(channel)) {
-      broadcaster.unsubscribe(name);
-    }
-  };
-}
-```
+A channel may also carry `params`, which the server sets and Inertia passes to the transport untouched. Channels are told apart by their type and name, so params should stay the same for a given channel.
