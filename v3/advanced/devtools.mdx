@@ -2,7 +2,7 @@
 title: DevTools
 ---
 
-Inertia DevTools is a Chrome extension that records every Inertia visit and displays it in a dedicated DevTools panel, showing exactly what each visit sent and received: which props were returned, whether they were deferred or merged, what the request headers were, and which route and controller handled it.
+Inertia DevTools is a browser extension that records every Inertia visit and displays it in a dedicated DevTools panel, showing exactly what each visit sent and received: which props were returned, whether they were deferred or merged, what the request headers were, and which route and controller handled it.
 
 DevTools is a local development tool, designed to run alongside your local development server. The recorder is disabled outside your local environment by default, so DevTools stays out of production unless you explicitly allow it.
 
@@ -16,9 +16,9 @@ There is no separate package to install in your app. DevTools ships inside the l
 
 </Step>
 
-<Step title="Install the Chrome extension">
+<Step title="Install the browser extension">
 
-Install Inertia DevTools from the [Chrome Web Store](https://chromewebstore.google.com/detail/inertiajs-devtools/cbaffpghpcbmgbnlpamegieokkpdlnih), or download the latest release from [GitHub](https://github.com/inertiajs/inertia-devtools/releases) and load it unpacked.
+Install Inertia DevTools from the [Chrome Web Store](https://chromewebstore.google.com/detail/inertiajs-devtools/cbaffpghpcbmgbnlpamegieokkpdlnih) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/inertia-js-devtools/), or download the latest release from [GitHub](https://github.com/inertiajs/inertia-devtools/releases) and load it unpacked.
 
 </Step>
 
@@ -30,7 +30,7 @@ DevTools is enabled automatically in development, so most applications need no c
 
 <Step title="Open the panel">
 
-Open Chrome DevTools on your Inertia app and select the "Inertia" panel. Navigate around your application and each visit will appear in the timeline.
+Open your browser's DevTools on your Inertia app and select the "Inertia" panel. Navigate around your application and each visit will appear in the timeline.
 
 </Step>
 
@@ -67,7 +67,7 @@ File references throughout the panel link directly to your editor. You may use t
 
 ## How It Works
 
-DevTools consists of two pieces that split the work across each request. The Laravel adapter records the server side as the response is prepared, while the Chrome extension captures the client side, and the two are paired into a single timeline entry. They communicate over a [documented protocol](/v3/advanced/devtools-protocol) that any server adapter may implement, with the Laravel adapter serving as the reference implementation. Entries are stored locally over the same origin, so nothing is sent to a remote service and no account or cloud sync is required.
+DevTools consists of two pieces that split the work across each request. The Laravel adapter records the server side as the response is prepared, while the browser extension captures the client side, and the two are paired into a single timeline entry. They communicate over a [documented protocol](/v3/advanced/devtools-protocol) that any server adapter may implement, with the Laravel adapter serving as the reference implementation. Entries are stored locally over the same origin, so nothing is sent to a remote service and no account or cloud sync is required.
 
 ## Enabling DevTools
 
