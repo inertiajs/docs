@@ -398,7 +398,7 @@ socketId.resolveUsing(null);
 
 </CodeGroup>
 
-Some broadcasters, such as Action Cable, issue no socket ID and cannot exclude a connection from a broadcast. For those, Inertia generates an ID per browser tab and sends it instead. The server includes the ID of the connection that caused the event as `__inertia.socketId`, and that tab ignores the event.
+Action Cable issues no socket ID and cannot exclude a connection from a broadcast, so the Action Cable transport generates an ID per browser tab and sends it instead. The server includes the ID of the connection that caused the event as `__inertia.socketId`, and that tab ignores the event. A custom transport without a `socketId` sends no header at all.
 
 ## Custom Transports
 
