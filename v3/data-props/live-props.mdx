@@ -365,11 +365,38 @@ router.on("live", (event) => {
 
 ## Skipping the Current Connection
 
-Inertia sends the broadcaster's socket ID with every request it makes, so `toOthers()` works as expected and the user who caused a change is not refreshed by their own broadcast.
+Inertia sends the broadcaster's socket ID as the `X-Socket-Id` header with every request it makes to your application, so `toOthers()` works as expected and the user who caused a change is not refreshed by their own broadcast. Requests to other origins never receive it.
 
 ```php
 broadcast(new OrderUpdated($order))->toOthers();
 ```
+
+You may resolve the socket ID yourself using `socketId.resolveUsing()`. Your resolver always wins over the transport's, whether you register it before or after calling `createInertiaApp()`. Passing `null` stops sending the header entirely.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { socketId } from "@inertiajs/vue3";
+
+socketId.resolveUsing(() => mySocket.id);
+socketId.resolveUsing(null);
+```
+
+```js React icon="react"
+import { socketId } from "@inertiajs/react";
+
+socketId.resolveUsing(() => mySocket.id);
+socketId.resolveUsing(null);
+```
+
+```js Svelte icon="s"
+import { socketId } from "@inertiajs/svelte";
+
+socketId.resolveUsing(() => mySocket.id);
+socketId.resolveUsing(null);
+```
+
+</CodeGroup>
 
 Some broadcasters, such as Action Cable, issue no socket ID and cannot exclude a connection from a broadcast. For those, Inertia generates an ID per browser tab and sends it instead. The server includes the ID of the connection that caused the event as `__inertia.socketId`, and that tab ignores the event.
 

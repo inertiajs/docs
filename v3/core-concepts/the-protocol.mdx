@@ -173,9 +173,10 @@ The following headers are automatically sent by Inertia when making requests. Yo
 </ParamField>
 
 <ParamField header="X-Socket-Id" type="string">
-  The broadcaster's connection id, sent when a [live
-  prop](/v3/data-props/live-props) transport reports one, so the server may skip
-  broadcasting back to the connection that caused the change.
+  The broadcaster's connection id, sent on same-origin requests once [live
+  props](/v3/data-props/live-props) are configured or the app registers a
+  resolver, so the server may skip broadcasting back to the connection that
+  caused the change.
 </ParamField>
 
 <ParamField header="X-Inertia-Except-Once-Props" type="string">
