@@ -657,6 +657,14 @@ By default, the command fails when the SSR server is not running. You may pass t
 php artisan inertia:stop-ssr --graceful
 ```
 
+<Badge>Laravel Adapter v3.6.0+</Badge>
+
+Before starting, the `inertia:start-ssr` command sends a shutdown request to the configured SSR URL to stop any server that is still running. Behind a load balancer, where several SSR servers share the same URL, this request may shut down another server instead. You may pass the `--no-stop-before-start` option to skip the shutdown request.
+
+```bash
+php artisan inertia:start-ssr --no-stop-before-start
+```
+
 You may use the `inertia:check-ssr` Artisan command to verify that the SSR server is running. This can be helpful after deployment and works well as a Docker health check to ensure the server is responding as expected.
 
 ```bash

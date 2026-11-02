@@ -651,7 +651,7 @@ See the [asset versioning](/v3/advanced/asset-versioning) page for configuring t
 
 ## Redirects
 
-Inertia relies on standard HTTP redirects for navigation after a server-side action. A `302 Found` returned after a `PUT`, `PATCH`, or `DELETE` is converted to `303 See Other` so the browser issues a `GET` to the redirect target, avoiding a repeated non-GET request.
+Inertia relies on standard HTTP redirects for navigation after a server-side action. A `302 Found` returned after a `PUT`, `PATCH`, `DELETE`, or `QUERY` request is converted to `303 See Other` so the browser issues a `GET` to the redirect target, avoiding a repeated non-GET request.
 
 External redirects point outside your Inertia app, where the Inertia request headers cannot survive the hop, so an XHR visit may not follow them. The server returns a `409 Conflict` with an `X-Inertia-Location` header instead, and the client performs a full `window.location` visit.
 
