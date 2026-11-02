@@ -113,7 +113,9 @@ createInertiaApp({
 });
 ```
 
-Each live channel is subscribed to `InertiaChannel` with the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. Since Action Cable messages carry no event name, the server sends it along in an `__inertia` envelope, which Inertia reads to decide which props an event feeds.
+[AnyCable](https://anycable.io) is also supported. Import `createConsumer()` from `@anycable/web` instead of `@rails/actioncable`.
+
+Each live channel is subscribed to `InertiaChannel` with the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. The params are serialized into the subscription identifier, so their values must be strings, numbers, or booleans. Since Action Cable messages carry no event name, the server sends it along in an `__inertia` envelope, which Inertia reads to decide which props an event feeds.
 
 ```json
 { "__inertia": { "event": "order.updated" } }
@@ -151,7 +153,7 @@ return Inertia::render('Dashboard', [
 Passing a class name rather than an instance works whenever the event's channels are fixed, since Inertia builds the event without its payload to read them.
 
 ```php
-class OrderUpdated
+class OrderUpdated implements ShouldBroadcast
 {
     public function broadcastOn(): PrivateChannel
     {
@@ -193,8 +195,10 @@ The channels an event returns from `broadcastOn()` are read the same way, so wra
 ```php
 public function broadcastOn(): array
 {
-    return ['stats'];                           // public
-    return [new PrivateChannel('orders.1')];    // private
+    return [
+        'stats',                        // public
+        new PrivateChannel('orders.1'), // private
+    ];
 }
 ```
 
