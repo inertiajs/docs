@@ -71,9 +71,11 @@ Unit tests confirm that your adapter emits the right headers and page objects, b
 4. A [partial reload](/v3/data-props/partial-reloads) returns only the requested props and the `errors` prop.
 5. Changing the asset version makes the next visit reload the full page.
 
+For broader coverage, you may port the controllers of the [demo application](/v3/getting-started/demo-application) to your framework and run its Vue frontend against your adapter. Its pages cover most of the features in this documentation, including forms, prefetching, deferred props, and error handling.
+
 ## Additional Features
 
-Once the basics work, you may add the features the rest of this documentation relies on, in any order.
+Once the basics work, you may add any of the following features.
 
 | Feature | Laravel API | Specification |
 | :--- | :--- | :--- |
@@ -88,9 +90,10 @@ Once the basics work, you may add the features the rest of this documentation re
 | Flash data | `Inertia::flash()` | [The page object](/v3/core-concepts/the-protocol#the-page-object) |
 | History encryption | `Inertia::encryptHistory()` | [The page object](/v3/core-concepts/the-protocol#the-page-object) |
 | Server-side rendering | | [Server-side rendering](/v3/core-concepts/the-protocol#server-side-rendering) |
+| Big integers | `preserveBigIntegers()` | [The page object](/v3/core-concepts/the-protocol#the-page-object) |
+| Precognition | | [Request headers](/v3/core-concepts/the-protocol#request-headers) |
 | Testing helpers | `assertInertia()` | [Testing](/v3/advanced/testing#endpoint-tests) |
-
-Support for [Precognition](/v3/the-basics/forms#precognition), [big integers](/v3/advanced/big-integers), and the [DevTools protocol](/v3/advanced/devtools-protocol) is optional.
+| DevTools | | [DevTools protocol](/v3/advanced/devtools-protocol) |
 
 ## Best Practices
 
