@@ -174,7 +174,7 @@ The `reload()` method is a convenient, shorthand method that automatically visit
 
 ## Method
 
-You may use the `method` option to set the request's HTTP method to `get`, `post`, `put`, `patch`, `delete` or `query`. The default method is `get`.
+You may use the `method` option to set the request's HTTP method to `get`, `post`, `put`, `patch`, `delete`, or `query`. The default method is `get`.
 
 <CodeGroup>
 
@@ -204,7 +204,7 @@ Uploading files via `put` or `patch` is not supported in Laravel. Instead, make 
 
 <Badge>v3.10.0+</Badge> <Badge>Laravel Adapter v3.6.0+</Badge>
 
-Sometimes you may wish to send search filters that are too large or deeply nested for a query string. Like `GET`, the `QUERY` HTTP method is safe and idempotent, but it sends its data in the request body instead of the URL, making it ideal for searches, filters, and reports with complex criteria. You may make a `QUERY` visit using the `router.query()` method.
+Sometimes you may wish to send search filters that are too large or too deeply nested for a query string. Like `GET`, the `QUERY` HTTP method is safe and idempotent, but it sends its data in the request body instead of the URL. You may make a `QUERY` visit using the `router.query()` method.
 
 <CodeGroup>
 
@@ -237,11 +237,11 @@ router.query("/products", {
 
 </CodeGroup>
 
-Like `POST`, `PUT`, and `PATCH` visits, `QUERY` visits [preserve component state](#state-preservation) by default. The data isn't part of the URL, so a full page refresh drops the filters, and `GET` remains the better choice for filters that should be shareable or survive a refresh.
+As with other non-`GET` visits, `QUERY` visits [preserve component state](#state-preservation) by default. The data isn't part of the URL, so refreshing the page or sharing its link loses the filters. `GET` remains the better choice for filters that users should be able to bookmark or share.
 
-A page rendered by a `QUERY` visit remembers its request body, so reloads, [partial reloads](/v3/data-props/partial-reloads), [deferred props](/v3/data-props/deferred-props), and [infinite scroll](/v3/data-props/infinite-scroll) keep working on filtered results.
+Inertia remembers the request body of a page rendered by a `QUERY` visit and resends it on reloads, [partial reloads](/v3/data-props/partial-reloads), [polling](/v3/data-props/polling), [deferred props](/v3/data-props/deferred-props), and [infinite scroll](/v3/data-props/infinite-scroll) requests, so these keep returning the filtered results. Any `data` passed to `router.reload()` is merged into the remembered body.
 
-Full page loads and redirects, such as the one after failed validation, request the URL using `GET`. Your route should therefore respond to both methods. Laravel supports `QUERY` routes as of version 13.35.
+Full page loads and redirects, such as the redirect after a failed validation, request the URL using `GET`, so your route should respond to both methods. Laravel supports `QUERY` routes as of version 13.35.
 
 ```php
 Route::match(['get', 'query'], '/products', [ProductController::class, 'index']);

@@ -144,7 +144,7 @@ import { inertia } from '@inertiajs/svelte'
 
 <Badge>v3.10.0+</Badge>
 
-Since [`QUERY` requests](/v3/the-basics/manual-visits#query-method) are safe, links using the `query` method may be prefetched as well. Inertia caches prefetched responses per request body, so two links to the same URL with different data each get their own cache entry.
+[`QUERY` requests](/v3/the-basics/manual-visits#query-method) are safe, so links using the `query` method may be prefetched as well. Prefetched responses are cached per request body, so links to the same URL with different data are cached separately.
 
 <CodeGroup>
 
