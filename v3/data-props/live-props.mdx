@@ -20,7 +20,7 @@ return Inertia::render('Orders/Show', [
 
 The channel is read from the event's `broadcastOn()` method, so an event that already broadcasts on `new PrivateChannel('orders.'.$order->id)` needs no further configuration. Whenever that event broadcasts, the client reloads the `order` prop.
 
-Live props may be composed with [deferred props](/v3/data-props/deferred-props), [once props](/v3/data-props/once-props), optional props, and always props.
+Live props may be composed with [deferred props](/v3/data-props/deferred-props), [once props](/v3/data-props/once-props), optional props, and always props. An optional live prop is only refreshed once the page has loaded it, so an event never loads a prop the page did not ask for.
 
 ```php
 return Inertia::render('Orders/Show', [
@@ -136,6 +136,8 @@ Several props may also listen for the same event. Inertia subscribes once per ch
 
 ## Channels
 
+Live props use the channels you already broadcast on, so the [Laravel broadcasting documentation](https://laravel.com/docs/broadcasting#defining-broadcast-events) applies as is. Keep in mind that a prop subscribes to every channel its event broadcasts on. An event that broadcasts on both `orders.1` and a shared `orders` channel refreshes the prop whenever any order changes, so pass the `channel` argument to listen on only one of them.
+
 To subscribe to a channel other than the one your event broadcasts on, pass the `channel` argument.
 
 ```php
@@ -194,7 +196,7 @@ public function broadcastOn(): array
 }
 ```
 
-Private, presence, and encrypted private channels are authorized through your `channels.php` routes exactly like any other Echo subscription.
+Private, presence, and encrypted private channels are authorized through your `channels.php` routes exactly like any other Echo subscription. See [authorizing channels](https://laravel.com/docs/broadcasting#authorizing-channels) in the Laravel documentation.
 
 ## Throttling
 
@@ -252,7 +254,7 @@ Refreshes pause while the browser tab is in the background and flush when the us
 
 One server action often broadcasts several events. Those frames reach the browser a few milliseconds apart, so Inertia waits briefly before sending the first request of a burst, then refreshes every prop the burst touched in one go.
 
-Events that arrive too late to join a burst refresh their props on the next pass, so the window only ever changes how many requests a burst costs, never whether a prop is refreshed.
+Events that arrive too late to join a burst refresh their props on the next pass, once the prop's throttle window ends. A burst that outlasts the collect window therefore costs two requests per prop: one when it starts, and one that picks up everything that arrived after. The window only ever changes how many requests a burst costs, never whether a prop is refreshed.
 
 ## Broadcasting Values
 
