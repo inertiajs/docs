@@ -25,21 +25,17 @@ The adapter's [test suite](https://github.com/inertiajs/inertia-laravel/tree/3.x
 
 A basic Inertia application needs a render function, a root template helper, and a middleware from your adapter.
 
-The render function accepts a component name and props, builds the [page object](/v3/core-concepts/the-protocol#the-page-object), and returns either an [HTML response](/v3/core-concepts/the-protocol#html-responses) or an [Inertia response](/v3/core-concepts/the-protocol#inertia-responses). A simplified version of the Laravel adapter's implementation looks like this.
+The render function accepts a component name and props, builds the [page object](/v3/core-concepts/the-protocol#the-page-object), and returns either an [HTML response](/v3/core-concepts/the-protocol#html-responses) or an [Inertia response](/v3/core-concepts/the-protocol#inertia-responses). A minimal version looks like this.
 
 ```php
 public function toResponse($request)
 {
-    $resolver = new PropsResolver($request, $this->component);
-
-    [$props, $metadata] = $resolver->resolve($this->sharedProps, $this->props);
-
-    $page = array_merge([
+    $page = [
         'component' => $this->component,
-        'props' => $props,
-        'url' => $this->getUrl($request),
+        'props' => array_merge($this->sharedProps, $this->props),
+        'url' => $request->getRequestUri(),
         'version' => $this->version,
-    ], $metadata);
+    ];
 
     if ($request->header('X-Inertia')) {
         return new JsonResponse($page, 200, ['X-Inertia' => 'true']);
@@ -48,6 +44,8 @@ public function toResponse($request)
     return view($this->rootView, ['page' => $page]);
 }
 ```
+
+Prop types such as deferred and merge props add their own metadata fields to the page object. You may add those [later](#additional-features).
 
 The root template helper renders the page object script and the root element into the application's layout, like the Laravel adapter's `<x-inertia::app>` and `<x-inertia::head>` Blade components. These helpers also print the output of [server-side rendering](/v3/core-concepts/the-protocol#server-side-rendering).
 
