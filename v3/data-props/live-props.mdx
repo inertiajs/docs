@@ -79,11 +79,45 @@ createInertiaApp({
 
 </CodeGroup>
 
-You may pass a `resolve` callback to `echo()` to use an Echo instance other than the one configured by `configureEcho()`.
+You may pass a `resolve` callback to `echo()` to use a different Echo instance, such as one created with `laravel-echo` directly.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { createInertiaApp } from "@inertiajs/vue3";
+import { echo } from "@inertiajs/vue3/echo";
+
+createInertiaApp({
+  live: echo({ resolve: () => window.Echo }),
+  // ...
+});
+```
+
+```js React icon="react"
+import { createInertiaApp } from "@inertiajs/react";
+import { echo } from "@inertiajs/react/echo";
+
+createInertiaApp({
+  live: echo({ resolve: () => window.Echo }),
+  // ...
+});
+```
+
+```js Svelte icon="s"
+import { createInertiaApp } from "@inertiajs/svelte";
+import { echo } from "@inertiajs/svelte/echo";
+
+createInertiaApp({
+  live: echo({ resolve: () => window.Echo }),
+  // ...
+});
+```
+
+</CodeGroup>
 
 ### Pusher
 
-The `pusher()` transport accepts a `pusher-js` client, which works with any Pusher-compatible server, such as [Reverb](https://reverb.laravel.com). You are responsible for configuring the client, including channel authorization.
+The `pusher()` transport accepts a `pusher-js` client, which works with any Pusher-compatible server, such as [Reverb](https://laravel.com/framework/docs/reverb). You are responsible for configuring the client, including channel authorization.
 
 ```js
 import { pusher } from "@inertiajs/core/pusher";
@@ -115,14 +149,6 @@ createInertiaApp({
 
 [AnyCable](https://anycable.io) is also supported. Import `createConsumer()` from `@anycable/web` instead of `@rails/actioncable`.
 
-Inertia subscribes each live channel to `InertiaChannel`, passing the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. Param values must be strings, numbers, or booleans.
-
-Action Cable messages carry no event name, so the server includes it in an `__inertia` envelope.
-
-```json
-{ "__inertia": { "event": "order.updated" } }
-```
-
 ## Listening for Multiple Events
 
 You may pass an array of events to refresh a prop from more than one event. Each event uses its own channels.
@@ -148,7 +174,7 @@ return Inertia::render('Dashboard', [
 ]);
 ```
 
-You may pass an event class name instead of an instance, as long as its channels don't depend on the event's data. Inertia creates the event without calling its constructor to read them.
+You may also pass an event class name instead of an instance, as long as its channels and `broadcastAs()` name don't depend on the event's data, since Inertia creates the event without calling its constructor.
 
 ```php
 class OrderUpdated implements ShouldBroadcast
@@ -160,13 +186,6 @@ class OrderUpdated implements ShouldBroadcast
 }
 
 Inertia::live(fn () => $order, on: OrderUpdated::class);
-```
-
-Events that build their channels or `broadcastAs()` name from their data, such as `new PrivateChannel('orders.'.$this->order->id)`, throw an exception. Pass an instance or the `channel` argument instead.
-
-```php
-Inertia::live(fn () => $order, on: new OrderUpdated($order));
-Inertia::live(fn () => $order, on: OrderUpdated::class, channel: new PrivateChannel('orders.'.$order->id));
 ```
 
 A bare string is a public channel, and each channel class defines its own type.
@@ -382,8 +401,6 @@ socketId.resolveUsing(null);
 
 </CodeGroup>
 
-Action Cable has no socket IDs, so the `actionCable()` transport generates one per browser tab. The server returns the ID of the tab that triggered the event as `__inertia.socketId`, and that tab ignores the event.
-
 ## Custom Transports
 
 You may pass any object implementing the `LiveTransport` interface to the `live` option, allowing you to receive events from your own WebSocket client, server-sent events, or a `BroadcastChannel`.
@@ -406,11 +423,16 @@ const transport: LiveTransport = {
     return () => {};
   },
 };
+
+createInertiaApp({
+  live: transport,
+  // ...
+});
 ```
 
-Since `subscribe()` runs during a page swap, avoid throwing from it, as an error aborts the swap.
+Channels arrive unprefixed with their type, such as `{ name: "orders.1", type: "private" }`, so `subscribe()` should apply any prefix your broadcaster expects. A broadcaster that subscribes per channel rather than per event should join the channel on its first listener and leave it after its last. Since `subscribe()` runs during a page swap, avoid throwing from it, as an error aborts the swap.
 
-The `onStatusChange()` callback receives whether the connection is up. Inertia ignores repeated statuses and only acts when a dropped connection is restored.
+The `onStatusChange()` callback receives a boolean indicating whether the connection is up. Inertia ignores repeated statuses and only acts when a dropped connection is restored.
 
 ```ts
 onStatusChange(callback) {
@@ -421,8 +443,6 @@ onStatusChange(callback) {
   return () => connection.off("state_change", handler);
 }
 ```
-
-Channels arrive unprefixed with their type, such as `{ name: "orders.1", type: "private" }`, so the transport should apply any prefix its broadcaster expects. Inertia subscribes once per channel and event pair, so a transport for a broadcaster that subscribes per channel should join on the first listener and leave after the last.
 
 ### Channel Transports
 
@@ -442,5 +462,3 @@ const transport: LiveChannelTransport = {
   eventName: (payload) => (payload as { type?: string }).type,
 };
 ```
-
-Channels may also carry `params` set by the server, which Inertia passes to the transport untouched. Since Inertia identifies channels by type and name, params should not vary for the same channel.
