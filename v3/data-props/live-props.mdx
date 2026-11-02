@@ -2,9 +2,9 @@
 title: Live Props
 ---
 
-Sometimes you may wish for a prop to stay in sync with your server without the user doing anything. Live props subscribe to your broadcast events and refresh the props those events affect, making them ideal for order statuses, unread counts, dashboard metrics, or anything a background job updates.
+Sometimes you may wish to keep a prop in sync with your server without any user interaction. Live props listen for your broadcast events and refresh the props those events affect, making them ideal for order statuses, unread counts, or dashboard metrics.
 
-A live prop is refreshed with a [partial reload](/v3/data-props/partial-reloads), so the value the client receives is whatever your controller resolves at that moment. The broadcast event is only a signal that something changed. An event may also [carry the new values](#broadcasting-values) itself, in which case no request is made at all.
+Live props are refreshed using [partial reloads](/v3/data-props/partial-reloads), so the client receives whatever your controller returns at that moment. Events may also [carry the new values](#broadcasting-values) themselves.
 
 ## Creating Live Props
 
@@ -14,13 +14,13 @@ To create a live prop, use the `Inertia::live()` method and pass the event that 
 use App\Events\OrderUpdated;
 
 return Inertia::render('Orders/Show', [
-    'order' => Inertia::live(fn () => $order->fresh(), on: new OrderUpdated($order)),
+    'order' => Inertia::live(fn () => $order, on: new OrderUpdated($order)),
 ]);
 ```
 
-The channel is read from the event's `broadcastOn()` method, so an event that already broadcasts on `new PrivateChannel('orders.'.$order->id)` needs no further configuration. Whenever that event broadcasts, the client reloads the `order` prop.
+Inertia reads the channels from the event's `broadcastOn()` method, and the client reloads the `order` prop whenever the event is broadcast.
 
-Live props may be composed with [deferred props](/v3/data-props/deferred-props), [once props](/v3/data-props/once-props), [optional props](/v3/data-props/partial-reloads#lazy-data-evaluation), and always props. An optional live prop is only refreshed once the page has loaded it, so an event never loads a prop the page did not ask for. [Merge props](/v3/data-props/merging-props) may not be live.
+Live props may be combined with [deferred](/v3/data-props/deferred-props), [once](/v3/data-props/once-props), [optional](/v3/data-props/partial-reloads#lazy-data-evaluation), and always props. An optional live prop is only refreshed after the page has loaded it. [Merge props](/v3/data-props/merging-props) may not be live.
 
 ```php
 return Inertia::render('Orders/Show', [
@@ -30,11 +30,11 @@ return Inertia::render('Orders/Show', [
 
 ## Client Setup
 
-Live props receive their events through a transport, which you pass to the `live` option of `createInertiaApp()`. Inertia ships transports for [Laravel Echo](https://laravel.com/docs/broadcasting#client-side-installation), `pusher-js`, and Action Cable.
+Live props receive events through a transport, which you pass to the `live` option of `createInertiaApp()`. Inertia includes transports for [Laravel Echo](https://laravel.com/docs/broadcasting#client-side-installation), `pusher-js`, and Action Cable, and subscribes and unsubscribes automatically as the user navigates.
 
 ### Echo
 
-Configure Echo as you normally would, then pass the transport.
+Configure Echo as usual, then pass the `echo()` transport.
 
 <CodeGroup>
 
@@ -79,11 +79,11 @@ createInertiaApp({
 
 </CodeGroup>
 
-The transport uses the Echo instance configured by `configureEcho()`. You may pass a `resolve` callback to `echo()` to provide an Echo instance yourself.
+You may pass a `resolve` callback to `echo()` to use an Echo instance other than the one configured by `configureEcho()`.
 
 ### Pusher
 
-You may also deliver updates using `pusher-js` directly, which works with any server speaking the Pusher protocol, such as [Reverb](https://reverb.laravel.com). Configure the client yourself, including channel authorization, and pass it to the `pusher()` transport.
+The `pusher()` transport accepts a `pusher-js` client, which works with any Pusher-compatible server, such as [Reverb](https://reverb.laravel.com). You are responsible for configuring the client, including channel authorization.
 
 ```js
 import { pusher } from "@inertiajs/core/pusher";
@@ -101,7 +101,7 @@ createInertiaApp({
 
 ### Action Cable
 
-Rails applications may deliver updates over [Action Cable](https://guides.rubyonrails.org/action_cable_overview.html) instead. Pass a function that creates the consumer, so Inertia opens a single connection the first time a page subscribes, and never during server-side rendering.
+Rails applications may use the `actionCable()` transport for [Action Cable](https://guides.rubyonrails.org/action_cable_overview.html). Pass a function that creates the consumer, so Inertia only opens the connection once a page subscribes, and never during server-side rendering.
 
 ```js
 import { actionCable } from "@inertiajs/core/actionCable";
@@ -115,34 +115,32 @@ createInertiaApp({
 
 [AnyCable](https://anycable.io) is also supported. Import `createConsumer()` from `@anycable/web` instead of `@rails/actioncable`.
 
-Each live channel is subscribed to `InertiaChannel` with the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. The params are serialized into the subscription identifier, so their values must be strings, numbers, or booleans. Since Action Cable messages carry no event name, the server sends it along in an `__inertia` envelope, which Inertia reads to decide which props an event feeds.
+Inertia subscribes each live channel to `InertiaChannel`, passing the channel's `stream` and `type` as params. You may pass the `channel` option to use a different channel class, or an `identifier` function to build the params yourself. Param values must be strings, numbers, or booleans.
+
+Action Cable messages carry no event name, so the server includes it in an `__inertia` envelope.
 
 ```json
 { "__inertia": { "event": "order.updated" } }
 ```
 
-No further client-side setup is required. Inertia reads the subscriptions from each page response, subscribing and unsubscribing as the user navigates.
-
 ## Listening for Multiple Events
 
-You may pass an array of events to refresh a prop from more than one event. Each event keeps its own channel, so events that broadcast in different places may safely feed the same prop.
+You may pass an array of events to refresh a prop from more than one event. Each event uses its own channels.
 
 ```php
 return Inertia::render('Orders/Show', [
-    'order' => Inertia::live(fn () => $order->fresh(), on: [
+    'order' => Inertia::live(fn () => $order, on: [
         new OrderUpdated($order),
         new OrderShipped($order),
     ]),
 ]);
 ```
 
-Several props may also listen for the same event. Inertia subscribes once per channel and event pair, and props refreshed by the same event are reloaded together in a single request.
+Props listening for the same event are refreshed together in a single request.
 
 ## Channels
 
-Live props use the channels your events already broadcast on, so the [Laravel broadcasting documentation](https://laravel.com/docs/broadcasting#defining-broadcast-events) applies as is. A prop subscribes to every channel its event broadcasts on, so an event that broadcasts on both `orders.1` and a shared `orders` channel refreshes the prop whenever any order changes.
-
-You may pass the `channel` argument to subscribe to a specific channel instead.
+Live props listen on every channel your event [broadcasts on](https://laravel.com/docs/broadcasting#defining-broadcast-events). An event broadcasting on both `orders.1` and `orders` therefore refreshes the prop whenever any order changes. You may pass the `channel` argument to listen on a specific channel instead.
 
 ```php
 return Inertia::render('Dashboard', [
@@ -150,7 +148,7 @@ return Inertia::render('Dashboard', [
 ]);
 ```
 
-Passing a class name rather than an instance works whenever the event's channels are fixed, since Inertia builds the event without its payload to read them.
+You may pass an event class name instead of an instance, as long as its channels don't depend on the event's data. Inertia creates the event without calling its constructor to read them.
 
 ```php
 class OrderUpdated implements ShouldBroadcast
@@ -161,19 +159,17 @@ class OrderUpdated implements ShouldBroadcast
     }
 }
 
-Inertia::live(fn () => $order->fresh(), on: OrderUpdated::class);
+Inertia::live(fn () => $order, on: OrderUpdated::class);
 ```
 
-An event that builds its channel from the payload, such as `new PrivateChannel('orders.'.$this->order->id)`, throws an exception since there is no payload to read from. Pass an instance, or name the channel yourself.
+Events that build their channels or `broadcastAs()` name from their data, such as `new PrivateChannel('orders.'.$this->order->id)`, throw an exception. Pass an instance or the `channel` argument instead.
 
 ```php
-Inertia::live(fn () => $order->fresh(), on: new OrderUpdated($order));
-Inertia::live(fn () => $order->fresh(), on: OrderUpdated::class, channel: new PrivateChannel('orders.'.$order->id));
+Inertia::live(fn () => $order, on: new OrderUpdated($order));
+Inertia::live(fn () => $order, on: OrderUpdated::class, channel: new PrivateChannel('orders.'.$order->id));
 ```
 
-The same applies to an event whose `broadcastAs()` method builds the broadcast name from its payload.
-
-Channels behave as they do anywhere else in Laravel. A bare string is a public channel, and each channel class defines its own type.
+A bare string is a public channel, and each channel class defines its own type.
 
 ```php
 use Illuminate\Broadcasting\Channel;
@@ -190,7 +186,7 @@ $channel = new EncryptedPrivateChannel('orders.1');   // encrypted private
 Inertia::live($value, on: $event, channel: $channel);
 ```
 
-The channels an event returns from `broadcastOn()` are read the same way, so wrap the name in a channel class there too unless the event is meant to be public.
+Channels returned from `broadcastOn()` follow the same rules, so wrap non-public channel names in the appropriate channel class.
 
 ```php
 public function broadcastOn(): array
@@ -202,11 +198,11 @@ public function broadcastOn(): array
 }
 ```
 
-Private, presence, and encrypted private channels are authorized through your `channels.php` routes like any other channel subscription. See [authorizing channels](https://laravel.com/docs/broadcasting#authorizing-channels) in the Laravel documentation.
+Private, presence, and encrypted private channels are [authorized](https://laravel.com/docs/broadcasting#authorizing-channels) through your `channels.php` routes as usual.
 
 ## Throttling
 
-By default, each live prop refreshes at most once per second. You may change this default by passing a `throttle` value in milliseconds to `echo()`, `pusher()`, or `actionCable()`.
+By default, each live prop refreshes at most once per second. You may change this default using the `throttle` option, in milliseconds, of `echo()`, `pusher()`, or `actionCable()`.
 
 <CodeGroup>
 
@@ -242,7 +238,7 @@ createInertiaApp({
 
 </CodeGroup>
 
-A prop may also set its own throttle, which takes precedence over the default.
+A prop may also define its own throttle.
 
 ```php
 return Inertia::render('Dashboard', [
@@ -250,23 +246,15 @@ return Inertia::render('Dashboard', [
 ]);
 ```
 
-Each prop keeps its own throttle window, so a busy prop never delays the rest of the page. Events that arrive during the window are not dropped. Instead, they are collected into a single request once the window expires. Throttling only limits requests, so [values carried by a broadcast](#broadcasting-values) are applied immediately.
+Each prop is throttled separately, so a busy prop never delays the rest of the page. Events received during the throttle window are collected into a single request once the window ends. Manual reloads using `router.reload()` are never throttled.
 
-Manual reloads are never throttled, so you may always fetch a prop yourself using `router.reload({ only: ['order'] })`.
+A single action often broadcasts several events at once, so Inertia waits a few milliseconds before refreshing and collects every affected prop into one request.
 
-Refreshes pause while the browser tab is hidden and resume when the user returns. You may pass `pauseWhenHidden: false` to the transport to keep refreshing hidden tabs. Values carried by a broadcast are applied either way.
-
-## Collecting Bursts
-
-A single server action often broadcasts several events, which reach the browser a few milliseconds apart. Inertia waits briefly before sending the first request of a burst, then refreshes every prop the burst touched in a single request.
-
-Events that arrive after that request has been sent refresh their props once the prop's [throttle](#throttling) window ends, so every prop the burst touched ends up refreshed.
+Refreshes pause while the browser tab is hidden and resume when the user returns. You may disable this using the `pauseWhenHidden` option.
 
 ## Broadcasting Values
 
-By default, an event is only a signal, and every listening page asks the server for the new value. This keeps each value specific to the user, since your controller resolves it for them. However, a dashboard open in a thousand tabs turns one event into a thousand requests.
-
-Instead, an event may carry the values itself. You may return them from the event's `broadcastWith()` method using `Inertia::broadcastProps()`, alongside any other data the event sends.
+By default, every listening page requests the new value from the server, so a dashboard open in a thousand tabs turns one event into a thousand requests. To avoid these requests, the event may broadcast the values itself using `Inertia::broadcastProps()`.
 
 ```php
 class OrderUpdated implements ShouldBroadcast
@@ -290,29 +278,17 @@ class OrderUpdated implements ShouldBroadcast
 }
 ```
 
-Inertia writes those values straight into the page, so no request is made at all. The keys are prop names, and nested props use their dot path, the same way `only` does on a partial reload.
+Inertia writes these values into the page without making a request. Keys are prop names, using dot notation for nested props. Values are resolved like page props, so resources, `Arrayable` objects, and closures all work, but prop types such as `Inertia::optional()` do not.
 
-Values are only applied to props that listen for the event, so an event may safely carry values for props that some pages don't have. Props the event doesn't carry a value for are refreshed with a request as usual, so an event may carry some values and leave the rest to the server.
+Props that don't listen for the event ignore its values, and props the event carries no value for are reloaded as usual. A prop that is already being reloaded also ignores the value, since that request may return newer data.
 
-Values are resolved exactly as page props are, keeping their shape identical to what a refresh would have produced. Resources, `Arrayable` objects, and closures all work. Pass the value itself rather than a prop type such as `Inertia::optional()`, since a prop that is omitted during resolution cannot be broadcast.
-
-A carried value is discarded while a refresh for that prop is already in flight, and the prop is refreshed instead, since that request may have read newer data than the event carries.
-
-Events are applied in the order they arrive. Nothing reorders them, so an event that overtakes another leaves the prop showing the older value until the next event for that prop arrives.
-
-### Every Subscriber Receives the Same Values
-
-Channel authorization decides who may join a channel. It does not decide what each member is allowed to see, and a broadcast delivers identical bytes to everyone listening. A refreshed prop is resolved per request, with that user's session, policies, locale, and visibility rules. A carried value cannot be.
-
-Only carry values that are the same for every subscriber of the channel. A private channel alone is not enough, since a channel with several members, such as a team or presence channel, delivers the same payload to all of them. Anything that varies per user belongs on the refresh path, where your controller resolves it.
-
-Returning a model rather than a resource serializes it using `toArray()`, which respects `$hidden` but knows nothing about the fields your resource omits. A resource that reads from the request also behaves differently inside a queued event, where there is no real request to read.
-
-Authorization is only checked when the subscription is established, not per event. Props whose data must stop reaching a user the moment their access is revoked should stay on the refresh path.
+<Warning>
+Every subscriber of a channel receives the same payload, and channel authorization only runs when a user subscribes. Only broadcast values that every subscriber may see, and leave anything that depends on the user to a reload. Prefer resources over models, since a model broadcasts every attribute that isn't `$hidden`.
+</Warning>
 
 ## Tracking Refreshes
 
-The `useProp` hook returns a prop's value along with whether it is currently being refreshed, making it ideal for rendering a subtle loading indicator without blocking the UI.
+The `useProp` hook returns a prop's value and whether it is being refreshed, making it ideal for subtle loading indicators.
 
 <CodeGroup>
 
@@ -354,11 +330,11 @@ export default () => {
 
 </CodeGroup>
 
-A `loaded` value is also returned, which reports whether the prop has arrived yet. This is useful for a live prop that is also [deferred](/v3/data-props/deferred-props).
+The hook also returns a `loaded` value, which is useful for live props that are also [deferred](/v3/data-props/deferred-props).
 
 ## Live Events
 
-Inertia fires a cancelable [`live` event](/v3/advanced/events#live) before updating a live prop. Returning `false` from the listener skips the update, including any values the event carries, letting you show a "New data available" button instead of updating the page under the user. You may later apply the update using `router.reload({ only: event.detail.props })`.
+Inertia fires a cancelable [`live` event](/v3/advanced/events#live) before updating a live prop. Returning `false` skips the update, allowing you to show a "New data available" button instead. You may apply the update later using `router.reload({ only: event.detail.props })`.
 
 ```js
 router.on("live", (event) => {
@@ -373,13 +349,13 @@ router.on("live", (event) => {
 
 ## Skipping the Current Connection
 
-Inertia sends the broadcaster's socket ID as the `X-Socket-Id` header with every request it makes to your application, so `toOthers()` works as expected and the user who caused a change is not refreshed by their own broadcast. Requests to other origins never receive it.
+Inertia sends the socket ID as an `X-Socket-Id` header on same-origin requests, so the user who triggers a broadcast using `toOthers()` doesn't receive it.
 
 ```php
 broadcast(new OrderUpdated($order))->toOthers();
 ```
 
-You may resolve the socket ID yourself using `socketId.resolveUsing()`. Your resolver takes precedence over the transport's, regardless of whether you register it before or after calling `createInertiaApp()`. Passing `null` stops sending the header entirely.
+You may provide your own socket ID using `socketId.resolveUsing()`, which takes precedence over the transport's. Passing `null` disables the header.
 
 <CodeGroup>
 
@@ -406,11 +382,11 @@ socketId.resolveUsing(null);
 
 </CodeGroup>
 
-Action Cable issues no socket ID and cannot exclude a connection from a broadcast, so the Action Cable transport generates an ID per browser tab and sends it instead. The server includes the ID of the connection that caused the event as `__inertia.socketId`, and that tab ignores the event. A custom transport without a `socketId` sends no header at all.
+Action Cable has no socket IDs, so the `actionCable()` transport generates one per browser tab. The server returns the ID of the tab that triggered the event as `__inertia.socketId`, and that tab ignores the event.
 
 ## Custom Transports
 
-You may pass any object implementing the `LiveTransport` interface to the `live` option, allowing you to deliver updates over your own WebSocket client, a server-sent events stream, or a `BroadcastChannel`.
+You may pass any object implementing the `LiveTransport` interface to the `live` option, allowing you to receive events from your own WebSocket client, server-sent events, or a `BroadcastChannel`.
 
 ```ts
 import type { LiveTransport } from "@inertiajs/core";
@@ -432,9 +408,9 @@ const transport: LiveTransport = {
 };
 ```
 
-The `subscribe()` method runs during a page swap, so avoid throwing from it for anything recoverable, as an error there aborts the page swap.
+Since `subscribe()` runs during a page swap, avoid throwing from it, as an error aborts the swap.
 
-The `onStatusChange()` callback receives a boolean indicating whether the connection is up. Inertia only acts when a dropped connection is restored, so reporting the same status repeatedly, or once per channel, is safe.
+The `onStatusChange()` callback receives whether the connection is up. Inertia ignores repeated statuses and only acts when a dropped connection is restored.
 
 ```ts
 onStatusChange(callback) {
@@ -446,11 +422,11 @@ onStatusChange(callback) {
 }
 ```
 
-Channel names arrive unprefixed alongside their type, such as `{ name: "orders.1", type: "private" }`, so the transport is responsible for applying the prefix your broadcaster expects. Inertia subscribes per channel and event pair, so a transport for a broadcaster that subscribes per channel should join a channel on its first listener and leave it after its last.
+Channels arrive unprefixed with their type, such as `{ name: "orders.1", type: "private" }`, so the transport should apply any prefix its broadcaster expects. Inertia subscribes once per channel and event pair, so a transport for a broadcaster that subscribes per channel should join on the first listener and leave after the last.
 
 ### Channel Transports
 
-Some broadcasters cannot route messages by event name. Transports for these broadcasters may implement `subscribeToChannel()` instead, which is called once per channel. Inertia reads the event name from the `__inertia.event` key of each message and routes it to the props that event feeds.
+Some broadcasters can't route messages by event name. Their transports may implement `subscribeToChannel()` instead, which is called once per channel. Inertia then reads the event name from each message's `__inertia.event` key.
 
 ```ts
 import type { LiveChannelTransport } from "@inertiajs/core";
@@ -463,8 +439,8 @@ const transport: LiveChannelTransport = {
   },
 
   // Optional. Reads the event name from somewhere other than `__inertia.event`.
-  eventName: (payload) => payload.type,
+  eventName: (payload) => (payload as { type?: string }).type,
 };
 ```
 
-A channel may also carry `params`, which the server sets and Inertia passes to the transport untouched. Channels are told apart by their type and name, so params should stay the same for a given channel.
+Channels may also carry `params` set by the server, which Inertia passes to the transport untouched. Since Inertia identifies channels by type and name, params should not vary for the same channel.
