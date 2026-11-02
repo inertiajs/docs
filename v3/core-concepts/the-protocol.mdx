@@ -634,7 +634,7 @@ Live props stay in sync with the server by refreshing themselves whenever a broa
 }
 ```
 
-An incoming event refreshes the props it feeds with a regular partial reload, so the value the client receives is whatever the server resolves at that moment. The broadcast payload itself is never applied to the prop. The client sends the broadcaster's connection id along in the `X-Socket-Id` header, which lets the server exclude the connection that caused the change.
+An incoming event refreshes the props it feeds with a regular partial reload, so the value the client receives is whatever the server resolves at that moment. An event may instead carry new values under an `__inertia.props` key in its payload, keyed by prop path, which the client writes into the page without a request. Values for props that don't listen for the event are ignored. The client sends the broadcaster's connection id along in the `X-Socket-Id` header, which lets the server exclude the connection that caused the change.
 
 ## Infinite Scroll
 
