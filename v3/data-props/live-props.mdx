@@ -444,11 +444,11 @@ onStatusChange(callback) {
 }
 ```
 
-Review the [pusher.ts](https://github.com/inertiajs/inertia/blob/3.x/packages/core/src/pusher.ts) source for a reference implementation.
+Review the [pusher.ts](https://github.com/inertiajs/inertia/blob/3.x/packages/core/src/pusher.ts) source for a reference implementation. It relies on a few internal helpers, such as prefixing channel names and counting the listeners on each channel, which your transport implements for its own broadcaster.
 
 ### Channel Transports
 
-Some broadcasters can't route messages by event name. Their transports may implement `subscribeToChannel()` instead, which is called once per channel. Inertia then reads the event name from each message's `__inertia.event` key. Review the [actionCable.ts](https://github.com/inertiajs/inertia/blob/3.x/packages/core/src/actionCable.ts) source for a reference implementation.
+Some broadcasters can't route messages by event name. Their transports may implement `subscribeToChannel()` instead, which is called once per channel. Inertia then reads the event name from each message's `__inertia.event` key. Review the [actionCable.ts](https://github.com/inertiajs/inertia/blob/3.x/packages/core/src/actionCable.ts) source for a reference implementation, which also uses internal helpers you'd write yourself.
 
 ```ts
 import type { LiveChannelTransport } from "@inertiajs/core";
