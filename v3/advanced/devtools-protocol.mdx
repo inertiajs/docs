@@ -260,6 +260,9 @@ http: {
     <ParamField body="once" type="boolean">
       Set for a [once prop](/v3/data-props/once-props). The client reuses its value on later visits until the value expires or the server refreshes it.
     </ParamField>
+    <ParamField body="live" type="boolean">
+      Set for a [live prop](/v3/data-props/live-props). The client refreshes it whenever one of its broadcast events arrives.
+    </ParamField>
     <ParamField body="mergeDirection" type="'append' | 'prepend'">
       How a [merge](/v3/data-props/merging-props) or [scroll](/v3/data-props/infinite-scroll) prop combines with existing client data.
     </ParamField>

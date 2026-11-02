@@ -66,12 +66,12 @@ import { Link } from '@inertiajs/svelte'
 </CodeGroup>
 
 <Info>
-    Creating anchor (`<a>`) links that issue `POST`, `PUT`, `PATCH`, or `DELETE` requests is discouraged because it causes accessibility issues with "Open Link in New Tab / Window". The component automatically renders a `<button>` element when using these methods.
+    Creating anchor (`<a>`) links that issue `POST`, `PUT`, `PATCH`, `DELETE`, or `QUERY` requests is discouraged because it causes accessibility issues with "Open Link in New Tab / Window". The component automatically renders a `<button>` element when using these methods.
 </Info>
 
 ## Method
 
-You can specify the HTTP request method for an Inertia link request using the `method` prop. The default method used by links is `GET`, but you can use the `method` prop to make `POST`, `PUT`, `PATCH`, and `DELETE` requests via links.
+You may specify the HTTP request method for an Inertia link request using the `method` prop. Links use `GET` by default, but the `method` prop also accepts `POST`, `PUT`, `PATCH`, `DELETE`, and `QUERY`.
 
 <CodeGroup>
 
@@ -95,6 +95,34 @@ import { inertia, Link } from '@inertiajs/svelte'
 <button use:inertia={{ href: '/logout', method: 'post' }} type="button">Logout</button>
 
 <Link href="/logout" method="post">Logout</Link>
+```
+
+</CodeGroup>
+
+<Badge>v3.10.0+</Badge>
+
+Links using the `query` method send their [data](#data) in the request body instead of the query string. See the [QUERY method](/v3/the-basics/manual-visits#query-method) documentation for more information.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+import { Link } from '@inertiajs/vue3'
+
+<Link href="/products" method="query" :data="{ brand: 'Acme' }">Acme products</Link>
+```
+
+```jsx React icon="react"
+import { Link } from "@inertiajs/react";
+
+<Link href="/products" method="query" data={{ brand: "Acme" }}>
+  Acme products
+</Link>;
+```
+
+```svelte Svelte icon="s"
+import { Link } from '@inertiajs/svelte'
+
+<Link href="/products" method="query" data={{ brand: 'Acme' }}>Acme products</Link>
 ```
 
 </CodeGroup>

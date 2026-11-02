@@ -67,6 +67,7 @@
                             "v3/data-props/deferred-props",
                             "v3/data-props/merging-props",
                             "v3/data-props/once-props",
+                            "v3/data-props/live-props",
                             "v3/data-props/polling",
                             "v3/data-props/prefetching",
                             "v3/data-props/load-when-visible",

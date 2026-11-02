@@ -140,6 +140,36 @@ import { inertia } from '@inertiajs/svelte'
 
 </CodeGroup>
 
+### QUERY Method
+
+<Badge>v3.10.0+</Badge>
+
+[`QUERY` requests](/v3/the-basics/manual-visits#query-method) are safe, so links using the `query` method may be prefetched as well. Prefetched responses are cached per request body, so links to the same URL with different data are cached separately.
+
+<CodeGroup>
+
+```vue Vue icon="vuejs"
+import { Link } from '@inertiajs/vue3'
+
+<Link href="/products" method="query" :data="{ brand: 'Acme' }" prefetch>Acme products</Link>
+```
+
+```jsx React icon="react"
+import { Link } from "@inertiajs/react";
+
+<Link href="/products" method="query" data={{ brand: "Acme" }} prefetch>
+  Acme products
+</Link>;
+```
+
+```svelte Svelte icon="s"
+import { Link } from '@inertiajs/svelte'
+
+<Link href="/products" method="query" data={{ brand: 'Acme' }} prefetch>Acme products</Link>
+```
+
+</CodeGroup>
+
 ## Programmatic Prefetching
 
 You can prefetch data programmatically using `router.prefetch`. This method's signature is identical to `router.visit` with the exception of a third argument that allows you to specify prefetch options.

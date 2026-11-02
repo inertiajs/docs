@@ -4,11 +4,11 @@ title: The Protocol
 
 This page specifies the Inertia protocol, the wire contract between the Inertia client and your server. The [how it works](/v3/core-concepts/how-it-works) page gives a high-level overview.
 
-The protocol is framework-agnostic. Any backend that speaks HTTP may implement it, in any language. The official Laravel adapter is the reference implementation, and the requests and responses on this page show its output. Placeholders such as `...` and comments shorten the longer examples. The [building an adapter](/v3/advanced/building-an-adapter) guide explains how to structure an implementation around this specification.
+The protocol is framework-agnostic, so any backend that speaks HTTP may implement it. The official Laravel adapter is the reference implementation, and the requests and responses on this page show its output. Placeholders such as `...` and comments shorten the longer examples. The [building an adapter](/v3/advanced/building-an-adapter) guide explains how to structure an implementation around this specification.
 
 ## Request Lifecycle Diagram
 
-The following diagram shows the request lifecycle of an Inertia application. The first visit is a standard request. The server returns an HTML document with a root element and a script element that holds the page object. With SSR enabled, the root element also contains server-rendered markup, which the client hydrates. Later visits are XHR requests that return JSON. Inertia applies each JSON response and swaps the page component without a full-page reload.
+The following diagram shows the request lifecycle of an Inertia application. The first visit is a standard request, and the server returns an HTML document with a root element and a script element that holds the page object. With SSR enabled, the root element also contains server-rendered markup, which the client hydrates. Later visits are XHR requests that return JSON, and Inertia swaps the page component without a full-page reload.
 
 ```mermaid
 sequenceDiagram
@@ -172,6 +172,13 @@ The Inertia client sends the following request headers.
   [infinite scroll](/v3/data-props/infinite-scroll) prop.
 </ParamField>
 
+<ParamField header="X-Socket-Id" type="string">
+  The broadcaster's connection id, sent on same-origin requests once the
+  application configures [live props](#live-props) or a [custom socket
+  ID](/v3/data-props/live-props#skipping-the-current-connection) resolver. The server may use it to
+  skip broadcasting back to the connection that caused the change.
+</ParamField>
+
 <ParamField header="X-Inertia-Except-Once-Props" type="string">
   Comma-separated list of the [once prop](#once-props) keys that the client
   has loaded and that have not expired. The server skips these props unless a
@@ -318,6 +325,12 @@ The server and the client exchange data through the page object. The page object
   for no expiry.
 </ParamField>
 
+<ParamField body="liveProps" type="object">
+  The [live props](#live-props) of the page. Each entry maps a prop path to the
+  channels and events that refresh it, and an optional `throttle` in
+  milliseconds.
+</ParamField>
+
 <ParamField body="flash" type="object">
   The flash data for the current request. Included only when flash data
   exists. The client exposes it through the `inertia:flash` event and leaves it
@@ -359,6 +372,7 @@ Resolution differs between the two request modes. A full visit resolves every el
 | Merge, deep merge, prepend   | Yes                                      | `mergeProps`, `deepMergeProps`, `prependProps`, `matchPropsOn` |
 | Once                         | Yes, unless already remembered by client | `onceProps`                                                    |
 | Scroll                       | Yes                                      | `scrollProps`, `mergeProps`                                    |
+| Live                         | Yes                                      | `liveProps`                                                    |
 
 **Partial reload**
 
@@ -371,12 +385,13 @@ Resolution differs between the two request modes. A full visit resolves every el
 | Merge, deep merge, prepend   | When resolved                            | `mergeProps`, `deepMergeProps`, `prependProps`, `matchPropsOn` |
 | Once                         | When requested, ignoring except-once     | `onceProps`                                                    |
 | Scroll                       | When resolved                            | `scrollProps`, `mergeProps`                                    |
+| Live                         | When resolved                            | `liveProps`                                                    |
 
 Some metadata fields depend on the mode:
 
 - `deferredProps` appears only on full visits. Deferred props resolve in the follow-up partial reload, so `deferredProps` is empty or absent there.
 - `rescuedProps` appears only on partial reloads. It lists the deferred props that failed to resolve.
-- Merge, scroll, and once metadata appears on each response that contains props with those behaviors.
+- Merge, scroll, once, and live metadata appears on each response that contains props with those behaviors, so a partial reload keeps the live listeners of the props it refreshes up to date.
 
 ### Always Props
 
@@ -431,7 +446,7 @@ The `X-Inertia-Reset` header lists the prop paths that the client resets before 
 
 ## Deferred and Optional Props
 
-A deferred prop is data that the client loads in a follow-up request. On a full visit, the server skips the prop and lists its key under `deferredProps`, grouped by request group. Group names are arbitrary. The client sends one partial reload per group. The [deferred props](/v3/data-props/deferred-props) page covers the server and client APIs.
+A deferred prop is data that the client loads in a follow-up request. On a full visit, the server skips the prop and lists its key under `deferredProps`, grouped by request group. Group names are arbitrary, and the client sends one partial reload per group. See the [deferred props](/v3/data-props/deferred-props) documentation for the server and client APIs.
 
 ```json
 {
@@ -455,7 +470,7 @@ Optional props are never announced. The server skips them on full visits and res
 
 ### Rescued Deferred Props
 
-A rescued deferred prop that throws does not fail the response. The response is still a `200` with every other prop. The server reports the exception through the framework's error handling and leaves the prop out of `props`. It does not send the prop as `null`. The server adds the key to the top-level `rescuedProps` array, and the client renders the `rescue` slot of the `<Deferred>` component for it. The [error handling](/v3/data-props/deferred-props#error-handling) section covers the server and client APIs.
+A rescued deferred prop that throws does not fail the response, which is still a `200` with every other prop. The server reports the exception through the framework's error handling and leaves the prop out of `props` entirely, rather than sending it as `null`. Instead, it adds the key to the top-level `rescuedProps` array, and the client renders the `rescue` slot of the `<Deferred>` component for it. The deferred props [error handling](/v3/data-props/deferred-props#error-handling) documentation covers the server and client APIs.
 
 ```json
 {
@@ -471,7 +486,7 @@ A rescued deferred prop that throws does not fail the response. The response is 
 
 ## Merging Props
 
-A merge prop tells the client to combine new data with the data already on the page instead of replacing it. The client appends or prepends arrays and merges objects, either shallowly or deeply. The page object labels each merge prop under `mergeProps` to append, `prependProps` to prepend, or `deepMergeProps` to deep merge. The client merges only on partial reloads. A full visit replaces the prop, even when the prop carries a merge label. The [merging props](/v3/data-props/merging-props) page covers the server and client APIs.
+A merge prop tells the client to combine new data with the data already on the page instead of replacing it. The client appends or prepends arrays and merges objects, either shallowly or deeply. The page object labels each merge prop under `mergeProps` to append, `prependProps` to prepend, or `deepMergeProps` to deep merge. The client merges only on partial reloads, so a full visit replaces the prop even when it carries a merge label. See the [merging props](/v3/data-props/merging-props) documentation for more details.
 
 ```json
 {
@@ -588,9 +603,41 @@ The response lists `plans` in `onceProps` but not in `props`, because the client
 
 The server may send a new value for a once prop even when `X-Inertia-Except-Once-Props` lists its key, for example after the underlying data changes. The new value and its `expiresAt` replace the client's copy. The server ignores the except-once header on a partial reload, so it always resolves a requested once prop.
 
+## Live Props
+
+A live prop refreshes itself whenever a broadcast event arrives. The page object carries a `liveProps` entry for each live prop, listing the channels it listens on, the events broadcast on each channel, and an optional `throttle` in milliseconds. Channel names are unprefixed and carry their type separately, so the client applies whichever prefix its broadcaster expects. The [live props](/v3/data-props/live-props) page covers the server and client APIs.
+
+```json
+{
+  "component": "Orders/Show",
+  "props": {
+    "errors": {},
+    "order": {
+      "id": 1,
+      "status": "shipped"
+    }
+  },
+  "url": "/orders/1",
+  "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
+  "liveProps": {
+    "order": {
+      "listeners": [
+        {
+          "channel": { "name": "orders.1", "type": "private" },
+          "events": ["App\\Events\\OrderUpdated"]
+        }
+      ],
+      "throttle": 5000
+    }
+  }
+}
+```
+
+An incoming event refreshes the props that listen for it with a regular partial reload, so the client receives whatever the server resolves at that moment. An event may instead carry new values under an `__inertia.props` key in its payload, keyed by prop path, and the client writes them into the page without a request. The client ignores values for props that don't listen for the event. It also sends the broadcaster's connection id in the `X-Socket-Id` header, so the server may exclude the connection that caused the change.
+
 ## Infinite Scroll
 
-Infinite scroll builds on merge props. The server labels the prop's inner array for merging, usually at `<path>.data`. The page object also carries a `scrollProps` entry that describes the pagination state. The [infinite scroll](/v3/data-props/infinite-scroll) page covers the server and client APIs.
+Infinite scroll builds on merge props. The server labels the prop's inner array for merging, usually at `<path>.data`, and the page object carries a `scrollProps` entry that describes the pagination state. See the [infinite scroll](/v3/data-props/infinite-scroll) documentation for the server and client APIs.
 
 ```json
 {
@@ -651,11 +698,11 @@ The [asset versioning](/v3/advanced/asset-versioning) page covers how to configu
 
 ## Redirects
 
-Inertia uses standard HTTP redirects for navigation after a server-side action. The server converts a `302 Found` after a `PUT`, `PATCH`, or `DELETE` request into a `303 See Other`. The browser then requests the redirect target with `GET` instead of repeating the original method.
+Inertia uses standard HTTP redirects for navigation after a server-side action. The server converts a `302 Found` after a `PUT`, `PATCH`, `DELETE`, or `QUERY` request into a `303 See Other`. The browser then requests the redirect target with `GET` instead of repeating the original method.
 
 An external redirect points outside the Inertia app, where the Inertia request headers do not carry over, so an XHR visit may not follow it. The server returns a `409 Conflict` with an `X-Inertia-Location` header instead, and the client makes a full `window.location` visit.
 
-For a redirect whose target contains a URL fragment, the server returns a `409 Conflict` with the full URL in an `X-Inertia-Redirect` header. Prefetch requests are the exception and receive the redirect unchanged. The client makes a new Inertia `GET` visit to the URL. The `preserveFragment` page object field is a separate feature. It keeps the fragment of the original request after an ordinary redirect. The [redirects](/v3/the-basics/redirects) page covers the server-side API.
+For a redirect whose target contains a URL fragment, the server returns a `409 Conflict` with the full URL in an `X-Inertia-Redirect` header, and the client makes a new Inertia `GET` visit to that URL. Prefetch requests are the exception and receive the redirect unchanged. This is separate from the `preserveFragment` page object field, which keeps the fragment of the original request after an ordinary redirect. The [redirects](/v3/the-basics/redirects) page covers the server-side API.
 
 ## Validation Errors
 
@@ -673,7 +720,7 @@ Inertia uses the following HTTP status codes.
 | :---------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **200 OK**        | The successful response, for both HTML and Inertia JSON responses.                                                                                                                                                                                                    |
 | **302 Found**     | The standard redirect response.                                                                                                                                                                                                                                       |
-| **303 See Other** | Replaces a `302` redirect after a `PUT`, `PATCH`, or `DELETE` request. The browser follows it with a `GET`. See [redirects](#redirects).                                                                                                                              |
+| **303 See Other** | Replaces a `302` redirect after a `PUT`, `PATCH`, `DELETE`, or `QUERY` request. The browser follows it with a `GET`. See [redirects](#redirects).                                                                                                                     |
 | **409 Conflict**  | A control response instead of a page, for an [asset version mismatch](#asset-versioning), an external redirect, or a fragment redirect. See [redirects](#redirects).                                                                                                  |
 
 [Precognition](/v3/the-basics/forms#precognition) validation requests use the following status codes.
