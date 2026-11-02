@@ -4,7 +4,7 @@ title: DevTools Protocol
 
 This page specifies the Inertia DevTools protocol. The [DevTools](/v3/advanced/devtools) page gives a high-level overview of the feature.
 
-The DevTools extension works with any backend. Any server-side Inertia adapter may integrate with it by implementing this protocol. The Laravel adapter is the reference implementation, and nothing in this specification depends on Laravel.
+The DevTools extension works with any backend, and any server-side Inertia adapter may integrate with it by implementing this protocol. The Laravel adapter is the reference implementation, and nothing in this specification depends on Laravel.
 
 The protocol has three layers:
 
@@ -68,11 +68,11 @@ The extension sends the following request headers. Each header is optional.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Deferred" type="string">
-  Set to `1` on the follow-up request for [deferred props](/v3/data-props/deferred-props). On the wire, that request looks like any [partial reload](/v3/data-props/partial-reloads), so the client marks it with this header.
+  Set to `1` on the follow-up request for [deferred props](/v3/data-props/deferred-props). The request is otherwise identical to a [partial reload](/v3/data-props/partial-reloads), so the client marks it with this header.
 </ParamField>
 
 <ParamField header="X-Inertia-Devtools-Poll" type="string">
-  Set to `1` on a [polling](/v3/data-props/polling) request. On the wire, a polling request also looks like a partial reload.
+  Set to `1` on a [polling](/v3/data-props/polling) request. A polling request is otherwise identical to a partial reload as well.
 </ParamField>
 
 The adapter sets the following response header.
@@ -102,9 +102,7 @@ The extension sends same-origin cookies with each request, so the adapter may au
 
 ## The Entry Format
 
-An entry is a JSON object with required and optional fields.
-
-The panel needs every required field. For a value that does not exist, the adapter emits the documented empty form or `null` instead of leaving the key out.
+An entry is a JSON object with required and optional fields. The panel needs every required field, so for a value that does not exist, the adapter emits the documented empty form or `null` instead of leaving the key out.
 
 Optional fields add detail. An adapter may leave an optional field out, or emit `null` where the field's type allows it. The `propValues` map may also be `{}`. The panel still works with less detail. For example, it hides "open in editor" links when source locations are missing.
 
@@ -241,7 +239,7 @@ http: {
 | { status: 'omitted', reason: string }
 ```
 
-`value` is a string for a raw text body. For structured data, such as parsed JSON or form input, it is a JSON-compatible value. The panel recognizes the following `omitted` reasons: `non-inertia-response`, `non-inertia-request`, `non-textual`, `streamed`, `too-large`, `unserializable`, and `binary`. It shows a readable notice for each one, and a generic message for an unknown reason, so an adapter may add new reasons. Adapters redact sensitive keys and summarize file uploads instead of serializing binary content.
+`value` is a string for a raw text body. For structured data, such as parsed JSON or form input, it is a JSON-compatible value. The panel recognizes the following `omitted` reasons: `non-inertia-response`, `non-inertia-request`, `non-textual`, `streamed`, `too-large`, `unserializable`, and `binary`. It shows a readable notice for each one, and a generic message for an unknown reason, so an adapter may add new reasons. An adapter should redact sensitive keys and summarize file uploads instead of serializing binary content.
 
 ### Props
 

@@ -2,7 +2,7 @@
 title: The Protocol
 ---
 
-This page specifies the Inertia protocol, the wire contract between the Inertia client and your server. The [how it works](/v3/core-concepts/how-it-works) page gives a high-level overview.
+This page specifies the Inertia protocol, which defines the requests and responses exchanged between the Inertia client and your server. The [how it works](/v3/core-concepts/how-it-works) page gives a high-level overview.
 
 The protocol is framework-agnostic, so any backend that speaks HTTP may implement it. The official Laravel adapter is the reference implementation, and the requests and responses on this page show its output. Placeholders such as `...` and comments shorten the longer examples. The [building an adapter](/v3/advanced/building-an-adapter) guide explains how to structure an implementation around this specification.
 
@@ -55,7 +55,7 @@ Content-Type: text/html; charset=utf-8
 ```
 
 <Warning>
-  The serialized page object MUST NOT contain a literal `</script>` sequence. That sequence closes the script element early and breaks the page. Escaping forward slashes (`/` becomes `\/`) or the `<` character (`<` becomes `\u003C`) prevents it. The Laravel adapter escapes both, so the example above contains `"\/events\/80"`. The server MUST NOT use HTML-entity encoding here. The browser does not decode entities inside a script element, so JSON parsing fails.
+  The serialized page object must not contain a literal `</script>` sequence, since it closes the script element early and breaks the page. Escaping forward slashes (`/` becomes `\/`) or the `<` character (`<` becomes `\u003C`) prevents this. The Laravel adapter escapes both, so the example above contains `"\/events\/80"`. The server must not use HTML-entity encoding here either, because the browser does not decode entities inside a script element and JSON parsing fails.
 </Warning>
 
 ## Inertia Responses
@@ -97,7 +97,7 @@ X-Inertia: true
 
 ## How the Client Handles Responses
 
-The client inspects each response before it changes the page, and handles the response by these rules:
+The client inspects each response before it changes the page, and handles it as follows:
 
 - **An Inertia response (`X-Inertia: true`)**: the client applies the page object and swaps the component.
 - **A `409 Conflict` with `X-Inertia-Location`**: the client makes a full `window.location` visit to that URL, which loads fresh assets. A background request skips this visit when the asset version changed, because a reload the user did not start would discard unsaved state.
@@ -395,7 +395,7 @@ Some metadata fields depend on the mode:
 
 ### Always Props
 
-The server resolves always props on every response in both modes. Always props ignore the partial reload filters, so the server sends an always prop even when the request lists it in `except`. They carry no metadata. The Laravel adapter's middleware shares the `errors` prop as an always prop. Its page objects therefore include an `errors` object, unless a page prop overrides it.
+The server resolves always props on every response in both modes. Always props ignore the partial reload filters, so the server sends an always prop even when the request lists it in `except`. Always props carry no metadata. The Laravel adapter's middleware shares `errors` as an always prop, so its page objects include an `errors` object unless a page prop overrides it.
 
 ### Composing Categories
 
@@ -411,7 +411,7 @@ A partial reload request carries the `X-Inertia-Partial-Component` header. It ma
 - `X-Inertia-Partial-Except` lists the prop keys to leave out. Sent alone, it returns every prop except the listed ones.
 - With both headers, the server first narrows the response to the `X-Inertia-Partial-Data` list, then removes the `X-Inertia-Partial-Except` list. A prop named in both headers is left out.
 
-Entries in both headers may be dot-notated paths, such as `auth.user`, which select or exclude a nested prop. The Laravel adapter applies nested paths only inside plain arrays. It returns a prop that a closure resolves in full.
+Entries in both headers may be dot-notated paths, such as `auth.user`, which select or exclude a nested prop. The Laravel adapter applies nested paths only inside plain arrays, and returns a prop that a closure resolves in full.
 
 `X-Inertia-Partial-Component` holds the name of the page component being reloaded. Partial reloads apply only to the same page component. The server resolves a request that ends on a different component as a full visit. A login page after the session expired is a common example.
 
@@ -529,7 +529,7 @@ A merge prop tells the client to combine new data with the data already on the p
 
 ### Matching Items
 
-The `matchPropsOn` array names the field that identifies each item. The client uses that field to update an existing item in place instead of adding a duplicate. Each entry has the form `"<propPath>.<keyField>"`, and the client splits it at the last dot. The text before the last dot is the prop path, and the final segment is the key field. `conversations.data.id` matches items of the array at `conversations.data` by their `id` field. The [matching items](/v3/data-props/merging-props#matching-items) section covers the server-side API.
+The `matchPropsOn` array names the field that identifies each item. The client uses that field to update an existing item in place instead of adding a duplicate. Each entry has the form `"<propPath>.<keyField>"`, and the client splits it at the last dot. The text before the last dot is the prop path, and the final segment is the key field. For example, `conversations.data.id` matches items of the array at `conversations.data` by their `id` field. The [matching items](/v3/data-props/merging-props#matching-items) section covers the server-side API.
 
 ## Once Props
 
@@ -706,7 +706,7 @@ For a redirect whose target contains a URL fragment, the server returns a `409 C
 
 ## Validation Errors
 
-The server sends validation errors in the `errors` prop. The Laravel adapter's middleware registers `errors` as an always prop. Every page object rendered through the middleware therefore contains `errors`, which is `{}` when there are no errors, unless a page prop overrides it. The client treats a missing `errors` prop as an empty object.
+The server sends validation errors in the `errors` prop. The Laravel adapter's middleware registers `errors` as an always prop. Every page object rendered through the middleware therefore contains `errors`, unless a page prop overrides it. The value is `{}` when there are no errors. The client treats a missing `errors` prop as an empty object.
 
 Each key maps to either a single message or an array of messages, and the client renders the shape it receives. The Laravel adapter sends the first message per field by default and may be [configured](/v3/the-basics/validation#multiple-errors-per-field) to send all messages.
 
@@ -732,7 +732,7 @@ Inertia uses the following HTTP status codes.
 
 ## Server-Side Rendering
 
-Inertia does not render page components on the server by default. [SSR](/v3/advanced/server-side-rendering) adds a second wire contract, between the server-side adapter and Inertia's Node SSR server. The adapter sends the page object to the SSR server in a `POST` request, and the SSR server returns the rendered markup for the HTML document.
+Inertia does not render page components on the server by default. [SSR](/v3/advanced/server-side-rendering) adds a second contract, between the server-side adapter and Inertia's Node SSR server. The adapter sends the page object to the SSR server in a `POST` request, and the SSR server returns the rendered markup for the HTML document.
 
 ```http
 REQUEST
