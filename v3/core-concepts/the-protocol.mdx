@@ -710,7 +710,13 @@ The server sends validation errors in the `errors` prop. The Laravel adapter's m
 
 Each key maps to either a single message or an array of messages, and the client renders the shape it receives. The Laravel adapter sends the first message per field by default and may be [configured](/v3/the-basics/validation#multiple-errors-per-field) to send all messages.
 
-A request may name an error bag in the `X-Inertia-Error-Bag` header. The Laravel adapter returns the default bag's errors under that name, so multiple forms on one page keep their errors apart. The [validation](/v3/the-basics/validation) page covers the client-side API.
+A request may name an error bag in the `X-Inertia-Error-Bag` header, so multiple forms on one page keep their errors apart. The Laravel adapter handles error bags by these rules:
+
+- A request with the `X-Inertia-Error-Bag` header receives the default bag's errors under the requested name.
+- A request without the header receives the default bag unwrapped.
+- Named bags appear under their own names only when no default bag exists, with or without the header.
+
+The [validation](/v3/the-basics/validation) page covers the client-side API.
 
 ## HTTP Status Codes
 
@@ -750,6 +756,8 @@ Server: Inertia.js SSR
 ```
 
 The response fills the two slots of the root template. The Laravel adapter provides these slots as the `<x-inertia::head>` and `<x-inertia::app>` Blade components. The `head` array holds the elements for the document's `<head>`, such as the title and meta tags. The `body` string replaces the page object script and the root `<div>` of a document rendered without SSR, because the SSR markup already contains both. Its root element carries `data-server-rendered="true"`, so the client hydrates the existing DOM instead of mounting a new app. The SSR server escapes the embedded page object, so the adapter prints the `body` markup unchanged.
+
+During development, the [Vite plugin](/v3/advanced/server-side-rendering#development-mode) accepts the same render request at a `/__inertia_ssr` endpoint on the Vite dev server, so no separate Node process runs. The plugin registers the endpoint only when it finds an SSR entry point. The Laravel adapter sends its render requests there while Vite runs in hot mode.
 
 The SSR server has two more endpoints. A `GET` request to `/health` returns `{"status":"OK","timestamp":...}`. An adapter may call it to check that the process runs before it sends a render. A request to `/shutdown` stops the process. The Laravel adapter's `inertia:stop-ssr` command uses this endpoint.
 
