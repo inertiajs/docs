@@ -69,6 +69,14 @@ The following request headers are sent by the extension, all optional per reques
   Present (`1`) when this is a [polling](/v3/data-props/polling) tick, also wire-indistinguishable from a partial reload.
 </ParamField>
 
+<ParamField header="X-Inertia-Devtools-Layer" type="string">
+  Present when the request was made from inside a [layer](/v3/the-basics/manual-visits#layers): the key of the layer it targets. The extension reads it back from the stored request headers to attribute the entry to that layer.
+</ParamField>
+
+<ParamField header="X-Inertia-Devtools-Layer-Owner" type="string">
+  Present (`1`) when the request opens a new layer rather than refreshing the one it was made from. The two are wire-indistinguishable, so the client declares the intent.
+</ParamField>
+
 The following response header is emitted by the adapter.
 
 <ParamField header="X-Inertia-Devtools-Parent-Out" type="string">
