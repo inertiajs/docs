@@ -241,12 +241,6 @@ As with other non-`GET` visits, `QUERY` visits [preserve component state](#state
 
 Inertia remembers the request body of a page rendered by a `QUERY` visit and resends it on reloads, [partial reloads](/v3/data-props/partial-reloads), [polling](/v3/data-props/polling), [deferred props](/v3/data-props/deferred-props), and [infinite scroll](/v3/data-props/infinite-scroll) requests, so these keep returning the filtered results. Any `data` passed to `router.reload()` is merged into the remembered body.
 
-Full page loads and redirects, such as the redirect after a failed validation, request the URL using `GET`, so your route should respond to both methods. Laravel supports `QUERY` routes as of version 13.35.
-
-```php
-Route::match(['get', 'query'], '/products', [ProductController::class, 'index']);
-```
-
 ## Wayfinder
 
 When using [Wayfinder](https://github.com/laravel/wayfinder), you can pass the resulting object directly to any router method. The router will infer the HTTP method and URL from the Wayfinder object.
