@@ -799,6 +799,8 @@ It also returns the router's own methods, scoped to the layer instead of the pag
 
 A request issued from inside a layer targets that layer, so its response, validation errors, flash data, and partial props all land there instead of on the page underneath. Its `onSuccess` and `onError` callbacks are scoped the same way, handing back the layer's own page rather than the page beneath it. This happens automatically for `<Link>`, `useForm`, `<Form>`, `<WhenVisible>`, `<Deferred>`, `<InfiniteScroll>`, and `usePoll`. A form rendered inside a layer puts its errors on that layer, and a link rendered inside one navigates that layer.
 
+[Live props](/v3/data-props/live-props) follow the same rule. A layer response may declare live props of its own. Inertia listens for their events while the layer is open, applies each update to that layer, and stops listening when the layer closes. The `useProp` helper reads the props of the layer it is called from, and a layer rendered by a `QUERY` visit reloads with the same request body.
+
 The server still decides the outcome. A layer response whose key names a layer that is already open replaces that layer where it stands, closing anything stacked above it on the way. An ordinary page response replaces the whole stack.
 
 <Note>

@@ -939,7 +939,7 @@ The `prefetched` event is not cancelable.
 
 ## Live
 
-The `live` event fires whenever a broadcast event is about to refresh a [live prop](/v3/data-props/live-props). The event detail includes the props that are about to be refreshed, the channel the broadcast arrived on, the broadcast event name, and its payload.
+The `live` event fires whenever a broadcast event is about to refresh a [live prop](/v3/data-props/live-props). The event detail includes the props that are about to be refreshed, the channel the broadcast arrived on, the broadcast event name, and its payload. When the props belong to a [layer](/v3/the-basics/manual-visits#layers), the detail also includes the `layerId` of that layer, and an event that feeds both a layer and the page beneath it fires once for each.
 
 <CodeGroup>
 

@@ -353,7 +353,7 @@ The hook also returns a `loaded` value, which is useful for live props that are 
 
 ## Live Events
 
-Inertia fires a cancelable [`live` event](/v3/advanced/events#live) before updating a live prop. Returning `false` skips the update, allowing you to show a "New data available" button instead. You may apply the update later using `router.reload({ only: event.detail.props })`.
+Inertia fires a cancelable [`live` event](/v3/advanced/events#live) before updating a live prop. Returning `false` skips the update, allowing you to show a "New data available" button instead. You may apply the update later using `router.reload({ only: event.detail.props, layerId: event.detail.layerId })`. The `layerId` is only set when the props belong to a [layer](/v3/the-basics/manual-visits#layers), so the same call works for an ordinary page.
 
 ```js
 router.on("live", (event) => {
@@ -361,6 +361,7 @@ router.on("live", (event) => {
   console.log(event.detail.channel); // { name, type }
   console.log(event.detail.event); // the broadcast event name
   console.log(event.detail.payload); // the broadcast payload
+  console.log(event.detail.layerId); // the layer the props belong to, if any
 
   return false;
 });
