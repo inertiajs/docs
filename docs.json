@@ -26,7 +26,8 @@
                         "group": "Installation",
                         "pages": [
                             "v3/installation/server-side-setup",
-                            "v3/installation/client-side-setup"
+                            "v3/installation/client-side-setup",
+                            "v3/installation/community-adapters"
                         ]
                     },
                     {
@@ -66,6 +67,7 @@
                             "v3/data-props/deferred-props",
                             "v3/data-props/merging-props",
                             "v3/data-props/once-props",
+                            "v3/data-props/live-props",
                             "v3/data-props/polling",
                             "v3/data-props/prefetching",
                             "v3/data-props/load-when-visible",
@@ -86,6 +88,7 @@
                         "group": "Advanced",
                         "pages": [
                             "v3/advanced/asset-versioning",
+                            "v3/advanced/big-integers",
                             "v3/advanced/code-splitting",
                             "v3/advanced/devtools",
                             "v3/advanced/error-handling",
@@ -95,6 +98,13 @@
                             "v3/advanced/server-side-rendering",
                             "v3/advanced/testing",
                             "v3/advanced/typescript"
+                        ]
+                    },
+                    {
+                        "group": "Server Adapters",
+                        "pages": [
+                            "v3/advanced/building-an-adapter",
+                            "v3/advanced/devtools-protocol"
                         ]
                     }
                 ]
@@ -288,6 +298,14 @@
         {
             "source": "/client-side-setup",
             "destination": "/v3/installation/client-side-setup"
+        },
+        {
+            "source": "/community-adapters",
+            "destination": "/v3/installation/community-adapters"
+        },
+        {
+            "source": "/building-an-adapter",
+            "destination": "/v3/advanced/building-an-adapter"
         },
         {
             "source": "/who-is-it-for",

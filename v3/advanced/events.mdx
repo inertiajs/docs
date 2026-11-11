@@ -265,7 +265,7 @@ removeStartEventListener();
 
 ## Canceling Events
 
-Some events, such as `before`, `networkError`, `httpException`, and `location`, support cancellation, allowing you to prevent Inertia's default behavior. Just like native events, the event will be canceled if only one event listener calls `event.preventDefault()`.
+Some events, such as `before`, `networkError`, `httpException`, `location`, and `live`, support cancellation, allowing you to prevent Inertia's default behavior. Just like native events, the event will be canceled if only one event listener calls `event.preventDefault()`.
 
 <CodeGroup>
 
@@ -756,6 +756,10 @@ The `finish` event is not cancelable.
 
 The `navigate` event fires on successful page visits, as well as when navigating through history.
 
+<Badge>v3.9.0+</Badge>
+
+The event detail includes a `type` value describing how the navigation happened: `initial` for the first page load, `visit` for Inertia visits, and `history` for back and forward navigation.
+
 <CodeGroup>
 
 ```js Vue icon="vuejs"
@@ -763,6 +767,7 @@ import { router } from "@inertiajs/vue3";
 
 router.on("navigate", (event) => {
   console.log(`Navigated to ${event.detail.page.url}`);
+  console.log(`Navigation type: ${event.detail.type}`);
 });
 ```
 
@@ -771,6 +776,7 @@ import { router } from "@inertiajs/react";
 
 router.on("navigate", (event) => {
   console.log(`Navigated to ${event.detail.page.url}`);
+  console.log(`Navigation type: ${event.detail.type}`);
 });
 ```
 
@@ -779,6 +785,7 @@ import { router } from "@inertiajs/svelte";
 
 router.on("navigate", (event) => {
   console.log(`Navigated to ${event.detail.page.url}`);
+  console.log(`Navigation type: ${event.detail.type}`);
 });
 ```
 
@@ -929,6 +936,40 @@ router.on("prefetched", (event) => {
 </CodeGroup>
 
 The `prefetched` event is not cancelable.
+
+## Live
+
+The `live` event fires whenever a broadcast event is about to refresh a [live prop](/v3/data-props/live-props). The event detail includes the props that are about to be refreshed, the channel the broadcast arrived on, the broadcast event name, and its payload.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { router } from "@inertiajs/vue3";
+
+router.on("live", (event) => {
+  console.log(`Refreshing ${event.detail.props.join(", ")}`);
+});
+```
+
+```js React icon="react"
+import { router } from "@inertiajs/react";
+
+router.on("live", (event) => {
+  console.log(`Refreshing ${event.detail.props.join(", ")}`);
+});
+```
+
+```js Svelte icon="s"
+import { router } from "@inertiajs/svelte";
+
+router.on("live", (event) => {
+  console.log(`Refreshing ${event.detail.props.join(", ")}`);
+});
+```
+
+</CodeGroup>
+
+The `live` event is cancelable, allowing you to hold back the update and let the user decide when to see the new data.
 
 ## Event Callbacks
 

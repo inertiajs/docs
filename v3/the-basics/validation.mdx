@@ -181,7 +181,7 @@ You may [configure TypeScript](/v3/advanced/typescript#error-values) to expect a
 
 While handling errors in Inertia is similar to full page form submissions, Inertia offers even more benefits. In fact, you don't even need to manually repopulate old form input data.
 
-When validation errors occur, the user is typically redirected back to the form page they were previously on. And, by default, Inertia automatically preserves the [component state](/v3/the-basics/manual-visits#state-preservation) for `post`, `put`, `patch`, and `delete` requests. Therefore, all the old form input data remains exactly as it was when the user submitted the form.
+When validation errors occur, the user is typically redirected back to the form page they were previously on. And, by default, Inertia automatically preserves the [component state](/v3/the-basics/manual-visits#state-preservation) for `post`, `put`, `patch`, `delete`, and `query` requests. Therefore, all the old form input data remains exactly as it was when the user submitted the form.
 
 So, the only work remaining is to display any validation errors using the `errors` prop.
 

@@ -6,7 +6,7 @@ title: CSRF Protection
 
 Laravel automatically includes the proper CSRF token when making requests via Inertia or Axios. However, if you're using Laravel, be sure to omit the `csrf-token` meta tag from your project, as this will prevent the CSRF token from refreshing properly.
 
-If your server-side framework includes cross-site request forgery (CSRF) protection, you'll need to ensure that each Inertia request includes the necessary CSRF token for `POST`, `PUT`, `PATCH`, and `DELETE` requests.
+Server-side frameworks with cross-site request forgery (CSRF) protection require each Inertia `POST`, `PUT`, `PATCH`, `DELETE`, and `QUERY` request to include a CSRF token.
 
 Some server-side frameworks, such as Laravel, automatically include the CSRF token when making requests. No additional configuration is required when using these frameworks.
 

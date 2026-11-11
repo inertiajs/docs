@@ -757,6 +757,8 @@ The `Form` component provides the `setDefaultsOnSuccess` attribute to set the cu
 
 ### Canceling Form Submissions
 
+<Badge>v3.7.0+</Badge>
+
 The `cancel` method aborts an in-flight submission. It's available through the [slot props](#slot-props), the [component ref](#programmatic-access), and the [form context](#form-context).
 
 <CodeGroup>
@@ -1537,7 +1539,7 @@ function submit(e) {
 
 </CodeGroup>
 
-To submit the form, you may use the `get`, `post`, `put`, `patch` and `delete` methods.
+To submit the form, you may use the `get`, `post`, `put`, `patch`, `delete`, and `query` methods.
 
 <CodeGroup>
 
@@ -1548,10 +1550,11 @@ form.post(url, options);
 form.put(url, options);
 form.patch(url, options);
 form.delete(url, options);
+form.query(url, options);
 ```
 
 ```js React icon="react"
-const { submit, get, post, put, patch, delete: destroy } = useForm({ ... })
+const { submit, get, post, put, patch, delete: destroy, query } = useForm({ ... })
 
 submit(method, url, options)
 get(url, options)
@@ -1559,6 +1562,7 @@ post(url, options)
 put(url, options)
 patch(url, options)
 destroy(url, options)
+query(url, options)
 ```
 
 ```js Svelte icon="s"
@@ -1568,6 +1572,7 @@ form.post(url, options);
 form.put(url, options);
 form.patch(url, options);
 form.delete(url, options);
+form.query(url, options);
 ```
 
 </CodeGroup>
