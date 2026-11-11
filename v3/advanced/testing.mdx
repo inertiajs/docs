@@ -225,6 +225,32 @@ $response->assertInertia(fn (Assert $page) => $page
 );
 ```
 
+### Testing Layers
+
+You may use the `hasLayer` and `layerBase` methods to assert that a response opens a [layer](/v3/the-basics/manual-visits#layers) rather than replacing the page.
+
+```php
+$response->assertInertia(fn (Assert $page) => $page
+    ->component('Users/Edit')
+    ->hasLayer()
+    ->layerBase('/users')
+);
+```
+
+Passing a key to `hasLayer` asserts the key the layer is known by. A layer that declares no key of its own falls back to its component name, the same default the client applies, so it may still be asserted by that name.
+
+```php
+$response->assertInertia(fn (Assert $page) => $page
+    ->hasLayer('Users/Edit')
+);
+```
+
+The `isClose` method asserts that a response is a [close instruction](/v3/the-basics/responses#closing-a-layer) rather than a page.
+
+```php
+$response->assertInertia(fn (Assert $page) => $page->isClose());
+```
+
 ### Testing Flash Data
 
 You may use the `hasFlash` and `missingFlash` methods to test [flash data](/v3/data-props/flash-data) in your Inertia responses.
