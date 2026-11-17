@@ -442,7 +442,7 @@ Content-Type: application/json
 
 ### Resetting Props
 
-The `X-Inertia-Reset` header lists the prop paths that the client resets before it applies new data. The client sends each reset path in both `X-Inertia-Reset` and `X-Inertia-Partial-Data`. The server resolves a reset prop again and returns it in `props` without a merge label, so the client replaces the value instead of merging it. For a scroll prop, the server also sets `scrollProps[path].reset`. The [infinite scroll](/v3/data-props/infinite-scroll) component then resets its pagination state to the returned page. The [resetting props](/v3/data-props/merging-props#resetting-props) section covers the client-side API.
+The `X-Inertia-Reset` header lists the prop paths that the client resets before it applies new data. When the visit includes `only`, the client also adds each reset path to `X-Inertia-Partial-Data`. With no `only` and no `except`, the client sends `X-Inertia-Reset` and no partial headers, and the server treats the request as a full visit. A visit that passes `except` without `only` stays partial: the reset paths stay on `X-Inertia-Reset` and are not added to `X-Inertia-Partial-Data`. The server resolves a reset prop again and returns it in `props` without a merge label, so the client replaces the value instead of merging it. For a scroll prop, the server also sets `scrollProps[path].reset`. The [infinite scroll](/v3/data-props/infinite-scroll) component then resets its pagination state to the returned page. The [resetting props](/v3/data-props/merging-props#resetting-props) section covers the client-side API.
 
 ## Deferred and Optional Props
 

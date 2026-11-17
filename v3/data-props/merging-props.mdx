@@ -136,13 +136,19 @@ For more information on once props, see the [once props](/v3/data-props/once-pro
 
 ## Resetting Props
 
-On the client side, you can indicate to the server that you would like to reset the prop. This is useful when you want to clear the prop value before merging new data, such as when the user enters a new search query on a paginated list.
+On the client side, you can indicate to the server that you would like to reset the prop. The `reset` request option accepts an array of the prop keys you would like to reset.
 
-The `reset` request option accepts an array of the prop keys you would like to reset.
+```js
+router.reload({ reset: ["results"] });
+```
+
+This replaces `results` and reloads the whole page.
+
+Pass `only` to keep the reload partial. `results` is replaced, and any prop you left out stays as it is. Use this when a new search query should clear a paginated list before later pages merge into it.
 
 ```js
 router.reload({
+  only: ["results"],
   reset: ["results"],
-  // ...
 });
 ```
